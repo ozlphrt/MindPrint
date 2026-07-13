@@ -1,0 +1,20 @@
+{
+  "name": "@mindprint/assessment-engine",
+  "version": "1.0.0",
+  "private": true,
+  "main": "./dist/index.js",
+  "type": "module",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@mindprint/shared-types": "workspace:*",
+    "typescript": "^5.4.5",
+    "vitest": "^1.6.0"
+  }
+}

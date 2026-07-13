@@ -1,0 +1,28 @@
+# Tasks
+
+- [x] Monorepo & Configuration Setup
+  - [x] Create `pnpm-workspace.yaml`, root `package.json`, and `turbo.json`
+  - [x] Set up base `tsconfig.json` files and ESLint/Prettier configs
+- [x] Create Shared Packages
+  - [x] Implement `packages/shared-types`
+  - [x] Implement `packages/content-schema` with Zod validation
+  - [x] Implement `packages/ui` containing Vanilla CSS variables and base component styles
+- [x] Create `packages/assessment-engine`
+  - [x] Implement scoring logic and score normalization
+  - [x] Implement branching evaluator
+  - [x] Implement confidence calculations
+  - [x] Implement archetype vector matching
+  - [x] Write unit tests for the engine (Vitest)
+- [x] Create `apps/web` (Vite + React + PWA)
+  - [x] Set up Vite project, routing, and Zustand store
+  - [x] Configure Dexie.js for IndexedDB session persistence
+  - [x] Implement Workbox Service Worker for offline asset caching
+  - [x] Create 8-question sample journey JSON definition
+  - [x] Build ranked choice UI and question screens with Vanilla CSS custom design
+  - [x] Build local results page with archetype reveal and feedback buttons
+- [x] Create `apps/api` (Fastify Scaffold)
+  - [x] Scaffold Fastify server with hello/health and basic sync endpoints
+- [x] End-to-End Testing
+  - [x] Implement Playwright E2E offline test simulating flight-mode completion
+- [x] Verification and Polish
+  - [x] Verify build, run all tests, and check PWA audit

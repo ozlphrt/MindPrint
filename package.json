@@ -1,0 +1,18 @@
+{
+  "name": "mindprint-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "MindPrint - Offline-First Self-Discovery PWA Monorepo",
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev --parallel",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "test:e2e": "turbo run test:e2e"
+  },
+  "devDependencies": {
+    "turbo": "^2.0.4",
+    "typescript": "^5.4.5"
+  },
+  "packageManager": "pnpm@11.12.0"
+}

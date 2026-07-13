@@ -1,0 +1,754 @@
+{
+  "id": "jv-others-1",
+  "journeyId": "how-others-experience-me",
+  "version": "1.0.0",
+  "dimensions": [
+    {
+      "id": "directness",
+      "name": "Directness",
+      "description": "How directly, candidly, and straightforwardly you communicate your thoughts.",
+      "lowPole": "Diplomatic & Indirect",
+      "highPole": "Frank & Direct"
+    },
+    {
+      "id": "social_energy",
+      "name": "Social Energy",
+      "description": "Your natural preference for social interaction vs reflection time.",
+      "lowPole": "Reserved & Introspective",
+      "highPole": "Outgoing & Expressive"
+    },
+    {
+      "id": "reflectiveness",
+      "name": "Reflectiveness",
+      "description": "Your tendency to process information deeply before reacting.",
+      "lowPole": "Action-Oriented & Spontaneous",
+      "highPole": "Deliberate & Analytical"
+    },
+    {
+      "id": "expressiveness",
+      "name": "Expressiveness",
+      "description": "How openly you convey emotion and personal warmth vs. maintaining an objective, reserved stance.",
+      "lowPole": "Objective & Reserved",
+      "highPole": "Warm & Expressive"
+    },
+    {
+      "id": "assertiveness",
+      "name": "Assertiveness",
+      "description": "How strongly you push for your own choices and opinions vs. accommodating those of others.",
+      "lowPole": "Receptive & Accommodating",
+      "highPole": "Assertive & Dominant"
+    },
+    {
+      "id": "adaptability",
+      "name": "Adaptability",
+      "description": "How easily you pivot and accept spontaneous changes vs. holding to plans and consistency.",
+      "lowPole": "Consistent & Grounded",
+      "highPole": "Flexible & Agile"
+    },
+    {
+      "id": "pace",
+      "name": "Pace",
+      "description": "Your preference for high-speed action and momentum vs. cautious, patient deliberation.",
+      "lowPole": "Deliberate & Patient",
+      "highPole": "Fast-paced & Urgent"
+    },
+    {
+      "id": "focus_orientation",
+      "name": "Focus Orientation",
+      "description": "Whether you focus primarily on objective tasks and logic vs. group harmony and relationships.",
+      "lowPole": "Task & Logic Focused",
+      "highPole": "Relationship & Harmony Focused"
+    },
+    {
+      "id": "vulnerability",
+      "name": "Vulnerability",
+      "description": "How openly you share your doubts, mistakes, and emotions vs. maintaining a stoic, guarded exterior.",
+      "lowPole": "Stoic & Guarded",
+      "highPole": "Vulnerable & Open"
+    },
+    {
+      "id": "conflict_style",
+      "name": "Conflict Engagement",
+      "description": "Your natural stance during friction—debating head-on vs. harmonizing and de-escalating.",
+      "lowPole": "Harmonizing & Avoiding",
+      "highPole": "Confrontational & Debating"
+    },
+    {
+      "id": "feedback_style",
+      "name": "Feedback Style",
+      "description": "Providing raw, direct critique to push standards vs. supportive encouragement to protect confidence.",
+      "lowPole": "Critique & Correcting",
+      "highPole": "Supportive & Encouraging"
+    },
+    {
+      "id": "playfulness",
+      "name": "Playfulness",
+      "description": "Using humor, teasing, and playfulness to connect vs. maintaining seriousness and gravitas.",
+      "lowPole": "Serious & Gravitas",
+      "highPole": "Playful & Lighthearted"
+    }
+  ],
+  "questions": [
+    {
+      "id": "q-001",
+      "journeyVersionId": "jv-others-1",
+      "type": "ranked_choice",
+      "prompt": "At a dinner party, someone confidently asserts a fact about a movie or historical event that you know is completely incorrect.",
+      "instructions": "Select one primary action and up to two optional secondary actions.",
+      "minSelections": 1,
+      "maxSelections": 3,
+      "required": true,
+      "answerOptions": [
+        {
+          "id": "q-001-a",
+          "label": "Correct them immediately and share the actual facts.",
+          "effects": [
+            { "dimension": "directness", "delta": 1.0 },
+            { "dimension": "social_energy", "delta": 0.4 }
+          ],
+          "evidenceTags": ["direct_challenge"]
+        },
+        {
+          "id": "q-001-b",
+          "label": "Ask curious questions to let them realize the contradiction themselves.",
+          "effects": [
+            { "dimension": "directness", "delta": -0.5 },
+            { "dimension": "reflectiveness", "delta": 0.8 }
+          ],
+          "evidenceTags": ["socratic_questioning"]
+        },
+        {
+          "id": "q-001-c",
+          "label": "Keep silent and search it up on your phone privately.",
+          "effects": [
+            { "dimension": "social_energy", "delta": -0.8 },
+            { "dimension": "reflectiveness", "delta": 1.0 }
+          ],
+          "evidenceTags": ["internal_validation"]
+        },
+        {
+          "id": "q-001-d",
+          "label": "Laugh it off, crack a joke, or steering the topic somewhere else.",
+          "effects": [
+            { "dimension": "social_energy", "delta": 0.8 },
+            { "dimension": "reflectiveness", "delta": -0.6 }
+          ],
+          "evidenceTags": ["tension_defusion"]
+        }
+      ]
+    },
+    {
+      "id": "q-002",
+      "journeyVersionId": "jv-others-1",
+      "type": "ranked_choice",
+      "prompt": "A close friend is sharing a complex personal dilemma, and you notice their shoulders tense up as they confuse their own story details.",
+      "instructions": "Select one primary response and up to two secondary responses.",
+      "minSelections": 1,
+      "maxSelections": 3,
+      "required": true,
+      "answerOptions": [
+        {
+          "id": "q-002-a",
+          "label": "Point out the inconsistency directly to help them untangle the timeline.",
+          "effects": [
+            { "dimension": "directness", "delta": 0.9 },
+            { "dimension": "social_energy", "delta": 0.3 }
+          ],
+          "evidenceTags": ["direct_inquiry"]
+        },
+        {
+          "id": "q-002-b",
+          "label": "Just listen and offer emotional validation, ignoring the minor detail errors.",
+          "effects": [
+            { "dimension": "directness", "delta": -0.6 },
+            { "dimension": "reflectiveness", "delta": 0.7 }
+          ],
+          "evidenceTags": ["tactful_reframing"]
+        },
+        {
+          "id": "q-002-c",
+          "label": "Wait until they finish, then ask calmly: 'Would you like some space to reflect first?'",
+          "effects": [
+            { "dimension": "social_energy", "delta": -0.6 },
+            { "dimension": "reflectiveness", "delta": 0.5 }
+          ],
+          "evidenceTags": ["private_resolution"]
+        }
+      ]
+    },
+    {
+      "id": "q-003",
+      "journeyVersionId": "jv-others-1",
+      "type": "single_choice",
+      "prompt": "You arrive at a large house warming party where you only know the host, who is busy greeting guests.",
+      "instructions": "Select the one option that fits you best.",
+      "minSelections": 1,
+      "maxSelections": 1,
+      "required": true,
+      "answerOptions": [
+        {
+          "id": "q-003-a",
+          "label": "Walk straight into a circle, introduce yourself, and join the conversation.",
+          "effects": [
+            { "dimension": "social_energy", "delta": 1.0 }
+          ],
+          "evidenceTags": ["high_social_initiative"]
+        },
+        {
+          "id": "q-003-b",
+          "label": "Stand near the food or drinks, observe the rooms, and wait for someone to approach.",
+          "effects": [
+            { "dimension": "social_energy", "delta": -0.8 },
+            { "dimension": "reflectiveness", "delta": 0.5 }
+          ],
+          "evidenceTags": ["observant_posture"]
+        }
+      ]
+    },
+    {
+      "id": "q-004",
+      "journeyVersionId": "jv-others-1",
+      "type": "ranked_choice",
+      "prompt": "You are organizing a weekend trip with friends, and one person is delaying their confirmation, holding up the group lodging booking.",
+      "instructions": "Select one primary and up to two secondary actions.",
+      "minSelections": 1,
+      "maxSelections": 3,
+      "required": true,
+      "answerOptions": [
+        {
+          "id": "q-004-a",
+          "label": "Send a direct text: 'Booking in 2 hours. If you haven't confirmed by then, we're booking without you.'",
+          "effects": [
+            { "dimension": "directness", "delta": 1.0 },
+            { "dimension": "reflectiveness", "delta": -0.3 }
+          ],
+          "evidenceTags": ["blunt_action"]
+        },
+        {
+          "id": "q-004-b",
+          "label": "Call them privately to see if they're having hesitation, budget constraints, or other issues.",
+          "effects": [
+            { "dimension": "directness", "delta": -0.4 },
+            { "dimension": "social_energy", "delta": 0.6 }
+          ],
+          "evidenceTags": ["empathic_inquiry"]
+        },
+        {
+          "id": "q-004-c",
+          "label": "Book a room that has free cancellation anyway and tell them we've got them covered just in case.",
+          "effects": [
+            { "dimension": "directness", "delta": -0.8 },
+            { "dimension": "reflectiveness", "delta": 0.9 }
+          ],
+          "evidenceTags": ["conflict_avoidance"]
+        }
+      ]
+    },
+    {
+      "id": "q-005",
+      "journeyVersionId": "jv-others-1",
+      "type": "single_choice",
+      "prompt": "A friend is emotionally venting to you about a mutual friend's behavior that hurt them.",
+      "instructions": "Select the one option that fits you best.",
+      "minSelections": 1,
+      "maxSelections": 1,
+      "required": true,
+      "answerOptions": [
+        {
+          "id": "q-005-a",
+          "label": "Support them fully: validate their feelings and echo their frustration.",
+          "effects": [
+            { "dimension": "social_energy", "delta": 0.7 },
+            { "dimension": "directness", "delta": 0.5 }
+          ],
+          "evidenceTags": ["emotional_engagement"]
+        },
+        {
+          "id": "q-005-b",
+          "label": "Offer neutral perspective: explain the other friend's possible point of view to ease anger.",
+          "effects": [
+            { "dimension": "directness", "delta": -0.3 },
+            { "dimension": "reflectiveness", "delta": 0.8 }
+          ],
+          "evidenceTags": ["rational_focus"]
+        }
+      ],
+      "branchRules": [
+        {
+          "targetQuestionId": "q-007",
+          "condition": {
+            "dimension": "reflectiveness",
+            "operator": ">=",
+            "value": 70
+          }
+        }
+      ]
+    },
+    {
+      "id": "q-006",
+      "journeyVersionId": "jv-others-1",
+      "type": "ranked_choice",
+      "prompt": "A friend shares a wild, highly impractical plan (e.g., buying a school bus to travel the world next month).",
+      "instructions": "Select one primary and up to two secondary actions.",
+      "minSelections": 1,
+      "maxSelections": 3,
+      "required": true,
+      "answerOptions": [
+        {
+          "id": "q-006-a",
+          "label": "Gently point out the massive logistical and financial challenges immediately.",
+          "effects": [
+            { "dimension": "directness", "delta": 0.8 },
+            { "dimension": "reflectiveness", "delta": 0.4 }
+          ],
+          "evidenceTags": ["pragmatic_critique"]
+        },
+        {
+          "id": "q-006-b",
+          "label": "Enthusiastically build on the dream: 'That's amazing! Imagine painting it yellow and...' ",
+          "effects": [
+            { "dimension": "directness", "delta": -0.5 },
+            { "dimension": "social_energy", "delta": 0.8 }
+          ],
+          "evidenceTags": ["affirmative_building"]
+        },
+        {
+          "id": "q-006-c",
+          "label": "Listen quietly, evaluate if they are actually serious, and offer a balanced review later.",
+          "effects": [
+            { "dimension": "social_energy", "delta": -0.6 },
+            { "dimension": "reflectiveness", "delta": 0.9 }
+          ],
+          "evidenceTags": ["deep_evaluation"]
+        }
+      ]
+    },
+    {
+      "id": "q-007",
+      "journeyVersionId": "jv-others-1",
+      "type": "single_choice",
+      "prompt": "You need to choose a restaurant in an unfamiliar neighborhood with zero signal/internet reviews available.",
+      "instructions": "Select one option.",
+      "minSelections": 1,
+      "maxSelections": 1,
+      "required": true,
+      "answerOptions": [
+        {
+          "id": "q-007-a",
+          "label": "Walk into the first busy restaurant; any decision is better than walking around hungry.",
+          "effects": [
+            { "dimension": "reflectiveness", "delta": -1.0 }
+          ],
+          "evidenceTags": ["fast_action"]
+        },
+        {
+          "id": "q-007-b",
+          "label": "Peek through windows, read the physical menus, and choose the most promising option.",
+          "effects": [
+            { "dimension": "reflectiveness", "delta": 0.8 }
+          ],
+          "evidenceTags": ["cautious_validation"]
+        }
+      ]
+    },
+    {
+      "id": "q-008",
+      "journeyVersionId": "jv-others-1",
+      "type": "ranked_choice",
+      "prompt": "A friend asks you to review a creative draft or hobby project (like a short story or painting) they spent weeks on.",
+      "instructions": "Select one primary and up to two secondary actions.",
+      "minSelections": 1,
+      "maxSelections": 3,
+      "required": true,
+      "answerOptions": [
+        {
+          "id": "q-008-a",
+          "label": "Provide honest, constructive criticism, listing exactly what needs work.",
+          "effects": [
+            { "dimension": "directness", "delta": 1.0 }
+          ],
+          "evidenceTags": ["candid_criticism"]
+        },
+        {
+          "id": "q-008-b",
+          "label": "Focus mostly on praising their effort and keep suggestions very gentle.",
+          "effects": [
+            { "dimension": "directness", "delta": -0.8 },
+            { "dimension": "social_energy", "delta": 0.5 }
+          ],
+          "evidenceTags": ["padded_critique"]
+        },
+        {
+          "id": "q-008-c",
+          "label": "Ask them: 'Are you looking for encouragement or detailed feedback?' before sharing.",
+          "effects": [
+            { "dimension": "reflectiveness", "delta": 0.9 },
+            { "dimension": "directness", "delta": -0.3 }
+          ],
+          "evidenceTags": ["calibrated_feedback"]
+        }
+      ]
+    }
+  ],
+  "archetypes": [
+    {
+      "id": "socratic-connector",
+      "name": "The Socratic Connector",
+      "description": "You connect deeply through thoughtful questioning and warm diplomatic presence, preferring collaboration and dialogue over direct commands.",
+      "idealVector": {
+        "social_energy": 80,
+        "directness": 30,
+        "reflectiveness": 70,
+        "expressiveness": 75,
+        "assertiveness": 30,
+        "adaptability": 80,
+        "pace": 35,
+        "focus_orientation": 80,
+        "vulnerability": 75,
+        "conflict_style": 30,
+        "feedback_style": 75,
+        "playfulness": 70
+      },
+      "minimumConfidence": 30
+    },
+    {
+      "id": "independent-explorer",
+      "name": "The Independent Explorer",
+      "description": "You value autonomy and direct action, exploring ideas independently and voicing your candid perspective without hesitation.",
+      "idealVector": {
+        "social_energy": 40,
+        "directness": 80,
+        "reflectiveness": 40,
+        "expressiveness": 30,
+        "assertiveness": 80,
+        "adaptability": 75,
+        "pace": 75,
+        "focus_orientation": 30,
+        "vulnerability": 30,
+        "conflict_style": 75,
+        "feedback_style": 25,
+        "playfulness": 40
+      },
+      "minimumConfidence": 30
+    },
+    {
+      "id": "quiet-strategist",
+      "name": "The Quiet Strategist",
+      "description": "You observe deeply and act with deliberate planning, offering carefully considered insights and maintaining a calm, introspective presence.",
+      "idealVector": {
+        "social_energy": 25,
+        "directness": 40,
+        "reflectiveness": 85,
+        "expressiveness": 25,
+        "assertiveness": 40,
+        "adaptability": 30,
+        "pace": 25,
+        "focus_orientation": 30,
+        "vulnerability": 20,
+        "conflict_style": 35,
+        "feedback_style": 40,
+        "playfulness": 20
+      },
+      "minimumConfidence": 30
+    },
+    {
+      "id": "empathic-challenger",
+      "name": "The Empathic Challenger",
+      "description": "You combine raw honesty with intense social engagement, challenging group consensus directly out of care and interest in improvement.",
+      "idealVector": {
+        "social_energy": 85,
+        "directness": 85,
+        "reflectiveness": 40,
+        "expressiveness": 80,
+        "assertiveness": 85,
+        "adaptability": 40,
+        "pace": 80,
+        "focus_orientation": 75,
+        "vulnerability": 80,
+        "conflict_style": 85,
+        "feedback_style": 30,
+        "playfulness": 75
+      },
+      "minimumConfidence": 30
+    }
+  ],
+  "insights": [
+    {
+      "id": "insight-socratic",
+      "conditions": [
+        {
+          "evidenceTag": "socratic_questioning",
+          "minimumCount": 1
+        }
+      ],
+      "title": "You guide conversations rather than pushing views.",
+      "bodyTemplate": "You tend to use questions to invite reflection, allowing others to arrive at realizations on their own. People experience you as collaborative and non-confrontational.",
+      "alternativeTemplate": "At times, people might find this indirect approach slow, wishing for a direct statement of your opinion."
+    },
+    {
+      "id": "insight-candid",
+      "conditions": [
+        {
+          "dimension": "directness",
+          "operator": ">=",
+          "value": 70
+        }
+      ],
+      "title": "Your transparency is refreshing.",
+      "bodyTemplate": "You speak clearly and without filters. People know exactly where they stand with you, making you a reliable truth-teller in team settings.",
+      "alternativeTemplate": "In emotionally charged situations, your high directness could be perceived as blunt or insensitive."
+    },
+    {
+      "id": "insight-diplomatic",
+      "conditions": [
+        {
+          "dimension": "directness",
+          "operator": "<=",
+          "value": 30
+        }
+      ],
+      "title": "You are a master of social diplomacy.",
+      "bodyTemplate": "You deliver thoughts with gentleness and tact, prioritizing safety and ensuring nobody feels threatened or put on the spot.",
+      "alternativeTemplate": "Others might feel you sweep hard truths under the rug or hide your genuine opinions to maintain peace."
+    },
+    {
+      "id": "insight-observant",
+      "conditions": [
+        {
+          "dimension": "social_energy",
+          "operator": "<=",
+          "value": 40
+        },
+        {
+          "dimension": "reflectiveness",
+          "operator": ">=",
+          "value": 60
+        }
+      ],
+      "title": "You are a thoughtful observer.",
+      "bodyTemplate": "You listen closely and process interactions deeply before intervening. This gives your contributions high impact, as they are backed by reasoning.",
+      "alternativeTemplate": "People who thrive on quick interactions might misinterpret your quietness as critical evaluation."
+    },
+    {
+      "id": "insight-assertive",
+      "conditions": [
+        {
+          "dimension": "assertiveness",
+          "operator": ">=",
+          "value": 70
+        }
+      ],
+      "title": "You command authority and lead decisions.",
+      "bodyTemplate": "You confidently take charge, state your choices, and steer groups forward out of a desire for clarity and execution.",
+      "alternativeTemplate": "Others can experience you as overbearing, stubborn, or dominating, feeling their input has been ignored."
+    },
+    {
+      "id": "insight-receptive",
+      "conditions": [
+        {
+          "dimension": "assertiveness",
+          "operator": "<=",
+          "value": 40
+        }
+      ],
+      "title": "You are highly collaborative and receptive.",
+      "bodyTemplate": "You value other people's perspectives, yield to the group consensus, and create space for collective choices.",
+      "alternativeTemplate": "Others might view you as passive, indecisive, or hesitant to advocate for your own needs."
+    },
+    {
+      "id": "insight-flexible",
+      "conditions": [
+        {
+          "dimension": "adaptability",
+          "operator": ">=",
+          "value": 70
+        }
+      ],
+      "title": "You flow easily with changes.",
+      "bodyTemplate": "You adapt smoothly to shifting plans, welcoming new information and spontaneity without friction.",
+      "alternativeTemplate": "Others may perceive you as disorganized or lacking commitment, feeling you change directions too frequently."
+    },
+    {
+      "id": "insight-consistent",
+      "conditions": [
+        {
+          "dimension": "adaptability",
+          "operator": "<=",
+          "value": 40
+        }
+      ],
+      "title": "You bring stable consistency.",
+      "bodyTemplate": "You honor plans, follow structured conventions, and provide a reliable anchor of routine for those around you.",
+      "alternativeTemplate": "Others might experience you as rigid, stubborn, or resistant to necessary adjustments when circumstances change."
+    },
+    {
+      "id": "insight-fast",
+      "conditions": [
+        {
+          "dimension": "pace",
+          "operator": ">=",
+          "value": 70
+        }
+      ],
+      "title": "You operate with urgent momentum.",
+      "bodyTemplate": "You act quickly, decide fast, and keep conversations and projects moving at a high pace.",
+      "alternativeTemplate": "Others may feel rushed or run over, experiencing your speed as impulsive or careless."
+    },
+    {
+      "id": "insight-deliberate",
+      "conditions": [
+        {
+          "dimension": "pace",
+          "operator": "<=",
+          "value": 40
+        }
+      ],
+      "title": "You are deeply patient and deliberate.",
+      "bodyTemplate": "You prefer to slow down, analyze all details, and make sure things are done correctly and safely.",
+      "alternativeTemplate": "Others can find your pace slow or frustrating, misinterpreting caution as hesitation or stalling."
+    },
+    {
+      "id": "insight-task",
+      "conditions": [
+        {
+          "dimension": "focus_orientation",
+          "operator": "<=",
+          "value": 40
+        }
+      ],
+      "title": "You focus objectively on tasks and results.",
+      "bodyTemplate": "You prioritize logical progress, timelines, and raw results over social dynamics to get things done.",
+      "alternativeTemplate": "Others may feel you are cold, transactional, or insensitive to the emotional climate of the group."
+    },
+    {
+      "id": "insight-relationship",
+      "conditions": [
+        {
+          "dimension": "focus_orientation",
+          "operator": ">=",
+          "value": 70
+        }
+      ],
+      "title": "You prioritize relationship harmony.",
+      "bodyTemplate": "You focus heavily on the morale, cohesion, and emotional alignment of the group above objective tasks.",
+      "alternativeTemplate": "Others might feel you prioritize feelings over productivity, delaying progress to manage minor emotional friction."
+    },
+    {
+      "id": "insight-vulnerable",
+      "conditions": [
+        {
+          "dimension": "vulnerability",
+          "operator": ">=",
+          "value": 70
+        }
+      ],
+      "title": "You build trust through authenticity.",
+      "bodyTemplate": "You openly share your mistakes, emotions, and doubts, creating a human connection that invites others to open up.",
+      "alternativeTemplate": "Others might occasionally find this level of sharing uncomfortable, experiencing it as oversharing or emotional fragility."
+    },
+    {
+      "id": "insight-stoic",
+      "conditions": [
+        {
+          "dimension": "vulnerability",
+          "operator": "<=",
+          "value": 40
+        }
+      ],
+      "title": "You maintain a composed, steady presence.",
+      "bodyTemplate": "You keep your feelings and doubts private, presenting a calm, objective, and dependable exterior under pressure.",
+      "alternativeTemplate": "Others can find you guarded, robotic, or hard to read, making it difficult for them to establish deep trust."
+    },
+    {
+      "id": "insight-confrontational",
+      "conditions": [
+        {
+          "dimension": "conflict_style",
+          "operator": ">=",
+          "value": 70
+        }
+      ],
+      "title": "You address conflict head-on.",
+      "bodyTemplate": "You step directly into tension, believing that honest debate and clearing the air is the healthiest path.",
+      "alternativeTemplate": "Others can find your approach intimidating, feeling that you are argumentative or picking unnecessary fights."
+    },
+    {
+      "id": "insight-harmonizing",
+      "conditions": [
+        {
+          "dimension": "conflict_style",
+          "operator": "<=",
+          "value": 40
+        }
+      ],
+      "title": "You seek harmony and de-escalate tension.",
+      "bodyTemplate": "You use diplomacy, defusion, and patience to resolve friction, ensuring that discussions stay safe and calm.",
+      "alternativeTemplate": "Others might feel you avoid necessary conflict, sweeping critical arguments under the rug to maintain artificial peace."
+    },
+    {
+      "id": "insight-critique",
+      "conditions": [
+        {
+          "dimension": "feedback_style",
+          "operator": "<=",
+          "value": 40
+        }
+      ],
+      "title": "You drive growth through direct correction.",
+      "bodyTemplate": "You provide honest, constructive critiques pointing out flaws immediately to help others meet high standards.",
+      "alternativeTemplate": "Others can experience your feedback as harsh, discouraging, or feeling that their efforts are never good enough."
+    },
+    {
+      "id": "insight-encouraging",
+      "conditions": [
+        {
+          "dimension": "feedback_style",
+          "operator": ">=",
+          "value": 70
+        }
+      ],
+      "title": "You build confidence through encouragement.",
+      "bodyTemplate": "You focus on praising effort, protecting psychological safety, and giving gentle, supportive suggestions.",
+      "alternativeTemplate": "Others might feel you withhold direct truths, offering soft encouragement when direct correction is needed."
+    },
+    {
+      "id": "insight-playful",
+      "conditions": [
+        {
+          "dimension": "playfulness",
+          "operator": ">=",
+          "value": 70
+        }
+      ],
+      "title": "You bring lighthearted, playful energy.",
+      "bodyTemplate": "You use humor, playful teasing, and wit to defuse stress, keep conversations fun, and build friendly bonds.",
+      "alternativeTemplate": "Others can misinterpret your teasing as passive-aggressive, or feel that you do not take serious situations seriously."
+    },
+    {
+      "id": "insight-gravitas",
+      "conditions": [
+        {
+          "dimension": "playfulness",
+          "operator": "<=",
+          "value": 40
+        }
+      ],
+      "title": "You carry deep gravitas and respect.",
+      "bodyTemplate": "You treat interactions with seriousness and dignity, ensuring respect and professional weight in all matters.",
+      "alternativeTemplate": "Others may experience you as stiff, stuffy, or lacking warmth, feeling they cannot laugh or relax around you."
+    },
+    {
+      "id": "insight-expressive",
+      "conditions": [
+        {
+          "dimension": "expressiveness",
+          "operator": ">=",
+          "value": 70
+        }
+      ],
+      "title": "You radiate personal warmth and expression.",
+      "bodyTemplate": "You show your emotions openly, sharing personal enthusiasm and empathy to make others feel validated.",
+      "alternativeTemplate": "Objective-minded individuals might misinterpret your high expressiveness as emotionally loaded or less logical."
+    }
+  ]
+}
