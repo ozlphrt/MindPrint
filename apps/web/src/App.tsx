@@ -516,25 +516,17 @@ export default function App() {
       } catch (netErr: any) {
         console.warn('Network login connection failed, trying local simulation:', netErr);
         
-        if (
-          (loginUsername.toLowerCase() === 'zirt' && loginPassword === '1234') ||
-          (loginUsername.toLowerCase() === 'firt' && loginPassword === '1234')
-        ) {
-          data = { username: loginUsername.toLowerCase() === 'firt' ? 'Firt' : 'Zirt' };
-          offlineSim = true;
-        } else {
-          const simUsersRaw = localStorage.getItem('mindprint_simulated_users') || '[]';
-          let simUsers = JSON.parse(simUsersRaw);
-          const matched = simUsers.find((u: any) => 
-            u.username.toLowerCase() === loginUsername.toLowerCase() && 
-            u.password.toLowerCase() === loginPassword.toLowerCase()
-          );
-          if (!matched) {
-            throw new Error('Incorrect credentials or account not found in local simulation.');
-          }
-          data = { username: matched.username };
-          offlineSim = true;
+        const simUsersRaw = localStorage.getItem('mindprint_simulated_users') || '[]';
+        let simUsers = JSON.parse(simUsersRaw);
+        const matched = simUsers.find((u: any) => 
+          u.username.toLowerCase() === loginUsername.toLowerCase() && 
+          u.password.toLowerCase() === loginPassword.toLowerCase()
+        );
+        if (!matched) {
+          throw new Error('Incorrect credentials or account not found in local simulation.');
         }
+        data = { username: matched.username };
+        offlineSim = true;
       }
 
       if (!offlineSim && response) {

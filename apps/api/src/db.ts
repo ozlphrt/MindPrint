@@ -38,27 +38,13 @@ async function readJsonSafe(filename: string): Promise<Record<string, any>> {
   }
 }
 
-// Initialize database by loading data from disk, and seed default accounts if empty
+// Initialize database by loading data from disk
 export async function initDb() {
   await fs.mkdir(DATA_DIR, { recursive: true });
   users = await readJsonSafe(USERS_FILE);
   sessions = await readJsonSafe(SESSIONS_FILE);
   results = await readJsonSafe(RESULTS_FILE);
 
-  // Seed default users if users.json is empty or doesn't have Zirt/Firt
-  let needsWrite = false;
-  if (!users['zirt']) {
-    users['zirt'] = { username: 'Zirt', password: '1234' };
-    needsWrite = true;
-  }
-  if (!users['firt']) {
-    users['firt'] = { username: 'Firt', password: '1234' };
-    needsWrite = true;
-  }
-
-  if (needsWrite) {
-    await writeJsonAtomic(USERS_FILE, users);
-  }
   console.log(`[DB] Database initialized. Loaded ${Object.keys(users).length} users, ${Object.keys(sessions).length} sessions, ${Object.keys(results).length} results.`);
 }
 
