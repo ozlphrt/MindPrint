@@ -44,42 +44,70 @@ const ShareCard = ({ result }: { result: any }) => {
   );
 };
 
-const PersonalMap = ({ result }: { result: any }) => {
+const PersonalMap = ({ result, allSessions = [] }: { result: any; allSessions?: any[] }) => {
   const currentLanguage = useJourneyStore(state => state.currentLanguage);
-  const directnessDim = result.dimensions.find((d: any) => d.id === 'directness');
-  const socialDim = result.dimensions.find((d: any) => d.id === 'social_energy');
-  const x = directnessDim ? directnessDim.score : 50;
-  const y = socialDim ? socialDim.score : 50;
 
-  // Calculate archetype alignment weights
-  const socratic = (100 - x) * y;
-  const empathic = x * y;
-  const quiet = (100 - x) * (100 - y);
-  const independent = x * (100 - y);
+  // Group into self-assessments vs others' feedbacks
+  const selfAssessments = allSessions.filter(item => !item.session.feedbackFor);
+  const feedbackAssessments = allSessions.filter(item => item.session.feedbackFor);
 
-  const total = socratic + empathic + quiet + independent || 1;
-  const socraticPct = Math.round((socratic / total) * 100);
-  const empathicPct = Math.round((empathic / total) * 100);
-  const quietPct = Math.round((quiet / total) * 100);
-  const independentPct = Math.round((independent / total) * 100);
+  // Map self-assessments to coordinates
+  let selfPoints = selfAssessments.map(item => {
+    const directnessDim = item.result?.dimensions?.find((d: any) => d.id === 'directness');
+    const socialDim = item.result?.dimensions?.find((d: any) => d.id === 'social_energy');
+    const dx = directnessDim ? directnessDim.score : 50;
+    const dy = socialDim ? socialDim.score : 50;
+    const date = new Date(item.session.completedAt || item.session.startedAt);
+    return {
+      cx: Math.round(dx * 4),
+      cy: Math.round((100 - dy) * 4),
+      label: date.toLocaleDateString(currentLanguage === 'tr' ? 'tr-TR' : 'en-US', { month: 'short', day: 'numeric' })
+    };
+  });
 
-  const maxPct = Math.max(socraticPct, empathicPct, quietPct, independentPct);
+  // Fallback to active result if no chronological points found
+  if (selfPoints.length === 0 && result) {
+    const directnessDim = result.dimensions?.find((d: any) => d.id === 'directness');
+    const socialDim = result.dimensions?.find((d: any) => d.id === 'social_energy');
+    const dx = directnessDim ? directnessDim.score : 50;
+    const dy = socialDim ? socialDim.score : 50;
+    selfPoints = [{
+      cx: Math.round(dx * 4),
+      cy: Math.round((100 - dy) * 4),
+      label: currentLanguage === 'tr' ? 'Mevcut' : 'Current'
+    }];
+  }
 
-  // Localization labels
-  const labelSocratic = currentLanguage === 'tr' ? "Sokratik Bağlayıcı" : "Socratic Connector";
-  const labelChallenger = currentLanguage === 'tr' ? "Empatik Meydan Okuyan" : "Empathic Challenger";
-  const labelStrategist = currentLanguage === 'tr' ? "Sessiz Stratejist" : "Quiet Strategist";
-  const labelExplorer = currentLanguage === 'tr' ? "Bağımsız Kaşif" : "Independent Explorer";
-  
-  const title = currentLanguage === 'tr' ? "Kişisel Davranış Ağacınız" : "Your Behavior Tree";
-  const desc = currentLanguage === 'tr' ? "Davranış profilinizin dallarını ve baskın eğilimlerinizi sembolize eden büyüme ağacı." : "Visualizing the branches of your behavior profile and dominant traits.";
+  // Map feedbacks to coordinates
+  const feedbackPoints = feedbackAssessments.map((item, idx) => {
+    const directnessDim = item.result?.dimensions?.find((d: any) => d.id === 'directness');
+    const socialDim = item.result?.dimensions?.find((d: any) => d.id === 'social_energy');
+    const dx = directnessDim ? directnessDim.score : 50;
+    const dy = socialDim ? socialDim.score : 50;
+    return {
+      cx: Math.round(dx * 4),
+      cy: Math.round((100 - dy) * 4),
+      label: `${currentLanguage === 'tr' ? 'Geri Bildirim' : 'Feedback'} ${idx + 1}`
+    };
+  });
+
+  // Calculate self path string
+  let pathD = "";
+  if (selfPoints.length > 1) {
+    pathD = `M ${selfPoints[0].cx} ${selfPoints[0].cy} ` + selfPoints.slice(1).map(p => `L ${p.cx} ${p.cy}`).join(' ');
+  }
+
+  const title = currentLanguage === 'tr' ? "Davranışsal Perspektif Haritanız" : "Behavioral Perspective Map";
+  const desc = currentLanguage === 'tr' 
+    ? "Kendi kendinizi değerlendirmeleriniz (çizgi) ile başkalarının hakkınızdaki görüşlerini (noktalar) karşılaştırın." 
+    : "Comparing your chronological self-assessments (connected path) against how others perceive you (individual dots).";
 
   return (
     <div style={{ background: 'rgba(255, 255, 255, 0.02)', border: '1px solid var(--border-card)', borderRadius: '12px', padding: '24px', marginBottom: '24px' }}>
       <h3 style={{ fontSize: '1.15rem', color: '#fff', marginBottom: '4px' }}>{title}</h3>
       <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginBottom: '20px' }}>{desc}</p>
 
-      {/* SVG Behavior Tree Container */}
+      {/* SVG 2D Grid Map Container */}
       <div style={{ 
         position: 'relative', 
         width: '100%', 
@@ -87,133 +115,123 @@ const PersonalMap = ({ result }: { result: any }) => {
         border: '1px solid rgba(255, 255, 255, 0.05)', 
         borderRadius: '8px',
         overflow: 'hidden',
-        padding: '10px 0'
+        paddingBottom: '100%'
       }}>
-        <svg viewBox="0 0 400 360" style={{ width: '100%', height: 'auto', display: 'block' }}>
+        {/* Quadrant Labels */}
+        <div style={{ position: 'absolute', top: '12px', left: '12px', opacity: 0.25, fontSize: '0.7rem', fontWeight: 'bold', pointerEvents: 'none' }}>
+          {currentLanguage === 'tr' ? "SOKRATİK BAĞLAYICI" : "SOCRATIC CONNECTOR"}<br/>
+          <span style={{ fontSize: '0.62rem' }}>(Low Dir / High Soc)</span>
+        </div>
+        <div style={{ position: 'absolute', top: '12px', right: '12px', opacity: 0.25, fontSize: '0.7rem', fontWeight: 'bold', textAlign: 'right', pointerEvents: 'none' }}>
+          {currentLanguage === 'tr' ? "EMPATİK MEYDAN OKUYAN" : "EMPATHIC CHALLENGER"}<br/>
+          <span style={{ fontSize: '0.62rem' }}>(High Dir / High Soc)</span>
+        </div>
+        <div style={{ position: 'absolute', bottom: '12px', left: '12px', opacity: 0.25, fontSize: '0.7rem', fontWeight: 'bold', pointerEvents: 'none' }}>
+          {currentLanguage === 'tr' ? "SESSİZ STRATEJİST" : "QUIET STRATEGIST"}<br/>
+          <span style={{ fontSize: '0.62rem' }}>(Low Dir / Low Soc)</span>
+        </div>
+        <div style={{ position: 'absolute', bottom: '12px', right: '12px', opacity: 0.25, fontSize: '0.7rem', fontWeight: 'bold', textAlign: 'right', pointerEvents: 'none' }}>
+          {currentLanguage === 'tr' ? "BAĞIMSIZ KAŞİF" : "INDEPENDENT EXPLORER"}<br/>
+          <span style={{ fontSize: '0.62rem' }}>(High Dir / Low Soc)</span>
+        </div>
+
+        <svg viewBox="0 0 400 400" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', display: 'block' }}>
           <defs>
-            {/* Glow filters for dominant branches */}
-            <filter id="glow-dominant" x="-20%" y="-20%" width="140%" height="140%">
-              <feGaussianBlur stdDeviation="6" result="blur" />
+            {/* Glow filters for self path */}
+            <filter id="glow-self" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="4" result="blur" />
               <feComposite in="SourceGraphic" in2="blur" operator="over" />
             </filter>
-            <filter id="glow-soft" x="-20%" y="-20%" width="140%" height="140%">
+            {/* Glow filters for feedback points */}
+            <filter id="glow-feedback" x="-20%" y="-20%" width="140%" height="140%">
               <feGaussianBlur stdDeviation="3" result="blur" />
               <feComposite in="SourceGraphic" in2="blur" operator="over" />
             </filter>
-            {/* Trunk Gradient */}
-            <linearGradient id="trunkGrad" x1="0%" y1="100%" x2="0%" y2="0%">
-              <stop offset="0%" stopColor="#1e130c" />
-              <stop offset="100%" stopColor="#4a3018" />
-            </linearGradient>
+            {/* Heatmap gradients */}
+            <radialGradient id="heat-self" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="var(--accent-primary)" stopOpacity="0.18" />
+              <stop offset="60%" stopColor="var(--accent-primary)" stopOpacity="0.05" />
+              <stop offset="100%" stopColor="var(--accent-primary)" stopOpacity="0" />
+            </radialGradient>
+            <radialGradient id="heat-feedback" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="#2ecc71" stopOpacity="0.18" />
+              <stop offset="60%" stopColor="#2ecc71" stopOpacity="0.05" />
+              <stop offset="100%" stopColor="#2ecc71" stopOpacity="0" />
+            </radialGradient>
           </defs>
 
-          {/* Core Root (The Ground) */}
-          <ellipse cx="200" cy="340" rx="60" ry="12" fill="rgba(255, 255, 255, 0.03)" stroke="rgba(255, 255, 255, 0.08)" strokeWidth="1" />
-
-          {/* Trunk */}
-          <path d="M 190 340 L 195 240 L 205 240 L 210 340 Z" fill="url(#trunkGrad)" />
-          
-          {/* Core label */}
-          <text x="200" y="325" textAnchor="middle" fill="var(--text-secondary)" fontSize="10" fontWeight="bold" letterSpacing="0.5">CORE SELF</text>
-
-          {/* Branches connecting Splitting Node (200, 240) to tips */}
-          {/* Branch 1: Socratic Connector */}
-          <path 
-            d="M 200 240 C 180 180, 140 100, 80 80" 
-            fill="none" 
-            stroke={socraticPct === maxPct ? "var(--accent-primary)" : "rgba(207, 159, 61, 0.3)"} 
-            strokeWidth={3 + (socraticPct * 0.1)} 
-            strokeLinecap="round"
-            filter={socraticPct === maxPct ? "url(#glow-dominant)" : "none"}
-          />
-
-          {/* Branch 2: Empathic Challenger */}
-          <path 
-            d="M 200 240 C 220 180, 260 100, 320 80" 
-            fill="none" 
-            stroke={empathicPct === maxPct ? "var(--accent-primary)" : "rgba(207, 159, 61, 0.3)"} 
-            strokeWidth={3 + (empathicPct * 0.1)} 
-            strokeLinecap="round"
-            filter={empathicPct === maxPct ? "url(#glow-dominant)" : "none"}
-          />
-
-          {/* Branch 3: Quiet Strategist */}
-          <path 
-            d="M 200 240 C 180 230, 140 220, 80 220" 
-            fill="none" 
-            stroke={quietPct === maxPct ? "var(--accent-primary)" : "rgba(207, 159, 61, 0.3)"} 
-            strokeWidth={3 + (quietPct * 0.1)} 
-            strokeLinecap="round"
-            filter={quietPct === maxPct ? "url(#glow-dominant)" : "none"}
-          />
-
-          {/* Branch 4: Independent Explorer */}
-          <path 
-            d="M 200 240 C 220 230, 260 220, 320 220" 
-            fill="none" 
-            stroke={independentPct === maxPct ? "var(--accent-primary)" : "rgba(207, 159, 61, 0.3)"} 
-            strokeWidth={3 + (independentPct * 0.1)} 
-            strokeLinecap="round"
-            filter={independentPct === maxPct ? "url(#glow-dominant)" : "none"}
-          />
-
-          {/* Leaves and Nodes on Branch Tips */}
-          {/* Node 1: Socratic Connector */}
-          <g>
-            <circle cx="80" cy="80" r={8 + (socraticPct * 0.15)} fill={socraticPct === maxPct ? "var(--accent-primary)" : "#2ecc71"} opacity={socraticPct === maxPct ? 1 : 0.8} filter="url(#glow-soft)" />
-            {socraticPct > 10 && (
-              <>
-                <circle cx="68" cy="74" r={3 + (socraticPct * 0.05)} fill="#27ae60" opacity="0.7" />
-                <circle cx="90" cy="70" r={4 + (socraticPct * 0.05)} fill="#2ecc71" opacity="0.6" />
-                <circle cx="76" cy="92" r={3 + (socraticPct * 0.05)} fill="#cf9f3d" opacity="0.5" />
-              </>
-            )}
-            <text x="80" y="60" textAnchor="middle" fill="#fff" fontSize="10" fontWeight="bold">{labelSocratic}</text>
-            <text x="80" y="98" textAnchor="middle" fill="var(--accent-primary)" fontSize="11" fontWeight="bold">{socraticPct}%</text>
+          {/* Background Heatmap Layer */}
+          <g id="heatmap-layer">
+            {selfPoints.map((pt, idx) => (
+              <circle key={`heat-self-${idx}`} cx={pt.cx} cy={pt.cy} r="65" fill="url(#heat-self)" />
+            ))}
+            {feedbackPoints.map((pt, idx) => (
+              <circle key={`heat-feed-${idx}`} cx={pt.cx} cy={pt.cy} r="65" fill="url(#heat-feedback)" />
+            ))}
           </g>
 
-          {/* Node 2: Empathic Challenger */}
-          <g>
-            <circle cx="320" cy="80" r={8 + (empathicPct * 0.15)} fill={empathicPct === maxPct ? "var(--accent-primary)" : "#e74c3c"} opacity={empathicPct === maxPct ? 1 : 0.8} filter="url(#glow-soft)" />
-            {empathicPct > 10 && (
-              <>
-                <circle cx="332" cy="74" r={3 + (empathicPct * 0.05)} fill="#c0392b" opacity="0.7" />
-                <circle cx="310" cy="70" r={4 + (empathicPct * 0.05)} fill="#e74c3c" opacity="0.6" />
-                <circle cx="324" cy="92" r={3 + (empathicPct * 0.05)} fill="#cf9f3d" opacity="0.5" />
-              </>
-            )}
-            <text x="320" y="60" textAnchor="middle" fill="#fff" fontSize="10" fontWeight="bold">{labelChallenger}</text>
-            <text x="320" y="98" textAnchor="middle" fill="var(--accent-primary)" fontSize="11" fontWeight="bold">{empathicPct}%</text>
-          </g>
+          {/* Grid Axis Lines */}
+          <line x1="200" y1="0" x2="200" y2="400" stroke="rgba(255,255,255,0.08)" strokeWidth="1.5" strokeDasharray="4" />
+          <line x1="0" y1="200" x2="400" y2="200" stroke="rgba(255,255,255,0.08)" strokeWidth="1.5" strokeDasharray="4" />
 
-          {/* Node 3: Quiet Strategist */}
-          <g>
-            <circle cx="80" cy="220" r={8 + (quietPct * 0.15)} fill={quietPct === maxPct ? "var(--accent-primary)" : "#9b59b6"} opacity={quietPct === maxPct ? 1 : 0.8} filter="url(#glow-soft)" />
-            {quietPct > 10 && (
-              <>
-                <circle cx="68" cy="214" r={3 + (quietPct * 0.05)} fill="#8e44ad" opacity="0.7" />
-                <circle cx="90" cy="210" r={4 + (quietPct * 0.05)} fill="#9b59b6" opacity="0.6" />
-                <circle cx="76" cy="232" r={3 + (quietPct * 0.05)} fill="#cf9f3d" opacity="0.5" />
-              </>
-            )}
-            <text x="80" y="200" textAnchor="middle" fill="#fff" fontSize="10" fontWeight="bold">{labelStrategist}</text>
-            <text x="80" y="238" textAnchor="middle" fill="var(--accent-primary)" fontSize="11" fontWeight="bold">{quietPct}%</text>
-          </g>
+          {/* Render Feedback Assessments (Others' Perspectives - Dotted Halo) */}
+          {feedbackPoints.map((pt, idx) => (
+            <g key={`feedback-${idx}`}>
+              <circle cx={pt.cx} cy={pt.cy} r="10" fill="rgba(46, 204, 113, 0.15)" stroke="#2ecc71" strokeWidth="1.5" strokeDasharray="2" filter="url(#glow-feedback)" />
+              <circle cx={pt.cx} cy={pt.cy} r="4" fill="#2ecc71" />
+              <text x={pt.cx} y={pt.cy - 14} textAnchor="middle" fill="#2ecc71" fontSize="8" fontWeight="bold" letterSpacing="0.2">{pt.label}</text>
+            </g>
+          ))}
 
-          {/* Node 4: Independent Explorer */}
-          <g>
-            <circle cx="320" cy="220" r={8 + (independentPct * 0.15)} fill={independentPct === maxPct ? "var(--accent-primary)" : "#3498db"} opacity={independentPct === maxPct ? 1 : 0.8} filter="url(#glow-soft)" />
-            {independentPct > 10 && (
-              <>
-                <circle cx="332" cy="214" r={3 + (independentPct * 0.05)} fill="#2980b9" opacity="0.7" />
-                <circle cx="310" cy="210" r={4 + (independentPct * 0.05)} fill="#3498db" opacity="0.6" />
-                <circle cx="324" cy="232" r={3 + (independentPct * 0.05)} fill="#cf9f3d" opacity="0.5" />
-              </>
-            )}
-            <text x="320" y="200" textAnchor="middle" fill="#fff" fontSize="10" fontWeight="bold">{labelExplorer}</text>
-            <text x="320" y="238" textAnchor="middle" fill="var(--accent-primary)" fontSize="11" fontWeight="bold">{independentPct}%</text>
-          </g>
+          {/* Render Self-Assessment Chronological Connected Path Line */}
+          {pathD && (
+            <path d={pathD} fill="none" stroke="var(--accent-primary)" strokeWidth="3" strokeLinecap="round" filter="url(#glow-self)" />
+          )}
+
+          {/* Render Self-Assessment Points */}
+          {selfPoints.map((pt, idx) => {
+            const isLatest = idx === selfPoints.length - 1;
+            return (
+              <g key={`self-${idx}`}>
+                <circle 
+                  cx={pt.cx} 
+                  cy={pt.cy} 
+                  r={isLatest ? 8 : 6} 
+                  fill={isLatest ? "var(--accent-primary)" : "rgba(207, 159, 61, 0.7)"} 
+                  stroke={isLatest ? "#fff" : "#111"} 
+                  strokeWidth="1.5" 
+                  filter={isLatest ? "url(#glow-self)" : "none"}
+                />
+                <text 
+                  x={pt.cx} 
+                  y={isLatest ? pt.cy - 14 : pt.cy + 16} 
+                  textAnchor="middle" 
+                  fill={isLatest ? "#fff" : "var(--accent-primary)"} 
+                  fontSize={isLatest ? "9" : "8"} 
+                  fontWeight="bold"
+                >
+                  {pt.label} {isLatest && selfPoints.length > 1 && `(${currentLanguage === 'tr' ? 'Son' : 'Latest'})`}
+                </text>
+              </g>
+            );
+          })}
         </svg>
+      </div>
+
+      {/* Legend */}
+      <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginTop: '16px', fontSize: '0.8rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <span style={{ display: 'inline-block', width: '12px', height: '12px', background: 'var(--accent-primary)', borderRadius: '50%' }}></span>
+          <span style={{ color: 'var(--text-secondary)' }}>
+            {currentLanguage === 'tr' ? "Kişisel Değerlendirmeler (Çizgi)" : "Self-Assessments (Connected)"}
+          </span>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <span style={{ display: 'inline-block', width: '12px', height: '12px', background: 'rgba(46, 204, 113, 0.15)', borderRadius: '50%', border: '1.5px dashed #2ecc71' }}></span>
+          <span style={{ color: 'var(--text-secondary)' }}>
+            {currentLanguage === 'tr' ? "Geri Bildirimler (Noktalar)" : "Feedback (Dotted)"}
+          </span>
+        </div>
       </div>
     </div>
   );
@@ -379,6 +397,7 @@ export default function App() {
   const [upgradeSuccess, setUpgradeSuccess] = useState(false);
   const [resultsTab, setResultsTab] = useState<'overview' | 'map' | 'history'>('overview');
   const [historySessions, setHistorySessions] = useState<any[]>([]);
+  const [allMapSessions, setAllMapSessions] = useState<any[]>([]);
 
   // User Login States
   const [loginUsername, setLoginUsername] = useState('');
@@ -389,14 +408,49 @@ export default function App() {
   const [shareTab, setShareTab] = useState<'app' | 'feedback'>('app');
 
   useEffect(() => {
-    if (resultsTab === 'history' && registeredUser) {
-      fetch(`http://localhost:3000/v1/user/sessions?username=${registeredUser}`)
-        .then(res => res.json())
-        .then(data => {
-          if (data.sessions) setHistorySessions(data.sessions);
-        })
-        .catch(err => console.error('[History] Fetch failed:', err));
+    async function loadSessions() {
+      try {
+        // 1. Local Dexie sessions
+        const localSess = await db.journeySessions.where('status').equals('completed').toArray();
+        const localRes = await db.localResults.toArray();
+        
+        const localCombined = localSess.map(s => {
+          const r = localRes.find(res => res.sessionId === s.id);
+          return { session: s, result: r };
+        }).filter(item => item.result);
+
+        // 2. Fetch server sessions if registered
+        let serverCombined: any[] = [];
+        if (registeredUser) {
+          try {
+            const res = await fetch(`http://localhost:3000/v1/user/sessions?username=${registeredUser}`);
+            const data = await res.json();
+            if (data.sessions) {
+              serverCombined = data.sessions;
+              setHistorySessions(data.sessions);
+            }
+          } catch (netErr) {
+            console.warn('[History] Remote fetch failed, using local sessions:', netErr);
+          }
+        }
+
+        // 3. Merge unique by session ID
+        const allSessions = [...localCombined];
+        for (const item of serverCombined) {
+          if (!allSessions.some(x => x.session.id === item.session.id)) {
+            allSessions.push(item);
+          }
+        }
+
+        // Sort chronological
+        allSessions.sort((a, b) => new Date(a.session.completedAt || a.session.startedAt).getTime() - new Date(b.session.startedAt).getTime());
+        setAllMapSessions(allSessions);
+      } catch (err) {
+        console.error('[MapSessions] Failed to load:', err);
+      }
     }
+
+    loadSessions();
   }, [resultsTab, registeredUser]);
 
   const handleLogout = async () => {
@@ -1394,7 +1448,7 @@ export default function App() {
         )}
 
         {resultsTab === 'map' && (
-          <PersonalMap result={localResult} />
+          <PersonalMap result={localResult} allSessions={allMapSessions} />
         )}
 
         {resultsTab === 'history' && (
