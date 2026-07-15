@@ -1350,23 +1350,6 @@ export default function App() {
           >
             {currentLanguage === 'fr' ? 'Carte personnelle' : currentLanguage === 'de' ? 'Persönliche Karte' : currentLanguage === 'ru' ? 'Личная карта' : currentLanguage === 'tr' ? 'Kişisel Harita' : 'Personal Map'}
           </button>
-          <button 
-            onClick={() => setResultsTab('history')}
-            style={{
-              flex: 1,
-              padding: '10px',
-              background: resultsTab === 'history' ? 'rgba(207, 159, 61, 0.1)' : 'transparent',
-              border: 'none',
-              borderBottom: resultsTab === 'history' ? '2px solid var(--accent-primary)' : 'none',
-              color: resultsTab === 'history' ? 'var(--accent-primary)' : 'var(--text-secondary)',
-              cursor: 'pointer',
-              fontWeight: 600,
-              fontSize: '0.9rem',
-              borderRadius: '4px'
-            }}
-          >
-            {currentLanguage === 'fr' ? 'Historique' : currentLanguage === 'de' ? 'Verlauf' : currentLanguage === 'ru' ? 'История' : currentLanguage === 'tr' ? 'Geçmiş' : 'History'}
-          </button>
         </div>
 
         {resultsTab === 'overview' && (
@@ -1626,48 +1609,6 @@ export default function App() {
         {resultsTab === 'map' && (
           <PersonalMap result={localResult} allSessions={allMapSessions} />
         )}
-
-        {resultsTab === 'history' && (
-          <div style={{ marginBottom: '24px' }}>
-            <h3 style={{ fontSize: '1.1rem', marginBottom: '15px', color: '#fff' }}>Assessment History</h3>
-            {historySessions.length === 0 ? (
-              <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>No past assessments found on server sync registries.</p>
-            ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                {historySessions.map((item, idx) => (
-                  <div 
-                    key={item.session.id} 
-                    onClick={() => {
-                      if (item.result) setLocalResult(item.result);
-                      setResultsTab('overview');
-                    }}
-                    style={{ 
-                      background: 'rgba(255, 255, 255, 0.02)', 
-                      border: '1px solid var(--border-card)', 
-                      borderRadius: '12px', 
-                      padding: '16px', 
-                      cursor: 'pointer',
-                      transition: 'border 0.2s ease'
-                    }}
-                    onMouseEnter={(e) => e.currentTarget.style.borderColor = 'var(--accent-primary)'}
-                    onMouseLeave={(e) => e.currentTarget.style.borderColor = 'var(--border-card)'}
-                  >
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '4px' }}>
-                      <span>Journey {idx + 1}</span>
-                      <span>{new Date(item.session.completedAt || item.session.updatedAt).toLocaleDateString()}</span>
-                    </div>
-                    <h4 style={{ color: '#fff', margin: 0, fontSize: '1rem' }}>
-                      {item.result?.primaryArchetype?.name || 'Explorer Profile'}
-                    </h4>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Share Result Component */}
-        <ShareCard result={localResult} />
 
         {/* Save Result / Log In Container */}
         <div style={{ background: 'rgba(255, 255, 255, 0.02)', border: '1px solid var(--border-card)', borderRadius: '12px', padding: '20px', marginBottom: '24px' }}>

@@ -302,6 +302,20 @@ export const useJourneyStore = create<JourneyState>((set, get) => ({
       await db.journeySessions.put(completedSession);
       await db.localResults.put(finalResult);
 
+      // Queue completed session sync
+      const sessionSyncOp: SyncOperation = {
+        operationId: crypto.randomUUID(),
+        entityType: 'session',
+        entityId: currentSession.id,
+        operationType: 'upsert',
+        payload: completedSession,
+        createdAt: new Date().toISOString(),
+        attemptCount: 0,
+        nextAttemptAt: null,
+        status: 'pending'
+      };
+      await db.syncOperations.put(sessionSyncOp);
+
       // Queue result sync
       const resultSyncOp: SyncOperation = {
         operationId: crypto.randomUUID(),
