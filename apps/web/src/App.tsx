@@ -301,6 +301,38 @@ export default function App() {
     window.location.reload();
   };
 
+  const renderShareModal = () => {
+    if (!showShareModal) return null;
+    return (
+      <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.85)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 3000 }}>
+        <div style={{ background: '#161616', border: '1px solid var(--accent-primary)', borderRadius: '12px', padding: '24px', maxWidth: '320px', width: '90%', textAlign: 'center', boxShadow: 'var(--shadow-glow)' }}>
+          <h3 style={{ color: '#fff', marginBottom: '6px', fontSize: '1.2rem' }}>
+            {currentLanguage === 'tr' ? "Uygulamayı Paylaş" : "Share MindPrint"}
+          </h3>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.78rem', marginBottom: '16px', lineHeight: 1.3 }}>
+            {currentLanguage === 'tr' ? "Cihazlar arasında anında geçiş yapmak için bu QR kodunu taratın." : "Scan this QR code to quickly open this app on another device."}
+          </p>
+          
+          <div style={{ background: '#fff', padding: '12px', borderRadius: '8px', display: 'inline-block', marginBottom: '16px' }}>
+            <img 
+              src={`https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(window.location.origin)}`} 
+              alt="QR Code" 
+              style={{ width: '160px', height: '160px', display: 'block' }} 
+            />
+          </div>
+
+          <button
+            className="btn btn-secondary"
+            style={{ width: '100%', padding: '10px' }}
+            onClick={() => setShowShareModal(false)}
+          >
+            {currentLanguage === 'tr' ? "Kapat" : "Close"}
+          </button>
+        </div>
+      </div>
+    );
+  };
+
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoginError(null);
@@ -556,8 +588,8 @@ export default function App() {
 
     return (
       <div className="glass-panel animate-float animate-fade-in" style={{ 
-        maxWidth: '360px', 
-        margin: '50px auto', 
+        maxWidth: '430px', 
+        margin: '20px auto', 
         padding: '24px', 
         textAlign: 'center',
         border: '1px solid rgba(207, 159, 61, 0.25)',
@@ -687,10 +719,60 @@ export default function App() {
           color: 'var(--text-secondary)', 
           fontSize: '0.85rem', 
           lineHeight: '1.4', 
-          marginBottom: '20px'
+          marginBottom: '16px'
         }}>
-          {currentLanguage === 'tr' ? "Davranışsal kör noktalarınızı keşfedin." : "Discover the behavioral blindspots you cannot easily see from the inside."}
+          {t.welcomeDesc}
         </p>
+
+        {/* Feature Highlights Grid */}
+        <div style={{ 
+          display: 'grid', 
+          gridTemplateColumns: '1fr', 
+          gap: '8px', 
+          textAlign: 'left', 
+          marginBottom: '18px',
+          background: 'rgba(255, 255, 255, 0.01)',
+          border: '1px solid rgba(255, 255, 255, 0.05)',
+          borderRadius: '10px',
+          padding: '12px'
+        }}>
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+            <span style={{ color: 'var(--accent-primary)', fontSize: '0.85rem' }}>✦</span>
+            <span style={{ fontSize: '0.8rem', color: 'var(--text-primary)' }}>
+              {t.anonymous.includes(' (') ? (
+                <>
+                  <strong>{t.anonymous.split(' (')[0]}</strong> ({t.anonymous.split(' (')[1]}
+                </>
+              ) : (
+                <strong>{t.anonymous}</strong>
+              )}
+            </span>
+          </div>
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+            <span style={{ color: 'var(--accent-primary)', fontSize: '0.85rem' }}>🔒</span>
+            <span style={{ fontSize: '0.8rem', color: 'var(--text-primary)' }}>
+              {t.localFirst.includes(' (') ? (
+                <>
+                  <strong>{t.localFirst.split(' (')[0]}</strong> ({t.localFirst.split(' (')[1]}
+                </>
+              ) : (
+                <strong>{t.localFirst}</strong>
+              )}
+            </span>
+          </div>
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+            <span style={{ color: 'var(--accent-primary)', fontSize: '0.85rem' }}>🔄</span>
+            <span style={{ fontSize: '0.8rem', color: 'var(--text-primary)' }}>
+              {t.crossDevice.includes(' (') ? (
+                <>
+                  <strong>{t.crossDevice.split(' (')[0]}</strong> ({t.crossDevice.split(' (')[1]}
+                </>
+              ) : (
+                <strong>{t.crossDevice}</strong>
+              )}
+            </span>
+          </div>
+        </div>
 
         <button 
           className="btn btn-primary" 
@@ -759,6 +841,7 @@ export default function App() {
             </div>
           </div>
         )}
+        {renderShareModal()}
       </div>
     );
   }
@@ -1229,6 +1312,7 @@ export default function App() {
             Wipe Data (GDPR)
           </button>
         </div>
+        {renderShareModal()}
       </div>
     );
   }
@@ -1482,34 +1566,7 @@ export default function App() {
           </div>
         </div>
       )}
-      {showShareModal && (
-        <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.85)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 3000 }}>
-          <div style={{ background: '#161616', border: '1px solid var(--accent-primary)', borderRadius: '12px', padding: '24px', maxWidth: '320px', width: '90%', textAlign: 'center', boxShadow: 'var(--shadow-glow)' }}>
-            <h3 style={{ color: '#fff', marginBottom: '6px', fontSize: '1.2rem' }}>
-              {currentLanguage === 'tr' ? "Uygulamayı Paylaş" : "Share MindPrint"}
-            </h3>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.78rem', marginBottom: '16px', lineHeight: 1.3 }}>
-              {currentLanguage === 'tr' ? "Cihazlar arasında anında geçiş yapmak için bu QR kodunu taratın." : "Scan this QR code to quickly open this app on another device."}
-            </p>
-            
-            <div style={{ background: '#fff', padding: '12px', borderRadius: '8px', display: 'inline-block', marginBottom: '16px' }}>
-              <img 
-                src={`https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(window.location.origin)}`} 
-                alt="QR Code" 
-                style={{ width: '160px', height: '160px', display: 'block' }} 
-              />
-            </div>
-
-            <button
-              className="btn btn-secondary"
-              style={{ width: '100%', padding: '10px' }}
-              onClick={() => setShowShareModal(false)}
-            >
-              {currentLanguage === 'tr' ? "Kapat" : "Close"}
-            </button>
-          </div>
-        </div>
-      )}
+      {renderShareModal()}
     </div>
   );
 }
