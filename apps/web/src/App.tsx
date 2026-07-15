@@ -1404,30 +1404,90 @@ export default function App() {
               <h3 style={{ fontSize: '1.1rem', marginBottom: '15px', color: '#fff' }}>{t.dimensionsTitle}</h3>
               {localResult.dimensions.map((dim: any) => {
                 const dimTrans = t.dimensions?.[dim.id] || dim;
+                const score = dim.score;
+                
+                const left = score < 50 ? score : 50;
+                const width = Math.abs(50 - score);
+
+                const isLeftDominant = score < 50;
+                const isRightDominant = score > 50;
+
                 return (
-                  <div key={dim.id} style={{ marginBottom: '16px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem', marginBottom: '6px' }}>
-                      <span style={{ fontWeight: 600 }}>{dimTrans.name}</span>
-                      <span style={{ color: 'var(--accent-primary)', fontWeight: 600 }}>{dim.score}%</span>
+                  <div 
+                    key={dim.id} 
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = 'rgba(207, 159, 61, 0.3)';
+                      e.currentTarget.style.transform = 'translateY(-2px)';
+                      e.currentTarget.style.boxShadow = '0 8px 24px rgba(207, 159, 61, 0.04)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.04)';
+                      e.currentTarget.style.transform = 'none';
+                      e.currentTarget.style.boxShadow = 'none';
+                    }}
+                    style={{ 
+                      background: 'rgba(255, 255, 255, 0.01)', 
+                      border: '1px solid rgba(255, 255, 255, 0.04)', 
+                      borderRadius: '12px', 
+                      padding: '16px', 
+                      marginBottom: '14px',
+                      transition: 'border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease'
+                    }}
+                  >
+                    <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '8px' }}>
+                      <span style={{ fontSize: '0.92rem', fontWeight: 700, color: '#fff', letterSpacing: '0.3px' }}>{dimTrans.name}</span>
                     </div>
-                    <div style={{ height: '8px', background: 'rgba(255, 255, 255, 0.08)', borderRadius: '4px', position: 'relative', margin: '8px 0' }}>
+                    
+                    <div style={{ height: '4px', background: 'rgba(255, 255, 255, 0.08)', borderRadius: '2px', position: 'relative', margin: '22px 0 10px 0' }}>
+                      <div style={{ position: 'absolute', left: '50%', top: '50%', width: '2px', height: '10px', background: 'rgba(255, 255, 255, 0.4)', transform: 'translate(-50%, -50%)', zIndex: 1 }} />
+                      
                       <div style={{
                         position: 'absolute',
-                        left: `${dim.score}%`,
-                        top: '50%',
-                        width: '14px',
-                        height: '14px',
+                        left: `${left}%`,
+                        width: `${width}%`,
+                        height: '100%',
                         background: 'var(--accent-primary)',
-                        borderRadius: '50%',
+                        borderRadius: '2px',
+                        transition: 'left 0.5s ease-out, width 0.5s ease-out'
+                      }} />
+
+                      <div style={{
+                        position: 'absolute',
+                        left: `${score}%`,
+                        top: '50%',
                         transform: 'translate(-50%, -50%)',
-                        boxShadow: '0 0 10px var(--accent-primary)',
+                        background: 'var(--accent-primary)',
+                        color: '#000',
+                        boxShadow: '0 0 15px var(--accent-primary)',
+                        border: '1.5px solid #fff',
+                        borderRadius: '20px',
+                        padding: '2px 10px',
+                        fontSize: '0.72rem',
+                        fontWeight: 'bold',
                         zIndex: 2,
                         transition: 'left 0.5s ease-out'
-                      }} />
+                      }}>
+                        {score}%
+                      </div>
                     </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '4px', marginBottom: '16px' }}>
-                      <span>{dimTrans.lowPole}</span>
-                      <span>{dimTrans.highPole}</span>
+
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', marginTop: '6px' }}>
+                      <span style={{ 
+                        fontWeight: isLeftDominant ? 'bold' : 'normal',
+                        color: isLeftDominant ? 'var(--accent-primary)' : 'var(--text-muted)',
+                        textShadow: isLeftDominant ? '0 0 10px rgba(207, 159, 61, 0.15)' : 'none',
+                        transition: 'color 0.3s ease'
+                      }}>
+                        {dimTrans.lowPole}
+                      </span>
+                      <span style={{ 
+                        fontWeight: isRightDominant ? 'bold' : 'normal',
+                        color: isRightDominant ? 'var(--accent-primary)' : 'var(--text-muted)',
+                        textShadow: isRightDominant ? '0 0 10px rgba(207, 159, 61, 0.15)' : 'none',
+                        transition: 'color 0.3s ease'
+                      }}>
+                        {dimTrans.highPole}
+                      </span>
                     </div>
                   </div>
                 );
