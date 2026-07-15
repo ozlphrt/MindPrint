@@ -118,21 +118,21 @@ const PersonalMap = ({ result, allSessions = [] }: { result: any; allSessions?: 
         paddingBottom: '100%'
       }}>
         {/* Quadrant Labels */}
-        <div style={{ position: 'absolute', top: '12px', left: '12px', opacity: 0.25, fontSize: '0.7rem', fontWeight: 'bold', pointerEvents: 'none' }}>
+        <div style={{ position: 'absolute', top: '12px', left: '12px', maxWidth: '42%', opacity: 0.65, fontSize: '0.65rem', fontWeight: 'bold', pointerEvents: 'none', lineHeight: '1.2', color: 'rgba(255,255,255,0.85)' }}>
           {currentLanguage === 'tr' ? "SOKRATİK BAĞLAYICI" : "SOCRATIC CONNECTOR"}<br/>
-          <span style={{ fontSize: '0.62rem' }}>(Low Dir / High Soc)</span>
+          <span style={{ fontSize: '0.55rem', opacity: 0.7 }}>(Low Dir / High Soc)</span>
         </div>
-        <div style={{ position: 'absolute', top: '12px', right: '12px', opacity: 0.25, fontSize: '0.7rem', fontWeight: 'bold', textAlign: 'right', pointerEvents: 'none' }}>
+        <div style={{ position: 'absolute', top: '12px', right: '12px', maxWidth: '42%', opacity: 0.65, fontSize: '0.65rem', fontWeight: 'bold', textAlign: 'right', pointerEvents: 'none', lineHeight: '1.2', color: 'rgba(255,255,255,0.85)' }}>
           {currentLanguage === 'tr' ? "EMPATİK MEYDAN OKUYAN" : "EMPATHIC CHALLENGER"}<br/>
-          <span style={{ fontSize: '0.62rem' }}>(High Dir / High Soc)</span>
+          <span style={{ fontSize: '0.55rem', opacity: 0.7 }}>(High Dir / High Soc)</span>
         </div>
-        <div style={{ position: 'absolute', bottom: '12px', left: '12px', opacity: 0.25, fontSize: '0.7rem', fontWeight: 'bold', pointerEvents: 'none' }}>
+        <div style={{ position: 'absolute', bottom: '12px', left: '12px', maxWidth: '42%', opacity: 0.65, fontSize: '0.65rem', fontWeight: 'bold', pointerEvents: 'none', lineHeight: '1.2', color: 'rgba(255,255,255,0.85)' }}>
           {currentLanguage === 'tr' ? "SESSİZ STRATEJİST" : "QUIET STRATEGIST"}<br/>
-          <span style={{ fontSize: '0.62rem' }}>(Low Dir / Low Soc)</span>
+          <span style={{ fontSize: '0.55rem', opacity: 0.7 }}>(Low Dir / Low Soc)</span>
         </div>
-        <div style={{ position: 'absolute', bottom: '12px', right: '12px', opacity: 0.25, fontSize: '0.7rem', fontWeight: 'bold', textAlign: 'right', pointerEvents: 'none' }}>
+        <div style={{ position: 'absolute', bottom: '12px', right: '12px', maxWidth: '42%', opacity: 0.65, fontSize: '0.65rem', fontWeight: 'bold', textAlign: 'right', pointerEvents: 'none', lineHeight: '1.2', color: 'rgba(255,255,255,0.85)' }}>
           {currentLanguage === 'tr' ? "BAĞIMSIZ KAŞİF" : "INDEPENDENT EXPLORER"}<br/>
-          <span style={{ fontSize: '0.62rem' }}>(High Dir / Low Soc)</span>
+          <span style={{ fontSize: '0.55rem', opacity: 0.7 }}>(High Dir / Low Soc)</span>
         </div>
 
         <svg viewBox="0 0 400 400" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', display: 'block' }}>
@@ -179,7 +179,6 @@ const PersonalMap = ({ result, allSessions = [] }: { result: any; allSessions?: 
             <g key={`feedback-${idx}`}>
               <circle cx={pt.cx} cy={pt.cy} r="10" fill="rgba(46, 204, 113, 0.15)" stroke="#2ecc71" strokeWidth="1.5" strokeDasharray="2" filter="url(#glow-feedback)" />
               <circle cx={pt.cx} cy={pt.cy} r="4" fill="#2ecc71" />
-              <text x={pt.cx} y={pt.cy - 14} textAnchor="middle" fill="#2ecc71" fontSize="8" fontWeight="bold" letterSpacing="0.2">{pt.label}</text>
             </g>
           ))}
 
