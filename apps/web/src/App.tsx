@@ -425,7 +425,7 @@ export default function App() {
           
           <div style={{ background: '#fff', padding: '12px', borderRadius: '8px', display: 'inline-block', marginBottom: '16px' }}>
             <img 
-              src={`https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(window.location.href)}`} 
+              src={`https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent("https://ozlphrt.github.io/MindPrint/")}`} 
               alt="QR Code" 
               style={{ width: '160px', height: '160px', display: 'block' }} 
             />
