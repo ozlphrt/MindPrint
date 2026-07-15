@@ -913,7 +913,16 @@ export function generateQuestionPool(lang: string = 'en'): Question[] {
       }
     ];
 
-    const shuffledOptions = [...answerOptions].sort(() => Math.random() - 0.5);
+    const permutations = [
+      [0, 1, 2],
+      [1, 2, 0],
+      [2, 0, 1],
+      [0, 2, 1],
+      [2, 1, 0],
+      [1, 0, 2]
+    ];
+    const perm = permutations[idCounter % permutations.length];
+    const shuffledOptions = perm.map(idx => answerOptions[idx]);
 
     let instructions = type === 'single_choice' ? 'Select the single best response.' : 'Select one primary and up to two secondary actions.';
     if (lang !== 'en' && trans) {
