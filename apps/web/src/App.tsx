@@ -45,77 +45,180 @@ const ShareCard = ({ result }: { result: any }) => {
 };
 
 const PersonalMap = ({ result }: { result: any }) => {
+  const currentLanguage = useJourneyStore(state => state.currentLanguage);
   const directnessDim = result.dimensions.find((d: any) => d.id === 'directness');
   const socialDim = result.dimensions.find((d: any) => d.id === 'social_energy');
   const x = directnessDim ? directnessDim.score : 50;
   const y = socialDim ? socialDim.score : 50;
 
+  // Calculate archetype alignment weights
+  const socratic = (100 - x) * y;
+  const empathic = x * y;
+  const quiet = (100 - x) * (100 - y);
+  const independent = x * (100 - y);
+
+  const total = socratic + empathic + quiet + independent || 1;
+  const socraticPct = Math.round((socratic / total) * 100);
+  const empathicPct = Math.round((empathic / total) * 100);
+  const quietPct = Math.round((quiet / total) * 100);
+  const independentPct = Math.round((independent / total) * 100);
+
+  const maxPct = Math.max(socraticPct, empathicPct, quietPct, independentPct);
+
+  // Localization labels
+  const labelSocratic = currentLanguage === 'tr' ? "Sokratik Bağlayıcı" : "Socratic Connector";
+  const labelChallenger = currentLanguage === 'tr' ? "Empatik Meydan Okuyan" : "Empathic Challenger";
+  const labelStrategist = currentLanguage === 'tr' ? "Sessiz Stratejist" : "Quiet Strategist";
+  const labelExplorer = currentLanguage === 'tr' ? "Bağımsız Kaşif" : "Independent Explorer";
+  
+  const title = currentLanguage === 'tr' ? "Kişisel Davranış Ağacınız" : "Your Behavior Tree";
+  const desc = currentLanguage === 'tr' ? "Davranış profilinizin dallarını ve baskın eğilimlerinizi sembolize eden büyüme ağacı." : "Visualizing the branches of your behavior profile and dominant traits.";
+
   return (
     <div style={{ background: 'rgba(255, 255, 255, 0.02)', border: '1px solid var(--border-card)', borderRadius: '12px', padding: '24px', marginBottom: '24px' }}>
-      <h3 style={{ fontSize: '1.15rem', color: '#fff', marginBottom: '4px' }}>Your Personal Map</h3>
-      <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginBottom: '20px' }}>
-        Visualizing Directness vs. Social Energy quadrants.
-      </p>
+      <h3 style={{ fontSize: '1.15rem', color: '#fff', marginBottom: '4px' }}>{title}</h3>
+      <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginBottom: '20px' }}>{desc}</p>
 
-      {/* 2D Quadrant Grid */}
+      {/* SVG Behavior Tree Container */}
       <div style={{ 
         position: 'relative', 
         width: '100%', 
-        paddingBottom: '100%', 
         background: '#0a0a0a', 
         border: '1px solid rgba(255, 255, 255, 0.05)', 
         borderRadius: '8px',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        padding: '10px 0'
       }}>
-        {/* Grid Axis Lines */}
-        <div style={{ position: 'absolute', top: '50%', left: 0, width: '100%', height: '1px', background: 'rgba(255, 255, 255, 0.1)' }} />
-        <div style={{ position: 'absolute', top: 0, left: '50%', width: '1px', height: '100%', background: 'rgba(255, 255, 255, 0.1)' }} />
+        <svg viewBox="0 0 400 360" style={{ width: '100%', height: 'auto', display: 'block' }}>
+          <defs>
+            {/* Glow filters for dominant branches */}
+            <filter id="glow-dominant" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="6" result="blur" />
+              <feComposite in="SourceGraphic" in2="blur" operator="over" />
+            </filter>
+            <filter id="glow-soft" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="3" result="blur" />
+              <feComposite in="SourceGraphic" in2="blur" operator="over" />
+            </filter>
+            {/* Trunk Gradient */}
+            <linearGradient id="trunkGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+              <stop offset="0%" stopColor="#1e130c" />
+              <stop offset="100%" stopColor="#4a3018" />
+            </linearGradient>
+          </defs>
 
-        {/* Quadrant Labels */}
-        <div style={{ position: 'absolute', top: '12px', left: '12px', textShadow: '0 2px 4px rgba(0,0,0,0.9)' }}>
-          <strong style={{ color: 'var(--accent-primary)', fontSize: '0.8rem', fontWeight: 700 }}>Socratic Connector</strong>
-          <span style={{ color: 'rgba(255, 255, 255, 0.75)', fontSize: '0.7rem', display: 'block', marginTop: '2px' }}>(Low Dir / High Soc)</span>
-        </div>
-        <div style={{ position: 'absolute', top: '12px', right: '12px', textAlign: 'right', textShadow: '0 2px 4px rgba(0,0,0,0.9)' }}>
-          <strong style={{ color: 'var(--accent-primary)', fontSize: '0.8rem', fontWeight: 700 }}>Empathic Challenger</strong>
-          <span style={{ color: 'rgba(255, 255, 255, 0.75)', fontSize: '0.7rem', display: 'block', marginTop: '2px' }}>(High Dir / High Soc)</span>
-        </div>
-        <div style={{ position: 'absolute', bottom: '12px', left: '12px', textShadow: '0 2px 4px rgba(0,0,0,0.9)' }}>
-          <strong style={{ color: 'var(--accent-primary)', fontSize: '0.8rem', fontWeight: 700 }}>Quiet Strategist</strong>
-          <span style={{ color: 'rgba(255, 255, 255, 0.75)', fontSize: '0.7rem', display: 'block', marginTop: '2px' }}>(Low Dir / Low Soc)</span>
-        </div>
-        <div style={{ position: 'absolute', bottom: '12px', right: '12px', textAlign: 'right', textShadow: '0 2px 4px rgba(0,0,0,0.9)' }}>
-          <strong style={{ color: 'var(--accent-primary)', fontSize: '0.8rem', fontWeight: 700 }}>Independent Explorer</strong>
-          <span style={{ color: 'rgba(255, 255, 255, 0.75)', fontSize: '0.7rem', display: 'block', marginTop: '2px' }}>(High Dir / Low Soc)</span>
-        </div>
+          {/* Core Root (The Ground) */}
+          <ellipse cx="200" cy="340" rx="60" ry="12" fill="rgba(255, 255, 255, 0.03)" stroke="rgba(255, 255, 255, 0.08)" strokeWidth="1" />
 
-        {/* Plot Golden Glowing Dot */}
-        <div style={{
-          position: 'absolute',
-          left: `${x}%`,
-          bottom: `${y}%`,
-          width: '16px',
-          height: '16px',
-          background: 'var(--accent-primary)',
-          borderRadius: '50%',
-          transform: 'translate(-50%, 50%)',
-          boxShadow: '0 0 16px 6px var(--accent-primary)',
-          transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)'
-        }} />
-      </div>
+          {/* Trunk */}
+          <path d="M 190 340 L 195 240 L 205 240 L 210 340 Z" fill="url(#trunkGrad)" />
+          
+          {/* Core label */}
+          <text x="200" y="325" textAnchor="middle" fill="var(--text-secondary)" fontSize="10" fontWeight="bold" letterSpacing="0.5">CORE SELF</text>
 
-      {/* Axis Guide */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '12px' }}>
-        <span>← Less Direct</span>
-        <span>More Direct →</span>
-      </div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '4px' }}>
-        <span>↓ Less Social</span>
-        <span>More Social ↑</span>
+          {/* Branches connecting Splitting Node (200, 240) to tips */}
+          {/* Branch 1: Socratic Connector */}
+          <path 
+            d="M 200 240 C 180 180, 140 100, 80 80" 
+            fill="none" 
+            stroke={socraticPct === maxPct ? "var(--accent-primary)" : "rgba(207, 159, 61, 0.3)"} 
+            strokeWidth={3 + (socraticPct * 0.1)} 
+            strokeLinecap="round"
+            filter={socraticPct === maxPct ? "url(#glow-dominant)" : "none"}
+          />
+
+          {/* Branch 2: Empathic Challenger */}
+          <path 
+            d="M 200 240 C 220 180, 260 100, 320 80" 
+            fill="none" 
+            stroke={empathicPct === maxPct ? "var(--accent-primary)" : "rgba(207, 159, 61, 0.3)"} 
+            strokeWidth={3 + (empathicPct * 0.1)} 
+            strokeLinecap="round"
+            filter={empathicPct === maxPct ? "url(#glow-dominant)" : "none"}
+          />
+
+          {/* Branch 3: Quiet Strategist */}
+          <path 
+            d="M 200 240 C 180 230, 140 220, 80 220" 
+            fill="none" 
+            stroke={quietPct === maxPct ? "var(--accent-primary)" : "rgba(207, 159, 61, 0.3)"} 
+            strokeWidth={3 + (quietPct * 0.1)} 
+            strokeLinecap="round"
+            filter={quietPct === maxPct ? "url(#glow-dominant)" : "none"}
+          />
+
+          {/* Branch 4: Independent Explorer */}
+          <path 
+            d="M 200 240 C 220 230, 260 220, 320 220" 
+            fill="none" 
+            stroke={independentPct === maxPct ? "var(--accent-primary)" : "rgba(207, 159, 61, 0.3)"} 
+            strokeWidth={3 + (independentPct * 0.1)} 
+            strokeLinecap="round"
+            filter={independentPct === maxPct ? "url(#glow-dominant)" : "none"}
+          />
+
+          {/* Leaves and Nodes on Branch Tips */}
+          {/* Node 1: Socratic Connector */}
+          <g>
+            <circle cx="80" cy="80" r={8 + (socraticPct * 0.15)} fill={socraticPct === maxPct ? "var(--accent-primary)" : "#2ecc71"} opacity={socraticPct === maxPct ? 1 : 0.8} filter="url(#glow-soft)" />
+            {socraticPct > 10 && (
+              <>
+                <circle cx="68" cy="74" r={3 + (socraticPct * 0.05)} fill="#27ae60" opacity="0.7" />
+                <circle cx="90" cy="70" r={4 + (socraticPct * 0.05)} fill="#2ecc71" opacity="0.6" />
+                <circle cx="76" cy="92" r={3 + (socraticPct * 0.05)} fill="#cf9f3d" opacity="0.5" />
+              </>
+            )}
+            <text x="80" y="60" textAnchor="middle" fill="#fff" fontSize="10" fontWeight="bold">{labelSocratic}</text>
+            <text x="80" y="98" textAnchor="middle" fill="var(--accent-primary)" fontSize="11" fontWeight="bold">{socraticPct}%</text>
+          </g>
+
+          {/* Node 2: Empathic Challenger */}
+          <g>
+            <circle cx="320" cy="80" r={8 + (empathicPct * 0.15)} fill={empathicPct === maxPct ? "var(--accent-primary)" : "#e74c3c"} opacity={empathicPct === maxPct ? 1 : 0.8} filter="url(#glow-soft)" />
+            {empathicPct > 10 && (
+              <>
+                <circle cx="332" cy="74" r={3 + (empathicPct * 0.05)} fill="#c0392b" opacity="0.7" />
+                <circle cx="310" cy="70" r={4 + (empathicPct * 0.05)} fill="#e74c3c" opacity="0.6" />
+                <circle cx="324" cy="92" r={3 + (empathicPct * 0.05)} fill="#cf9f3d" opacity="0.5" />
+              </>
+            )}
+            <text x="320" y="60" textAnchor="middle" fill="#fff" fontSize="10" fontWeight="bold">{labelChallenger}</text>
+            <text x="320" y="98" textAnchor="middle" fill="var(--accent-primary)" fontSize="11" fontWeight="bold">{empathicPct}%</text>
+          </g>
+
+          {/* Node 3: Quiet Strategist */}
+          <g>
+            <circle cx="80" cy="220" r={8 + (quietPct * 0.15)} fill={quietPct === maxPct ? "var(--accent-primary)" : "#9b59b6"} opacity={quietPct === maxPct ? 1 : 0.8} filter="url(#glow-soft)" />
+            {quietPct > 10 && (
+              <>
+                <circle cx="68" cy="214" r={3 + (quietPct * 0.05)} fill="#8e44ad" opacity="0.7" />
+                <circle cx="90" cy="210" r={4 + (quietPct * 0.05)} fill="#9b59b6" opacity="0.6" />
+                <circle cx="76" cy="232" r={3 + (quietPct * 0.05)} fill="#cf9f3d" opacity="0.5" />
+              </>
+            )}
+            <text x="80" y="200" textAnchor="middle" fill="#fff" fontSize="10" fontWeight="bold">{labelStrategist}</text>
+            <text x="80" y="238" textAnchor="middle" fill="var(--accent-primary)" fontSize="11" fontWeight="bold">{quietPct}%</text>
+          </g>
+
+          {/* Node 4: Independent Explorer */}
+          <g>
+            <circle cx="320" cy="220" r={8 + (independentPct * 0.15)} fill={independentPct === maxPct ? "var(--accent-primary)" : "#3498db"} opacity={independentPct === maxPct ? 1 : 0.8} filter="url(#glow-soft)" />
+            {independentPct > 10 && (
+              <>
+                <circle cx="332" cy="214" r={3 + (independentPct * 0.05)} fill="#2980b9" opacity="0.7" />
+                <circle cx="310" cy="210" r={4 + (independentPct * 0.05)} fill="#3498db" opacity="0.6" />
+                <circle cx="324" cy="232" r={3 + (independentPct * 0.05)} fill="#cf9f3d" opacity="0.5" />
+              </>
+            )}
+            <text x="320" y="200" textAnchor="middle" fill="#fff" fontSize="10" fontWeight="bold">{labelExplorer}</text>
+            <text x="320" y="238" textAnchor="middle" fill="var(--accent-primary)" fontSize="11" fontWeight="bold">{independentPct}%</text>
+          </g>
+        </svg>
       </div>
     </div>
   );
 };
+
 
 const getArchetypeLikesDislikes = (archetypeId: string, lang: string = 'en') => {
   const data: Record<string, Record<string, { like: string, dislike: string }>> = {
@@ -322,7 +425,7 @@ export default function App() {
           
           <div style={{ background: '#fff', padding: '12px', borderRadius: '8px', display: 'inline-block', marginBottom: '16px' }}>
             <img 
-              src={`https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(window.location.origin)}`} 
+              src={`https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(window.location.href)}`} 
               alt="QR Code" 
               style={{ width: '160px', height: '160px', display: 'block' }} 
             />
