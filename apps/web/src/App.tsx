@@ -1173,6 +1173,57 @@ export default function App() {
     );
   }
 
+  // --- RENDERING FEEDBACK THANK YOU SCREEN ---
+  if (currentSession?.status === 'completed' && currentSession?.feedbackFor) {
+    const feedbackFor = currentSession.feedbackFor;
+    const title = currentLanguage === 'tr' ? "Geri Bildiriminiz İletildi!" : "Feedback Submitted!";
+    const body = currentLanguage === 'tr' 
+      ? `Teşekkür ederiz! ${feedbackFor} için yaptığınız değerlendirme güvenli bir şekilde kaydedildi ve senkronize edildi. Şimdi bu sekmeyi kapatabilir veya çıkış yapabilirsiniz.` 
+      : `Thank you! Your perspective for ${feedbackFor} has been securely saved and synchronized. You can now close this tab or exit.`;
+    const btnText = currentLanguage === 'tr' ? "Tamamla ve Çık" : "Complete & Exit";
+
+    return (
+      <div className="glass-panel animate-float" style={{ 
+        maxWidth: '430px', 
+        margin: '60px auto', 
+        padding: '32px', 
+        textAlign: 'center',
+        border: '1px solid rgba(46, 204, 113, 0.25)',
+        boxShadow: '0 10px 40px rgba(0, 0, 0, 0.6)'
+      }}>
+        <div style={{ 
+          width: '60px', 
+          height: '60px', 
+          margin: '0 auto 20px auto', 
+          borderRadius: '50%', 
+          background: 'rgba(46, 204, 113, 0.1)',
+          border: '1.5px solid #2ecc71',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: '1.8rem'
+        }}>
+          ✓
+        </div>
+        <h2 style={{ fontSize: '1.5rem', color: '#fff', marginBottom: '12px', fontWeight: 800 }}>{title}</h2>
+        <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', lineHeight: '1.5', marginBottom: '24px' }}>
+          {body}
+        </p>
+        <button
+          className="btn btn-primary"
+          style={{ width: '100%', padding: '12px', background: '#2ecc71', borderColor: '#2ecc71', color: '#fff', fontWeight: 'bold' }}
+          onClick={() => {
+            window.history.pushState({}, '', window.location.pathname);
+            useJourneyStore.setState({ currentSession: null });
+            window.location.reload();
+          }}
+        >
+          {btnText}
+        </button>
+      </div>
+    );
+  }
+
   // --- RENDERING RESULT SCREEN ---
   if (currentSession?.status === 'completed' && localResult) {
     const t = TRANSLATIONS[currentLanguage] || TRANSLATIONS.en;
