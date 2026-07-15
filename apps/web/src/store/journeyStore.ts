@@ -89,6 +89,8 @@ export const useJourneyStore = create<JourneyState>((set, get) => ({
       const firstQuestion = pool[Math.floor(Math.random() * pool.length)];
       const firstQuestionId = firstQuestion.id;
       
+      const feedbackFor = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('feedbackFor') || undefined : undefined;
+      
       const newSession: JourneySession = {
         id: sessionId,
         journeyId: journeyDef.journeyId,
@@ -101,7 +103,8 @@ export const useJourneyStore = create<JourneyState>((set, get) => ({
         responseCount: 0,
         scoreSnapshot: {},
         deviceId,
-        syncStatus: 'pending'
+        syncStatus: 'pending',
+        feedbackFor
       };
 
       await db.transaction('rw', [db.journeySessions], async () => {

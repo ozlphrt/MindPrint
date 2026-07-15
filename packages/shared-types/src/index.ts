@@ -96,6 +96,7 @@ export interface JourneySession {
   scoreSnapshot: ScoreSnapshot;
   deviceId: string;
   syncStatus: 'pending' | 'synced';
+  feedbackFor?: string;
 }
 
 export interface Archetype {

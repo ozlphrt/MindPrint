@@ -386,6 +386,7 @@ export default function App() {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
   const [showShareModal, setShowShareModal] = useState(false);
+  const [shareTab, setShareTab] = useState<'app' | 'feedback'>('app');
 
   useEffect(() => {
     if (resultsTab === 'history' && registeredUser) {
@@ -413,19 +414,73 @@ export default function App() {
 
   const renderShareModal = () => {
     if (!showShareModal) return null;
+
+    const feedbackUrl = `https://ozlphrt.github.io/MindPrint/?feedbackFor=${encodeURIComponent(registeredUser || 'Guest_' + deviceId.slice(0, 6))}`;
+    const appUrl = "https://ozlphrt.github.io/MindPrint/";
+    const activeUrl = shareTab === 'feedback' ? feedbackUrl : appUrl;
+
+    const trTitle = shareTab === 'feedback' ? "Geri Bildirim Topla" : "Uygulamayı Paylaş";
+    const enTitle = shareTab === 'feedback' ? "Collect Feedback" : "Share MindPrint";
+
+    const trDesc = shareTab === 'feedback' 
+      ? "Çevrenizdekilerin sizi nasıl algıladığını öğrenmek için bu QR kodunu taratıp anketi sizin adınıza doldurmalarını sağlayın." 
+      : "Cihazlar arasında anında geçiş yapmak veya uygulamayı açmak için bu QR kodunu taratın.";
+    const enDesc = shareTab === 'feedback' 
+      ? "Let others scan this QR code to complete the survey on your behalf and collect data on how they think you would react." 
+      : "Scan this QR code to quickly open this app on another device.";
+
     return (
       <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.85)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 3000 }}>
-        <div style={{ background: '#161616', border: '1px solid var(--accent-primary)', borderRadius: '12px', padding: '24px', maxWidth: '320px', width: '90%', textAlign: 'center', boxShadow: 'var(--shadow-glow)' }}>
-          <h3 style={{ color: '#fff', marginBottom: '6px', fontSize: '1.2rem' }}>
-            {currentLanguage === 'tr' ? "Uygulamayı Paylaş" : "Share MindPrint"}
+        <div style={{ background: '#161616', border: '1px solid var(--accent-primary)', borderRadius: '12px', padding: '24px', maxWidth: '340px', width: '90%', textAlign: 'center', boxShadow: 'var(--shadow-glow)' }}>
+          
+          {/* Tab Switcher */}
+          <div style={{ display: 'flex', background: 'rgba(255,255,255,0.03)', borderRadius: '8px', padding: '3px', marginBottom: '16px', border: '1px solid rgba(255,255,255,0.05)' }}>
+            <button 
+              onClick={() => setShareTab('app')}
+              style={{
+                flex: 1,
+                padding: '6px 10px',
+                fontSize: '0.75rem',
+                fontWeight: 600,
+                border: 'none',
+                borderRadius: '6px',
+                cursor: 'pointer',
+                background: shareTab === 'app' ? 'var(--accent-primary)' : 'transparent',
+                color: shareTab === 'app' ? '#121212' : 'var(--text-secondary)',
+                transition: 'all 0.2s ease'
+              }}
+            >
+              {currentLanguage === 'tr' ? "Uygulama" : "App"}
+            </button>
+            <button 
+              onClick={() => setShareTab('feedback')}
+              style={{
+                flex: 1,
+                padding: '6px 10px',
+                fontSize: '0.75rem',
+                fontWeight: 600,
+                border: 'none',
+                borderRadius: '6px',
+                cursor: 'pointer',
+                background: shareTab === 'feedback' ? 'var(--accent-primary)' : 'transparent',
+                color: shareTab === 'feedback' ? '#121212' : 'var(--text-secondary)',
+                transition: 'all 0.2s ease'
+              }}
+            >
+              {currentLanguage === 'tr' ? "Geri Bildirim Al" : "Get Feedback"}
+            </button>
+          </div>
+
+          <h3 style={{ color: '#fff', marginBottom: '6px', fontSize: '1.15rem', fontWeight: 700 }}>
+            {currentLanguage === 'tr' ? trTitle : enTitle}
           </h3>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.78rem', marginBottom: '16px', lineHeight: 1.3 }}>
-            {currentLanguage === 'tr' ? "Cihazlar arasında anında geçiş yapmak için bu QR kodunu taratın." : "Scan this QR code to quickly open this app on another device."}
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.78rem', marginBottom: '16px', lineHeight: 1.35 }}>
+            {currentLanguage === 'tr' ? trDesc : enDesc}
           </p>
           
           <div style={{ background: '#fff', padding: '12px', borderRadius: '8px', display: 'inline-block', marginBottom: '16px' }}>
             <img 
-              src={`https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent("https://ozlphrt.github.io/MindPrint/")}`} 
+              src={`https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(activeUrl)}`} 
               alt="QR Code" 
               style={{ width: '160px', height: '160px', display: 'block' }} 
             />
@@ -785,6 +840,31 @@ export default function App() {
             </div>
           )}
         </div>
+
+        {/* Feedback Mode Banner */}
+        {(() => {
+          const queryParams = new URLSearchParams(window.location.search);
+          const feedbackFor = queryParams.get('feedbackFor');
+          if (!feedbackFor) return null;
+          return (
+            <div style={{
+              background: 'rgba(207, 159, 61, 0.1)',
+              border: '1px solid rgba(207, 159, 61, 0.3)',
+              borderRadius: '8px',
+              padding: '10px 14px',
+              marginBottom: '16px',
+              textAlign: 'left',
+              fontSize: '0.8rem',
+              color: 'var(--accent-primary)',
+              lineHeight: 1.35
+            }}>
+              <strong>📝 {currentLanguage === 'tr' ? "Geri Bildirim Modu" : "Feedback Mode"}:</strong>{' '}
+              {currentLanguage === 'tr' 
+                ? `Bu testi ${feedbackFor} adlı kullanıcının davranışlarını değerlendirmek için çözüyorsunuz.` 
+                : `You are answering this survey as you perceive ${feedbackFor} would behave.`}
+            </div>
+          );
+        })()}
 
         {/* Animated Glow Circle Logo */}
         <div className="animate-glow-pulse" style={{ 
@@ -1501,6 +1581,29 @@ export default function App() {
 
     return (
       <div className="glass-panel" style={{ maxWidth: '600px', margin: '40px auto', width: '90%' }}>
+        {(() => {
+          const queryParams = new URLSearchParams(window.location.search);
+          const feedbackFor = queryParams.get('feedbackFor');
+          if (!feedbackFor) return null;
+          return (
+            <div style={{
+              background: 'rgba(207, 159, 61, 0.1)',
+              border: '1px solid rgba(207, 159, 61, 0.3)',
+              borderRadius: '8px',
+              padding: '10px 14px',
+              marginBottom: '16px',
+              textAlign: 'center',
+              fontSize: '0.8rem',
+              color: 'var(--accent-primary)',
+              lineHeight: 1.35
+            }}>
+              <strong>📝 {currentLanguage === 'tr' ? "Geri Bildirim Modu" : "Feedback Mode"}:</strong>{' '}
+              {currentLanguage === 'tr' 
+                ? `${feedbackFor} adlı kullanıcının davranışlarını değerlendiriyorsunuz.` 
+                : `Answering as you perceive ${feedbackFor} would behave.`}
+            </div>
+          );
+        })()}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', fontSize: '0.85rem' }}>
           <span style={{ color: 'var(--text-secondary)' }}>
             {t.questionProgress.replace('{current}', String(answeredCount + 1)).replace('{total}', String(totalQuestions))}
