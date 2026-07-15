@@ -295,9 +295,16 @@ export default function App() {
     }
   }, [resultsTab, registeredUser]);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     localStorage.removeItem('mindprint_username');
     setRegisteredUser(null);
+    try {
+      await db.journeySessions.clear();
+      await db.responses.clear();
+      await db.localResults.clear();
+    } catch (dbErr) {
+      console.warn('Could not clear local tables on logout:', dbErr);
+    }
     window.location.reload();
   };
 
