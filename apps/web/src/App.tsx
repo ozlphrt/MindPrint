@@ -543,19 +543,18 @@ export default function App() {
               color: 'var(--accent-primary)',
               border: '1.5px solid rgba(207, 159, 61, 0.4)',
               borderRadius: '8px',
-              padding: '4px 8px',
-              fontSize: '0.8rem',
-              fontWeight: 600,
+              padding: '6px 10px',
+              fontSize: '1.1rem',
               cursor: 'pointer',
               outline: 'none',
               boxShadow: 'var(--shadow-glow)'
             }}
           >
-            <option value="en">🇺🇸 English</option>
-            <option value="fr">🇫🇷 Français</option>
-            <option value="de">🇩🇪 Deutsch</option>
-            <option value="ru">🇷🇺 Русский</option>
-            <option value="tr">🇹🇷 Türkçe</option>
+            <option value="en">🇺🇸</option>
+            <option value="fr">🇫🇷</option>
+            <option value="de">🇩🇪</option>
+            <option value="ru">🇷🇺</option>
+            <option value="tr">🇹🇷</option>
           </select>
         </div>
 
