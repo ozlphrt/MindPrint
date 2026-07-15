@@ -536,6 +536,44 @@ export default function App() {
             Log in to restore data
           </span>
         </div>
+
+        {showLoginModal && (
+          <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2000 }}>
+            <div style={{ background: '#161616', border: '1px solid var(--accent-primary)', borderRadius: '12px', padding: '24px', maxWidth: '400px', width: '90%', textAlign: 'left' }}>
+              <h3 style={{ color: '#fff', marginBottom: '8px' }}>Log In</h3>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', marginBottom: '16px' }}>Enter your username and password to restore and sync assessments.</p>
+              <form onSubmit={handleLoginSubmit}>
+                <div style={{ marginBottom: '12px' }}>
+                  <input 
+                    type="text" 
+                    placeholder="Username" 
+                    value={loginUsername}
+                    onChange={(e) => setLoginUsername(e.target.value)}
+                    required
+                    style={{ width: '100%', padding: '10px 14px', background: '#0d0d0d', border: '1px solid var(--border-card)', borderRadius: '8px', color: '#fff', fontSize: '0.9rem', outline: 'none' }}
+                  />
+                </div>
+                <div style={{ marginBottom: '16px' }}>
+                  <input 
+                    type="password" 
+                    placeholder="Password" 
+                    value={loginPassword}
+                    onChange={(e) => setLoginPassword(e.target.value)}
+                    required
+                    style={{ width: '100%', padding: '10px 14px', background: '#0d0d0d', border: '1px solid var(--border-card)', borderRadius: '8px', color: '#fff', fontSize: '0.9rem', outline: 'none' }}
+                  />
+                </div>
+                {loginError && (
+                  <p style={{ color: 'var(--danger)', fontSize: '0.85rem', marginBottom: '12px' }}>{loginError}</p>
+                )}
+                <div style={{ display: 'flex', gap: '12px' }}>
+                  <button className="btn btn-secondary" type="button" onClick={() => setShowLoginModal(false)} style={{ flex: 1 }}>Cancel</button>
+                  <button className="btn btn-primary" type="submit" style={{ flex: 1 }}>Log In</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
