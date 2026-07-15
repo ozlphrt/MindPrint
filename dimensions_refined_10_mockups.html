@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>10 Refined Midpoint Spectrum Mockups</title>
+  <style>
+    :root {
+      --accent-primary: #cf9f3d;
+      --accent-gradient: linear-gradient(135deg, #cf9f3d 0%, #ffb703 100%);
+      --bg-dark: #070707;
+      --card-bg: rgba(255, 255, 255, 0.02);
+      --border-color: rgba(255, 255, 255, 0.05);
+      --text-main: #ffffff;
+      --text-muted: #666666;
+    }
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin: 0;
+      padding: 40px 20px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .option-card {
+      background: #111;
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
+    .badge {
+      display: inline-block;
+      align-self: flex-start;
+      background: rgba(207, 159, 61, 0.15);
+      color: var(--accent-primary);
+      border: 1px solid rgba(207, 159, 61, 0.3);
+      padding: 3px 8px;
+      border-radius: 20px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    .title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: #fff;
+    }
+    .track {
+      position: relative;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 2px;
+      margin: 24px 0 10px 0;
+    }
+    .center-tick {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 2px;
+      height: 10px;
+      background: rgba(255,255,255,0.4);
+      transform: translate(-50%, -50%);
+      z-index: 1;
+    }
+    .poles {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      margin-top: 6px;
+    }
+    .pole-active {
+      font-weight: bold;
+      color: var(--accent-primary);
+      text-shadow: 0 0 10px rgba(207, 159, 61, 0.15);
+    }
+    .pole-inactive {
+      color: var(--text-muted);
+    }
+
+    /* SPECIFIC VARIATIONS */
+
+    /* Var 1: Classic Pill with Golden Flow */
+    .pill-btn-1 {
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      background: #fff;
+      color: #000;
+      border: 1.5px solid var(--accent-primary);
+      border-radius: 6px;
+      padding: 2px 8px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      box-shadow: 0 0 10px rgba(207,159,61,0.4);
+      z-index: 2;
+    }
+
+    /* Var 2: Neon Yellow outlined Capsule */
+    .pill-btn-2 {
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      background: #070707;
+      color: #ffb703;
+      border: 1.5px solid #ffb703;
+      border-radius: 20px;
+      padding: 2px 10px;
+      font-size: 0.7rem;
+      font-weight: bold;
+      box-shadow: 0 0 12px rgba(255,183,3,0.3);
+      z-index: 2;
+    }
+
+    /* Var 3: Glassmorphic Capsule */
+    .pill-btn-3 {
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(8px);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 4px;
+      padding: 2px 7px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+      z-index: 2;
+    }
+
+    /* Var 4: Soft Heatmap Glow Block behind active segment */
+    .heat-block {
+      position: absolute;
+      top: 50%;
+      height: 24px;
+      transform: translateY(-50%);
+      background: linear-gradient(to right, rgba(207,159,61,0.02), rgba(207,159,61,0.12));
+      border-radius: 4px;
+      pointer-events: none;
+    }
+
+    /* Var 5: Bracket Callout */
+    .bracket-btn {
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      color: var(--accent-primary);
+      font-family: monospace;
+      font-weight: bold;
+      font-size: 0.8rem;
+      z-index: 2;
+    }
+
+    /* Var 10: Cyberpunk Monospace Pill */
+    .cyber-pill {
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      background: #111;
+      border: 1.5px solid var(--accent-primary);
+      color: #fff;
+      font-family: monospace;
+      padding: 1px 6px;
+      font-size: 0.72rem;
+      font-weight: bold;
+      z-index: 2;
+      border-radius: 0px;
+    }
+  </style>
+</head>
+<body>
+  <div style="max-width: 1200px; margin: 0 auto 30px auto; text-align: center;">
+    <h1 style="background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 2.2rem; margin: 0 0 10px 0;">10 Refined Midpoint Mockups</h1>
+    <p style="color: #aaa; margin: 0; font-size: 0.95rem;">All variations use center-out variance fill, values inside the slider handle, and highlight the dominant side.</p>
+  </div>
+
+  <div class="grid">
+    <!-- Var 1: Solid Gold Classic Pill -->
+    <div class="option-card">
+      <div>
+        <span class="badge">Var 1: Golden Accent Pill</span>
+        <div class="header">
+          <span class="title">Directness</span>
+        </div>
+        <div class="track">
+          <div class="center-tick"></div>
+          <!-- Midpoint (50%) to 68% flow -->
+          <div style="position: absolute; left: 50%; width: 18%; height: 100%; background: var(--accent-primary);"></div>
+          <div class="pill-btn-1" style="left: 68%;">68%</div>
+        </div>
+        <div class="poles">
+          <span class="pole-inactive">Diplomatic & Indirect</span>
+          <span class="pole-active">Frank & Direct</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Var 2: Neon Capsule Pill -->
+    <div class="option-card">
+      <div>
+        <span class="badge">Var 2: Neon Capsule</span>
+        <div class="header">
+          <span class="title">Social Energy</span>
+        </div>
+        <div class="track">
+          <div class="center-tick" style="background: #ffb703;"></div>
+          <!-- Midpoint (50%) to 75% flow -->
+          <div style="position: absolute; left: 50%; width: 25%; height: 100%; background: #ffb703;"></div>
+          <div class="pill-btn-2" style="left: 75%;">75%</div>
+        </div>
+        <div class="poles">
+          <span class="pole-inactive">Reserved & Introspective</span>
+          <span class="pole-active">Outgoing & Expressive</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Var 3: Glassmorphic Capsule -->
+    <div class="option-card">
+      <div>
+        <span class="badge">Var 3: Glassmorphic Capsule</span>
+        <div class="header">
+          <span class="title">Reflectiveness</span>
+        </div>
+        <div class="track">
+          <div class="center-tick"></div>
+          <!-- 17% to 50% flow (Flows left from center) -->
+          <div style="position: absolute; left: 17%; width: 33%; height: 100%; background: rgba(255,255,255,0.35);"></div>
+          <div class="pill-btn-3" style="left: 17%;">17%</div>
+        </div>
+        <div class="poles">
+          <span class="pole-active">Action-Oriented & Spontaneous</span>
+          <span class="pole-inactive">Deliberate & Analytical</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Var 4: Heatmap Shadow Underlay -->
+    <div class="option-card">
+      <div>
+        <span class="badge">Var 4: Glowing Heat Block</span>
+        <div class="header">
+          <span class="title">Assertiveness</span>
+        </div>
+        <div class="track" style="margin-top: 24px;">
+          <div class="center-tick"></div>
+          <!-- Flow block underlay from 50% to 80% -->
+          <div class="heat-block" style="left: 50%; width: 30%;"></div>
+          <div style="position: absolute; left: 50%; width: 30%; height: 100%; background: var(--accent-primary);"></div>
+          <div class="pill-btn-1" style="left: 80%;">80%</div>
+        </div>
+        <div class="poles">
+          <span class="pole-inactive">Receptive & Accommodating</span>
+          <span class="pole-active">Assertive & Dominant</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Var 5: Bracket Text Handle -->
+    <div class="option-card">
+      <div>
+        <span class="badge">Var 5: Bracket Wrapper</span>
+        <div class="header">
+          <span class="title">Adaptability</span>
+        </div>
+        <div class="track">
+          <div class="center-tick"></div>
+          <div style="position: absolute; left: 50%; width: 14%; height: 100%; background: rgba(207,159,61,0.5);"></div>
+          <div class="bracket-btn" style="left: 64%;">[ 64% ]</div>
+        </div>
+        <div class="poles">
+          <span class="pole-inactive">Consistent & Grounded</span>
+          <span class="pole-active">Flexible & Agile</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Var 6: Floating Pill with Glow Halo -->
+    <div class="option-card">
+      <div>
+        <span class="badge">Var 6: Glowing Halo Pill</span>
+        <div class="header">
+          <span class="title">Pace</span>
+        </div>
+        <div class="track">
+          <div class="center-tick"></div>
+          <!-- 35% to 50% flow -->
+          <div style="position: absolute; left: 35%; width: 15%; height: 100%; background: var(--accent-primary);"></div>
+          <div class="pill-btn-2" style="left: 35%; background: var(--accent-primary); color: #000; box-shadow: 0 0 15px var(--accent-primary); border-color: #fff;">35%</div>
+        </div>
+        <div class="poles">
+          <span class="pole-active">Deliberate & Patient</span>
+          <span class="pole-inactive">Fast-paced & Urgent</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Var 7: Multi-Dot Progress Flow -->
+    <div class="option-card">
+      <div>
+        <span class="badge">Var 7: Glowing Dotted Flow</span>
+        <div class="header">
+          <span class="title">Focus Orientation</span>
+        </div>
+        <div class="track" style="background: repeating-linear-gradient(to right, #333 0, #333 4px, transparent 4px, transparent 8px);">
+          <div class="center-tick"></div>
+          <!-- Draw glowing flow line -->
+          <div style="position: absolute; left: 50%; width: 22%; height: 100%; background: repeating-linear-gradient(to right, var(--accent-primary) 0, var(--accent-primary) 4px, transparent 4px, transparent 8px);"></div>
+          <div class="pill-btn-1" style="left: 72%;">72%</div>
+        </div>
+        <div class="poles">
+          <span class="pole-inactive">Task & Logic Focused</span>
+          <span class="pole-active">Relationship & Harmony Focused</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Var 8: Flat Badge Contrast -->
+    <div class="option-card">
+      <div>
+        <span class="badge">Var 8: Flat Badge Style</span>
+        <div class="header">
+          <span class="title">Vulnerability</span>
+        </div>
+        <div class="track">
+          <div class="center-tick"></div>
+          <div style="position: absolute; left: 50%; width: 10%; height: 100%; background: rgba(255,255,255,0.4);"></div>
+          <div style="position: absolute; top: 50%; left: 60%; transform: translate(-50%, -50%); background: #222; border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; padding: 2px 6px; font-size: 0.68rem; font-weight: bold; color: #fff; z-index: 2;">60%</div>
+        </div>
+        <div class="poles">
+          <span class="pole-inactive">Stoic & Guarded</span>
+          <span class="pole-active">Vulnerable & Open</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Var 9: Thin Gauge Indicator -->
+    <div class="option-card">
+      <div>
+        <span class="badge">Var 9: Vertical Needle Gauge</span>
+        <div class="header">
+          <span class="title">Social Energy</span>
+        </div>
+        <div class="track">
+          <div class="center-tick"></div>
+          <div style="position: absolute; left: 30%; width: 20%; height: 100%; background: var(--accent-primary);"></div>
+          <div style="position: absolute; top: 50%; left: 30%; transform: translate(-50%, -50%); width: 4px; height: 18px; background: #fff; box-shadow: 0 0 10px var(--accent-primary); z-index: 2; border-radius: 2px;"></div>
+          <!-- Floating indicator above -->
+          <div style="position: absolute; left: 30%; top: -8px; transform: translateX(-50%); font-size: 0.7rem; font-weight: bold; color: var(--accent-primary);">30%</div>
+        </div>
+        <div class="poles">
+          <span class="pole-active">Reserved & Introspective</span>
+          <span class="pole-inactive">Outgoing & Expressive</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Var 10: Cyberpunk Monospace -->
+    <div class="option-card">
+      <div>
+        <span class="badge">Var 10: Cyberpunk Mono Pill</span>
+        <div class="header">
+          <span class="title">Assertiveness</span>
+        </div>
+        <div class="track">
+          <div class="center-tick" style="background: var(--accent-primary);"></div>
+          <div style="position: absolute; left: 50%; width: 33%; height: 100%; background: linear-gradient(to right, rgba(207,159,61,0.2), var(--accent-primary));"></div>
+          <div class="cyber-pill" style="left: 83%;">83%</div>
+        </div>
+        <div class="poles">
+          <span class="pole-inactive">Receptive & Accommodating</span>
+          <span class="pole-active">Assertive & Dominant</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
