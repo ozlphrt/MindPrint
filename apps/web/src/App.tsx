@@ -975,17 +975,21 @@ export default function App() {
           {t.beginBtn}
         </button>
 
-        <div style={{ fontSize: '0.8rem', display: 'flex', justifyContent: 'center', gap: '12px', flexWrap: 'wrap' }}>
-          <div>
-            <span style={{ color: 'var(--text-muted)' }}>{t.returningUser}</span>
-            <span 
-              onClick={() => setShowLoginModal(true)} 
-              style={{ color: 'var(--accent-primary)', cursor: 'pointer', fontWeight: 600, textDecoration: 'underline' }}
-            >
-              {t.loginRestore}
-            </span>
-          </div>
-          <span style={{ color: 'var(--text-muted)' }}>•</span>
+        <div style={{ fontSize: '0.8rem', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+          {!registeredUser && (
+            <>
+              <div>
+                <span style={{ color: 'var(--text-muted)' }}>{t.returningUser}</span>
+                <span 
+                  onClick={() => setShowLoginModal(true)} 
+                  style={{ color: 'var(--accent-primary)', cursor: 'pointer', fontWeight: 600, textDecoration: 'underline' }}
+                >
+                  {t.loginRestore}
+                </span>
+              </div>
+              <span style={{ color: 'var(--text-muted)' }}>•</span>
+            </>
+          )}
           <span 
             onClick={() => setShowShareModal(true)} 
             title={currentLanguage === 'tr' ? "Paylaş" : "Share"}
