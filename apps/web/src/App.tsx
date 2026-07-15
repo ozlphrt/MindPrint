@@ -379,6 +379,7 @@ export default function App() {
 
   // Onboarding & Legal states
   const [onboardingStep, setOnboardingStep] = useState<number>(-2);
+  const [isLangOpen, setIsLangOpen] = useState(false);
   const [legalConsentChecked, setLegalConsentChecked] = useState(false);
   const [showTermsModal, setShowTermsModal] = useState(false);
   const [showPrivacyModal, setShowPrivacyModal] = useState(false);
@@ -528,6 +529,15 @@ export default function App() {
 
   if (onboardingStep === -2) {
     const t = TRANSLATIONS[currentLanguage] || TRANSLATIONS.en;
+    const languages = [
+      { code: 'en', flag: 'us', label: 'English' },
+      { code: 'fr', flag: 'fr', label: 'Français' },
+      { code: 'de', flag: 'de', label: 'Deutsch' },
+      { code: 'ru', flag: 'ru', label: 'Русский' },
+      { code: 'tr', flag: 'tr', label: 'Türkçe' },
+    ];
+    const currentLangObj = languages.find(l => l.code === currentLanguage) || languages[0];
+
     return (
       <div className="glass-panel animate-float animate-fade-in" style={{ 
         maxWidth: '460px', 
@@ -538,28 +548,73 @@ export default function App() {
         boxShadow: '0 10px 40px rgba(0, 0, 0, 0.6), var(--shadow-glow)'
       }}>
         {/* Language switcher */}
-        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '8px' }}>
-          <select 
-            value={currentLanguage} 
-            onChange={(e) => setLanguage(e.target.value as any)}
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '8px', position: 'relative' }}>
+          <button
+            onClick={() => setIsLangOpen(!isLangOpen)}
             style={{
               background: '#161616',
-              color: 'var(--accent-primary)',
               border: '1.5px solid rgba(207, 159, 61, 0.4)',
               borderRadius: '8px',
-              padding: '6px 10px',
-              fontSize: '1.1rem',
+              padding: '6px 12px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
               cursor: 'pointer',
-              outline: 'none',
-              boxShadow: 'var(--shadow-glow)'
+              boxShadow: 'var(--shadow-glow)',
+              color: '#fff',
+              outline: 'none'
             }}
           >
-            <option value="en">🇺🇸</option>
-            <option value="fr">🇫🇷</option>
-            <option value="de">🇩🇪</option>
-            <option value="ru">🇷🇺</option>
-            <option value="tr">🇹🇷</option>
-          </select>
+            <img 
+              src={`https://flagcdn.com/w40/${currentLangObj.flag}.png`} 
+              alt={currentLangObj.label} 
+              style={{ width: '20px', height: '14px', borderRadius: '2px', objectFit: 'cover' }} 
+            />
+            <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>▼</span>
+          </button>
+
+          {isLangOpen && (
+            <div style={{
+              position: 'absolute',
+              top: '36px',
+              right: 0,
+              background: '#161616',
+              border: '1px solid rgba(207, 159, 61, 0.3)',
+              borderRadius: '8px',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.5)',
+              zIndex: 100,
+              padding: '4px 0',
+              minWidth: '120px'
+            }}>
+              {languages.map((lang) => (
+                <div
+                  key={lang.code}
+                  onClick={() => {
+                    setLanguage(lang.code as any);
+                    setIsLangOpen(false);
+                  }}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px',
+                    padding: '8px 12px',
+                    cursor: 'pointer',
+                    transition: 'background 0.2s ease',
+                    background: currentLanguage === lang.code ? 'rgba(207, 159, 61, 0.1)' : 'transparent',
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(207, 159, 61, 0.15)'}
+                  onMouseLeave={(e) => e.currentTarget.style.background = currentLanguage === lang.code ? 'rgba(207, 159, 61, 0.1)' : 'transparent'}
+                >
+                  <img 
+                    src={`https://flagcdn.com/w40/${lang.flag}.png`} 
+                    alt={lang.label} 
+                    style={{ width: '20px', height: '14px', borderRadius: '2px', objectFit: 'cover' }} 
+                  />
+                  <span style={{ fontSize: '0.85rem', color: '#fff' }}>{lang.label}</span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Animated Glow Circle Container around the logo */}
