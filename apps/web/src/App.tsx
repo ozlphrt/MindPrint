@@ -452,6 +452,15 @@ export default function App() {
     }
 
     loadSessions();
+
+    let intervalId: any;
+    if (registeredUser) {
+      intervalId = setInterval(loadSessions, 8000);
+    }
+
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
   }, [resultsTab, registeredUser]);
 
   const handleLogout = async () => {
