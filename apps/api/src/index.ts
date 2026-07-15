@@ -1,18 +1,23 @@
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
+import crypto from 'crypto';
+import { 
+  initDb, 
+  getUser, 
+  saveUser, 
+  hasUser, 
+  getSession, 
+  getAllSessions, 
+  saveSession, 
+  getResult, 
+  saveResult 
+} from './db.js';
 
 const fastify = Fastify({ logger: true });
 
 await fastify.register(cors, {
   origin: true
 });
-
-// Global mock state stores
-const sessionsStore = new Map<string, any>();
-const resultsStore = new Map<string, any>();
-const usersStore = new Map<string, any>(); // username -> { password, deviceId }
-usersStore.set('Zirt', { password: '1234' });
-usersStore.set('Firt', { password: '1234' });
 
 fastify.get('/v1/health', async () => {
   return { status: 'ok', timestamp: new Date().toISOString() };
@@ -27,10 +32,10 @@ fastify.post('/v1/sync', async (request, reply) => {
   if (body.operations) {
     for (const op of body.operations) {
       if (op.entityType === 'session' && op.payload) {
-        sessionsStore.set(op.entityId, op.payload);
+        await saveSession(op.entityId, op.payload);
       }
       if (op.entityType === 'result' && op.payload) {
-        resultsStore.set(op.entityId, op.payload);
+        await saveResult(op.entityId, op.payload);
       }
     }
   }
@@ -44,14 +49,14 @@ fastify.post('/v1/sync', async (request, reply) => {
 
 // Drop-off analytics endpoint
 fastify.get('/v1/analytics/dropoff', async () => {
-  const sessions = Array.from(sessionsStore.values());
+  const sessions = getAllSessions();
   const total = sessions.length;
-  const completed = sessions.filter(s => s.status === 'completed').length;
+  const completed = sessions.filter((s: any) => s.status === 'completed').length;
   const inProgress = total - completed;
 
   const dropoffs: Record<string, number> = {};
 
-  sessions.forEach(s => {
+  sessions.forEach((s: any) => {
     if (s.status === 'in_progress' && s.currentQuestionId) {
       dropoffs[s.currentQuestionId] = (dropoffs[s.currentQuestionId] || 0) + 1;
     }
@@ -91,11 +96,11 @@ fastify.post('/v1/auth/register', async (request, reply) => {
     return reply.code(400).send({ error: 'Username and password are required' });
   }
 
-  if (usersStore.has(username)) {
+  if (hasUser(username)) {
     return reply.code(400).send({ error: 'Username already exists' });
   }
 
-  usersStore.set(username, { password, deviceId });
+  await saveUser(username, { password, deviceId });
   fastify.log.info(`User registered successfully: ${username}`);
 
   return reply.code(200).send({
@@ -113,27 +118,27 @@ fastify.post('/v1/auth/login', async (request, reply) => {
     return reply.code(400).send({ error: 'Username and password are required' });
   }
 
-  const matchedKey = Array.from(usersStore.keys()).find(k => k.toLowerCase() === username.toLowerCase());
-  const user = matchedKey ? usersStore.get(matchedKey) : null;
+  const user = getUser(username);
   if (!user || user.password !== password) {
     return reply.code(401).send({ error: 'Invalid username or password' });
   }
 
   // Update associated deviceId
-  if (deviceId) {
+  if (deviceId && user.deviceId !== deviceId) {
     user.deviceId = deviceId;
+    await saveUser(user.username, user);
   }
 
-  fastify.log.info(`User logged in successfully: ${username}`);
+  fastify.log.info(`User logged in successfully: ${user.username}`);
 
   return reply.code(200).send({
     status: 'success',
-    username: matchedKey || username,
+    username: user.username,
     token: `mock-token-${crypto.randomUUID()}`
   });
 });
 
-// Retrieve User Sessions endpoint
+// Retrieve User Sessions and Feedback endpoint
 fastify.get('/v1/user/sessions', async (request, reply) => {
   const { username } = request.query as { username?: string };
 
@@ -141,21 +146,21 @@ fastify.get('/v1/user/sessions', async (request, reply) => {
     return reply.code(400).send({ error: 'Username is required' });
   }
 
-  const user = usersStore.get(username);
+  const user = getUser(username);
   if (!user) {
     return reply.code(404).send({ error: 'User not found' });
   }
 
   const userDeviceId = user.deviceId;
 
-  // Filter completed sessions by matching deviceId
-  const userSessions = Array.from(sessionsStore.values()).filter(
-    (s: any) => s.deviceId === userDeviceId && s.status === 'completed'
+  // Filter completed sessions by matching deviceId OR if it is feedback completed for this user
+  const userSessions = getAllSessions().filter(
+    (s: any) => (s.deviceId === userDeviceId || s.feedbackFor?.toLowerCase() === username.toLowerCase()) && s.status === 'completed'
   );
 
   // Map to include result payload
   const sessionsWithResults = userSessions.map((session: any) => {
-    const result = resultsStore.get(session.id);
+    const result = getResult(session.id);
     return { session, result };
   });
 
@@ -166,7 +171,11 @@ fastify.get('/v1/user/sessions', async (request, reply) => {
 
 const start = async () => {
   try {
+    // Initialize atomic database connection
+    await initDb();
+    
     await fastify.listen({ port: 3000, host: '0.0.0.0' });
+    console.log(`[API] Server listening on http://localhost:3000`);
   } catch (err) {
     fastify.log.error(err);
     process.exit(1);
