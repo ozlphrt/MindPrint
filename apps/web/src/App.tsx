@@ -912,17 +912,23 @@ export default function App() {
             style={{ 
               color: 'var(--accent-primary)', 
               cursor: 'pointer', 
-              fontSize: '1rem',
-              fontWeight: 600, 
               display: 'inline-flex',
               alignItems: 'center',
-              padding: '2px 6px',
-              borderRadius: '4px',
+              justifyContent: 'center',
+              padding: '6px',
+              borderRadius: '6px',
               background: 'rgba(207, 159, 61, 0.1)',
-              border: '1px solid rgba(207, 159, 61, 0.2)'
+              border: '1px solid rgba(207, 159, 61, 0.2)',
+              transition: 'background 0.2s ease, transform 0.1s ease'
             }}
           >
-            🔗
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" style={{ display: 'block' }}>
+              <circle cx="18" cy="5" r="3" fill="currentColor" />
+              <circle cx="6" cy="12" r="3" fill="currentColor" />
+              <circle cx="18" cy="19" r="3" fill="currentColor" />
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+            </svg>
           </span>
         </div>
 
@@ -1001,7 +1007,13 @@ export default function App() {
               outline: 'none'
             }}
           >
-            🔗 {currentLanguage === 'tr' ? "Paylaş" : "Share"}
+            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" style={{ display: 'inline-block', marginRight: '2px' }}>
+              <circle cx="18" cy="5" r="3" fill="currentColor" />
+              <circle cx="6" cy="12" r="3" fill="currentColor" />
+              <circle cx="18" cy="19" r="3" fill="currentColor" />
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+            </svg> {currentLanguage === 'tr' ? "Paylaş" : "Share"}
           </button>
           {registeredUser ? (
             <span 
