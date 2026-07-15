@@ -60,6 +60,8 @@ export const useJourneyStore = create<JourneyState>((set, get) => ({
   initializeSession: async (deviceId) => {
     set({ isLoading: true });
     
+    const feedbackFor = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('feedbackFor') || undefined : undefined;
+
     // Check if there is an active (in_progress) session in Dexie
     const activeSession = await db.journeySessions
       .where('status')
@@ -68,7 +70,7 @@ export const useJourneyStore = create<JourneyState>((set, get) => ({
 
     const journeyDef = mockJourney as unknown as JourneyVersion;
 
-    if (activeSession) {
+    if (activeSession && activeSession.feedbackFor === feedbackFor) {
       // Load responses for this session
       const resps = await db.responses
         .where('sessionId')
@@ -88,8 +90,6 @@ export const useJourneyStore = create<JourneyState>((set, get) => ({
       const pool = generateQuestionPool(get().currentLanguage);
       const firstQuestion = pool[Math.floor(Math.random() * pool.length)];
       const firstQuestionId = firstQuestion.id;
-      
-      const feedbackFor = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('feedbackFor') || undefined : undefined;
       
       const newSession: JourneySession = {
         id: sessionId,

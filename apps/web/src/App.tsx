@@ -8,6 +8,17 @@ import { useRegisterSW } from 'virtual:pwa-register/react';
 import { generateQuestionPool } from '@mindprint/assessment-engine';
 import { TRANSLATIONS } from './data/translations.ts';
 
+const getApiBaseUrl = () => {
+  if (typeof window === 'undefined') return 'http://localhost:3000';
+  const hostname = window.location.hostname;
+  if (hostname !== 'localhost' && hostname !== '127.0.0.1') {
+    if (/^(192\.168\.|10\.|172\.)/.test(hostname)) {
+      return `http://${hostname}:3000`;
+    }
+  }
+  return 'http://localhost:3000';
+};
+
 const ShareCard = ({ result }: { result: any }) => {
   const [copied, setCopied] = useState(false);
 
@@ -424,7 +435,7 @@ export default function App() {
         let serverCombined: any[] = [];
         if (registeredUser) {
           try {
-            const res = await fetch(`http://localhost:3000/v1/user/sessions?username=${registeredUser}`);
+            const res = await fetch(`${getApiBaseUrl()}/v1/user/sessions?username=${registeredUser}`);
             const data = await res.json();
             if (data.sessions) {
               serverCombined = data.sessions;
@@ -572,7 +583,7 @@ export default function App() {
       let response;
 
       try {
-        response = await fetch('http://localhost:3000/v1/auth/login', {
+        response = await fetch(`${getApiBaseUrl()}/v1/auth/login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ username: loginUsername, password: loginPassword, deviceId }),
@@ -607,7 +618,7 @@ export default function App() {
 
       if (!offlineSim) {
         try {
-          const sessRes = await fetch(`http://localhost:3000/v1/user/sessions?username=${data.username}`);
+          const sessRes = await fetch(`${getApiBaseUrl()}/v1/user/sessions?username=${data.username}`);
           const sessData = await sessRes.json();
 
           if (sessData.sessions && sessData.sessions.length > 0) {
@@ -689,7 +700,7 @@ export default function App() {
       let response;
 
       try {
-        response = await fetch('http://localhost:3000/v1/auth/register', {
+        response = await fetch(`${getApiBaseUrl()}/v1/auth/register`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ username, password, deviceId }),
