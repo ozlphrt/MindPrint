@@ -409,7 +409,7 @@ export default function App() {
           justifyContent: 'center',
           padding: '12px'
         }}>
-          <img src="/icon-512.png" alt="MindPrint Logo" style={{ width: '80px', height: '80px', borderRadius: '16px' }} />
+          <img src="icon-512.png" alt="MindPrint Logo" style={{ width: '80px', height: '80px', borderRadius: '16px' }} />
         </div>
 
         <h1 style={{ 
@@ -510,7 +510,7 @@ export default function App() {
     return (
       <div className="glass-panel" style={{ maxWidth: '600px', margin: '40px auto', padding: '30px' }}>
         <div style={{ textAlign: 'center', marginBottom: '30px' }}>
-          <img src="/icon-512.png" alt="MindPrint Logo" style={{ width: '80px', height: '80px', borderRadius: '16px', marginBottom: '15px' }} />
+          <img src="icon-512.png" alt="MindPrint Logo" style={{ width: '80px', height: '80px', borderRadius: '16px', marginBottom: '15px' }} />
           <h1 style={{ fontSize: '2rem', background: 'var(--accent-gradient)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: '8px' }}>
             Your MindPrint
           </h1>
@@ -1072,7 +1072,7 @@ export default function App() {
   // --- RENDERING LAUNCH/COMPLETE SCREEN ---
   return (
     <div className="glass-panel" style={{ maxWidth: '600px', margin: '80px auto', textAlign: 'center', padding: '40px' }}>
-      <img src="/icon-512.png" alt="MindPrint Logo" style={{ width: '100px', height: '100px', borderRadius: '16px', marginBottom: '20px' }} />
+      <img src="icon-512.png" alt="MindPrint Logo" style={{ width: '100px', height: '100px', borderRadius: '16px', marginBottom: '20px' }} />
       <h1 style={{ fontSize: '2.2rem', background: 'var(--accent-gradient)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: '12px' }}>
         MindPrint
       </h1>
