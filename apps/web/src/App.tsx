@@ -549,34 +549,34 @@ export default function App() {
 
     return (
       <div className="glass-panel animate-float animate-fade-in" style={{ 
-        maxWidth: '460px', 
-        margin: '15px auto', 
-        padding: '24px 28px', 
+        maxWidth: '360px', 
+        margin: '50px auto', 
+        padding: '24px', 
         textAlign: 'center',
         border: '1px solid rgba(207, 159, 61, 0.25)',
         boxShadow: '0 10px 40px rgba(0, 0, 0, 0.6), var(--shadow-glow)'
       }}>
-        {/* Language switcher */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', position: 'relative' }}>
+        {/* Language switcher & Signed in status */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', position: 'relative' }}>
           {registeredUser ? (
-            <span style={{ fontSize: '0.82rem', color: 'var(--success)', fontWeight: 600, background: 'rgba(46, 204, 113, 0.1)', padding: '4px 8px', borderRadius: '12px', border: '1px solid rgba(46, 204, 113, 0.2)' }}>
+            <span style={{ fontSize: '0.8rem', color: 'var(--success)', fontWeight: 600 }}>
               👤 {registeredUser}
             </span>
           ) : (
             <div />
           )}
+          
           <button
             onClick={() => setIsLangOpen(!isLangOpen)}
             style={{
               background: '#161616',
               border: '1.5px solid rgba(207, 159, 61, 0.4)',
               borderRadius: '8px',
-              padding: '6px 12px',
+              padding: '4px 8px',
               display: 'flex',
               alignItems: 'center',
-              gap: '6px',
+              gap: '4px',
               cursor: 'pointer',
-              boxShadow: 'var(--shadow-glow)',
               color: '#fff',
               outline: 'none'
             }}
@@ -584,15 +584,15 @@ export default function App() {
             <img 
               src={`https://flagcdn.com/w40/${currentLangObj.flag}.png`} 
               alt={currentLangObj.label} 
-              style={{ width: '20px', height: '14px', borderRadius: '2px', objectFit: 'cover' }} 
+              style={{ width: '16px', height: '11px', borderRadius: '1px', objectFit: 'cover' }} 
             />
-            <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>▼</span>
+            <span style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>▼</span>
           </button>
 
           {isLangOpen && (
             <div style={{
               position: 'absolute',
-              top: '36px',
+              top: '32px',
               right: 0,
               background: '#161616',
               border: '1px solid rgba(207, 159, 61, 0.3)',
@@ -600,7 +600,7 @@ export default function App() {
               boxShadow: '0 4px 12px rgba(0,0,0,0.5)',
               zIndex: 100,
               padding: '4px 0',
-              minWidth: '120px'
+              minWidth: '110px'
             }}>
               {languages.map((lang) => (
                 <div
@@ -612,8 +612,8 @@ export default function App() {
                   style={{
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '10px',
-                    padding: '8px 12px',
+                    gap: '8px',
+                    padding: '6px 10px',
                     cursor: 'pointer',
                     transition: 'background 0.2s ease',
                     background: currentLanguage === lang.code ? 'rgba(207, 159, 61, 0.1)' : 'transparent',
@@ -624,19 +624,19 @@ export default function App() {
                   <img 
                     src={`https://flagcdn.com/w40/${lang.flag}.png`} 
                     alt={lang.label} 
-                    style={{ width: '20px', height: '14px', borderRadius: '2px', objectFit: 'cover' }} 
+                    style={{ width: '16px', height: '11px', borderRadius: '1px', objectFit: 'cover' }} 
                   />
-                  <span style={{ fontSize: '0.85rem', color: '#fff' }}>{lang.label}</span>
+                  <span style={{ fontSize: '0.8rem', color: '#fff' }}>{lang.label}</span>
                 </div>
               ))}
             </div>
           )}
         </div>
 
-        {/* Animated Glow Circle Container around the logo */}
+        {/* Animated Glow Circle Logo */}
         <div className="animate-glow-pulse" style={{ 
-          width: '75px', 
-          height: '75px', 
+          width: '60px', 
+          height: '60px', 
           margin: '0 auto 12px auto', 
           borderRadius: '50%', 
           background: 'rgba(207, 159, 61, 0.05)',
@@ -644,13 +644,13 @@ export default function App() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          padding: '8px'
+          padding: '6px'
         }}>
-          <img src="icon-512.png" alt="MindPrint Logo" style={{ width: '50px', height: '50px', borderRadius: '10px' }} />
+          <img src="icon-512.png" alt="MindPrint Logo" style={{ width: '40px', height: '40px', borderRadius: '8px' }} />
         </div>
 
         <h1 style={{ 
-          fontSize: '1.9rem', 
+          fontSize: '1.8rem', 
           fontWeight: 800,
           background: 'var(--accent-gradient)',
           WebkitBackgroundClip: 'text',
@@ -658,82 +658,32 @@ export default function App() {
           marginBottom: '2px',
           letterSpacing: '-0.5px'
         }}>
-          {t.welcomeTitle}
+          MindPrint
         </h1>
         
         <p style={{ 
           color: 'var(--accent-primary)', 
-          fontSize: '0.85rem', 
+          fontSize: '0.8rem', 
           fontWeight: 600, 
           marginBottom: '10px',
           textTransform: 'uppercase',
-          letterSpacing: '1px'
+          letterSpacing: '0.5px'
         }}>
           {t.welcomeSubtitle}
         </p>
 
         <p style={{ 
           color: 'var(--text-secondary)', 
-          fontSize: '0.88rem', 
+          fontSize: '0.85rem', 
           lineHeight: '1.4', 
-          marginBottom: '16px'
+          marginBottom: '20px'
         }}>
-          {t.welcomeDesc}
+          {currentLanguage === 'tr' ? "Davranışsal kör noktalarınızı keşfedin." : "Discover the behavioral blindspots you cannot easily see from the inside."}
         </p>
-
-        {/* Feature Highlights Grid */}
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: '1fr', 
-          gap: '8px', 
-          textAlign: 'left', 
-          marginBottom: '18px',
-          background: 'rgba(255, 255, 255, 0.01)',
-          border: '1px solid rgba(255, 255, 255, 0.05)',
-          borderRadius: '10px',
-          padding: '12px'
-        }}>
-          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-            <span style={{ color: 'var(--accent-primary)', fontSize: '0.85rem' }}>✦</span>
-            <span style={{ fontSize: '0.8rem', color: 'var(--text-primary)' }}>
-              {t.anonymous.includes(' (') ? (
-                <>
-                  <strong>{t.anonymous.split(' (')[0]}</strong> ({t.anonymous.split(' (')[1]}
-                </>
-              ) : (
-                <strong>{t.anonymous}</strong>
-              )}
-            </span>
-          </div>
-          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-            <span style={{ color: 'var(--accent-primary)', fontSize: '0.85rem' }}>🔒</span>
-            <span style={{ fontSize: '0.8rem', color: 'var(--text-primary)' }}>
-              {t.localFirst.includes(' (') ? (
-                <>
-                  <strong>{t.localFirst.split(' (')[0]}</strong> ({t.localFirst.split(' (')[1]}
-                </>
-              ) : (
-                <strong>{t.localFirst}</strong>
-              )}
-            </span>
-          </div>
-          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-            <span style={{ color: 'var(--accent-primary)', fontSize: '0.85rem' }}>🔄</span>
-            <span style={{ fontSize: '0.8rem', color: 'var(--text-primary)' }}>
-              {t.crossDevice.includes(' (') ? (
-                <>
-                  <strong>{t.crossDevice.split(' (')[0]}</strong> ({t.crossDevice.split(' (')[1]}
-                </>
-              ) : (
-                <strong>{t.crossDevice}</strong>
-              )}
-            </span>
-          </div>
-        </div>
 
         <button 
           className="btn btn-primary" 
-          style={{ width: '100%', padding: '12px', fontSize: '1rem', marginBottom: '14px', textTransform: 'uppercase', letterSpacing: '0.5px' }} 
+          style={{ width: '100%', padding: '12px', fontSize: '0.95rem', marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '0.5px' }} 
           onClick={() => {
             localStorage.setItem('mindprint_onboarding_completed', 'true');
             setOnboardingStep(-1);
@@ -742,7 +692,7 @@ export default function App() {
           {t.beginBtn}
         </button>
 
-        <div style={{ fontSize: '0.82rem' }}>
+        <div style={{ fontSize: '0.8rem' }}>
           <span style={{ color: 'var(--text-muted)' }}>{t.returningUser}</span>
           <span 
             onClick={() => setShowLoginModal(true)} 
