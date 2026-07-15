@@ -557,7 +557,14 @@ export default function App() {
         boxShadow: '0 10px 40px rgba(0, 0, 0, 0.6), var(--shadow-glow)'
       }}>
         {/* Language switcher */}
-        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '8px', position: 'relative' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', position: 'relative' }}>
+          {registeredUser ? (
+            <span style={{ fontSize: '0.82rem', color: 'var(--success)', fontWeight: 600, background: 'rgba(46, 204, 113, 0.1)', padding: '4px 8px', borderRadius: '12px', border: '1px solid rgba(46, 204, 113, 0.2)' }}>
+              👤 {registeredUser}
+            </span>
+          ) : (
+            <div />
+          )}
           <button
             onClick={() => setIsLangOpen(!isLangOpen)}
             style={{
@@ -801,6 +808,13 @@ export default function App() {
     const t = TRANSLATIONS[currentLanguage] || TRANSLATIONS.en;
     return (
       <div className="glass-panel" style={{ maxWidth: '600px', margin: '40px auto', padding: '30px' }}>
+        {registeredUser && (
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '15px' }}>
+            <span style={{ fontSize: '0.82rem', color: 'var(--success)', fontWeight: 600, background: 'rgba(46, 204, 113, 0.1)', padding: '4px 8px', borderRadius: '12px', border: '1px solid rgba(46, 204, 113, 0.2)' }}>
+              👤 {registeredUser}
+            </span>
+          </div>
+        )}
         <div style={{ textAlign: 'center', marginBottom: '30px' }}>
           <img src="icon-512.png" alt="MindPrint Logo" style={{ width: '80px', height: '80px', borderRadius: '16px', marginBottom: '15px' }} />
           <h1 style={{ fontSize: '2rem', background: 'var(--accent-gradient)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: '8px' }}>
@@ -1295,8 +1309,15 @@ export default function App() {
               Reset
             </span>
           </span>
-          <span style={{ background: isOffline ? 'var(--danger)' : 'var(--success)', padding: '3px 8px', borderRadius: '20px', color: '#fff', fontSize: '0.75rem', fontWeight: 600 }}>
-            {isOffline ? t.syncStatusOffline : t.syncStatusOnline}
+          <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            {registeredUser && (
+              <span style={{ color: 'var(--success)', fontWeight: 600, borderRight: '1px solid rgba(255,255,255,0.1)', paddingRight: '8px', fontSize: '0.8rem' }}>
+                👤 {registeredUser}
+              </span>
+            )}
+            <span style={{ background: isOffline ? 'var(--danger)' : 'var(--success)', padding: '3px 8px', borderRadius: '20px', color: '#fff', fontSize: '0.75rem', fontWeight: 600 }}>
+              {isOffline ? t.syncStatusOffline : t.syncStatusOnline}
+            </span>
           </span>
         </div>
 
