@@ -1683,10 +1683,12 @@ export default function App() {
 
         <div style={{ display: 'flex', gap: '12px', marginTop: '20px' }}>
           <button className="btn btn-secondary" style={{ flex: 1 }} onClick={async () => {
-            await db.journeySessions.clear();
-            await db.responses.clear();
-            await db.localResults.clear();
-            initializeSession(deviceId);
+            useJourneyStore.setState({ currentSession: null, currentQuestionId: null, responses: [] });
+            localStorage.setItem('mindprint_onboarding_completed', 'true');
+            setOnboardingStep(-1);
+            setTimeout(() => {
+              initializeSession(deviceId);
+            }, 100);
           }}>
             Restart Journey
           </button>

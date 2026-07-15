@@ -2755,5 +2755,386 @@
     ],
     "generatedAt": "2026-07-15T16:16:42.243Z",
     "generationMode": "local"
+  },
+  "3bd6afd9-bab3-4efe-b1d3-1db1b60af83f": {
+    "sessionId": "3bd6afd9-bab3-4efe-b1d3-1db1b60af83f",
+    "journeyId": "how-others-experience-me",
+    "journeyVersion": "1.0.0",
+    "dimensions": [
+      {
+        "id": "directness",
+        "name": "Directness",
+        "lowPole": "Diplomatic & Indirect",
+        "highPole": "Frank & Direct",
+        "score": 39,
+        "confidence": 100,
+        "evidenceCount": 12
+      },
+      {
+        "id": "social_energy",
+        "name": "Social Energy",
+        "lowPole": "Reserved & Introspective",
+        "highPole": "Outgoing & Expressive",
+        "score": 37,
+        "confidence": 100,
+        "evidenceCount": 12
+      },
+      {
+        "id": "reflectiveness",
+        "name": "Reflectiveness",
+        "lowPole": "Action-Oriented & Spontaneous",
+        "highPole": "Deliberate & Analytical",
+        "score": 50,
+        "confidence": 100,
+        "evidenceCount": 12
+      },
+      {
+        "id": "expressiveness",
+        "name": "Expressiveness",
+        "lowPole": "Objective & Reserved",
+        "highPole": "Warm & Expressive",
+        "score": 37,
+        "confidence": 100,
+        "evidenceCount": 12
+      },
+      {
+        "id": "assertiveness",
+        "name": "Assertiveness",
+        "lowPole": "Receptive & Accommodating",
+        "highPole": "Assertive & Dominant",
+        "score": 35,
+        "confidence": 100,
+        "evidenceCount": 12
+      },
+      {
+        "id": "adaptability",
+        "name": "Adaptability",
+        "lowPole": "Consistent & Grounded",
+        "highPole": "Flexible & Agile",
+        "score": 35,
+        "confidence": 100,
+        "evidenceCount": 12
+      },
+      {
+        "id": "pace",
+        "name": "Pace",
+        "lowPole": "Deliberate & Patient",
+        "highPole": "Fast-paced & Urgent",
+        "score": 40,
+        "confidence": 100,
+        "evidenceCount": 12
+      },
+      {
+        "id": "focus_orientation",
+        "name": "Focus Orientation",
+        "lowPole": "Task & Logic Focused",
+        "highPole": "Relationship & Harmony Focused",
+        "score": 36,
+        "confidence": 100,
+        "evidenceCount": 12
+      },
+      {
+        "id": "vulnerability",
+        "name": "Vulnerability",
+        "lowPole": "Stoic & Guarded",
+        "highPole": "Vulnerable & Open",
+        "score": 38,
+        "confidence": 100,
+        "evidenceCount": 12
+      },
+      {
+        "id": "conflict_style",
+        "name": "Conflict Engagement",
+        "lowPole": "Harmonizing & Avoiding",
+        "highPole": "Confrontational & Debating",
+        "score": 37,
+        "confidence": 100,
+        "evidenceCount": 12
+      },
+      {
+        "id": "feedback_style",
+        "name": "Feedback Style",
+        "lowPole": "Critique & Correcting",
+        "highPole": "Supportive & Encouraging",
+        "score": 45,
+        "confidence": 100,
+        "evidenceCount": 12
+      },
+      {
+        "id": "playfulness",
+        "name": "Playfulness",
+        "lowPole": "Serious & Gravitas",
+        "highPole": "Playful & Lighthearted",
+        "score": 37,
+        "confidence": 100,
+        "evidenceCount": 12
+      }
+    ],
+    "primaryArchetype": {
+      "id": "quiet-strategist",
+      "name": "The Quiet Strategist",
+      "description": "You observe deeply and act with deliberate planning, offering carefully considered insights and maintaining a calm, introspective presence.",
+      "idealVector": {
+        "social_energy": 25,
+        "directness": 40,
+        "reflectiveness": 85,
+        "expressiveness": 25,
+        "assertiveness": 40,
+        "adaptability": 30,
+        "pace": 25,
+        "focus_orientation": 30,
+        "vulnerability": 20,
+        "conflict_style": 35,
+        "feedback_style": 40,
+        "playfulness": 20
+      },
+      "minimumConfidence": 30
+    },
+    "secondaryArchetype": {
+      "id": "independent-explorer",
+      "name": "The Independent Explorer",
+      "description": "You value autonomy and direct action, exploring ideas independently and voicing your candid perspective without hesitation.",
+      "idealVector": {
+        "social_energy": 40,
+        "directness": 80,
+        "reflectiveness": 40,
+        "expressiveness": 30,
+        "assertiveness": 80,
+        "adaptability": 75,
+        "pace": 75,
+        "focus_orientation": 30,
+        "vulnerability": 30,
+        "conflict_style": 75,
+        "feedback_style": 25,
+        "playfulness": 40
+      },
+      "minimumConfidence": 30
+    },
+    "insights": [
+      {
+        "id": "insight-receptive",
+        "title": "You are highly collaborative and receptive.",
+        "body": "You value other people's perspectives, yield to the group consensus, and create space for collective choices.",
+        "alternativeBody": "Others might view you as passive, indecisive, or hesitant to advocate for your own needs.",
+        "confidence": 100
+      },
+      {
+        "id": "insight-consistent",
+        "title": "You bring stable consistency.",
+        "body": "You honor plans, follow structured conventions, and provide a reliable anchor of routine for those around you.",
+        "alternativeBody": "Others might experience you as rigid, stubborn, or resistant to necessary adjustments when circumstances change.",
+        "confidence": 100
+      },
+      {
+        "id": "insight-deliberate",
+        "title": "You are deeply patient and deliberate.",
+        "body": "You prefer to slow down, analyze all details, and make sure things are done correctly and safely.",
+        "alternativeBody": "Others can find your pace slow or frustrating, misinterpreting caution as hesitation or stalling.",
+        "confidence": 100
+      },
+      {
+        "id": "insight-task",
+        "title": "You focus objectively on tasks and results.",
+        "body": "You prioritize logical progress, timelines, and raw results over social dynamics to get things done.",
+        "alternativeBody": "Others may feel you are cold, transactional, or insensitive to the emotional climate of the group.",
+        "confidence": 100
+      },
+      {
+        "id": "insight-stoic",
+        "title": "You maintain a composed, steady presence.",
+        "body": "You keep your feelings and doubts private, presenting a calm, objective, and dependable exterior under pressure.",
+        "alternativeBody": "Others can find you guarded, robotic, or hard to read, making it difficult for them to establish deep trust.",
+        "confidence": 100
+      },
+      {
+        "id": "insight-harmonizing",
+        "title": "You seek harmony and de-escalate tension.",
+        "body": "You use diplomacy, defusion, and patience to resolve friction, ensuring that discussions stay safe and calm.",
+        "alternativeBody": "Others might feel you avoid necessary conflict, sweeping critical arguments under the rug to maintain artificial peace.",
+        "confidence": 100
+      },
+      {
+        "id": "insight-gravitas",
+        "title": "You carry deep gravitas and respect.",
+        "body": "You treat interactions with seriousness and dignity, ensuring respect and professional weight in all matters.",
+        "alternativeBody": "Others may experience you as stiff, stuffy, or lacking warmth, feeling they cannot laugh or relax around you.",
+        "confidence": 100
+      }
+    ],
+    "generatedAt": "2026-07-15T16:25:26.841Z",
+    "generationMode": "local"
+  },
+  "910f1d10-e2c3-4409-a83b-9ffa9d3f6d59": {
+    "sessionId": "910f1d10-e2c3-4409-a83b-9ffa9d3f6d59",
+    "journeyId": "how-others-experience-me",
+    "journeyVersion": "1.0.0",
+    "dimensions": [
+      {
+        "id": "directness",
+        "name": "Directness",
+        "lowPole": "Diplomatic & Indirect",
+        "highPole": "Frank & Direct",
+        "score": 32,
+        "confidence": 100,
+        "evidenceCount": 12
+      },
+      {
+        "id": "social_energy",
+        "name": "Social Energy",
+        "lowPole": "Reserved & Introspective",
+        "highPole": "Outgoing & Expressive",
+        "score": 61,
+        "confidence": 100,
+        "evidenceCount": 12
+      },
+      {
+        "id": "reflectiveness",
+        "name": "Reflectiveness",
+        "lowPole": "Action-Oriented & Spontaneous",
+        "highPole": "Deliberate & Analytical",
+        "score": 25,
+        "confidence": 100,
+        "evidenceCount": 12
+      },
+      {
+        "id": "expressiveness",
+        "name": "Expressiveness",
+        "lowPole": "Objective & Reserved",
+        "highPole": "Warm & Expressive",
+        "score": 61,
+        "confidence": 100,
+        "evidenceCount": 12
+      },
+      {
+        "id": "assertiveness",
+        "name": "Assertiveness",
+        "lowPole": "Receptive & Accommodating",
+        "highPole": "Assertive & Dominant",
+        "score": 39,
+        "confidence": 100,
+        "evidenceCount": 12
+      },
+      {
+        "id": "adaptability",
+        "name": "Adaptability",
+        "lowPole": "Consistent & Grounded",
+        "highPole": "Flexible & Agile",
+        "score": 58,
+        "confidence": 100,
+        "evidenceCount": 12
+      },
+      {
+        "id": "pace",
+        "name": "Pace",
+        "lowPole": "Deliberate & Patient",
+        "highPole": "Fast-paced & Urgent",
+        "score": 58,
+        "confidence": 100,
+        "evidenceCount": 12
+      },
+      {
+        "id": "focus_orientation",
+        "name": "Focus Orientation",
+        "lowPole": "Task & Logic Focused",
+        "highPole": "Relationship & Harmony Focused",
+        "score": 57,
+        "confidence": 100,
+        "evidenceCount": 12
+      },
+      {
+        "id": "vulnerability",
+        "name": "Vulnerability",
+        "lowPole": "Stoic & Guarded",
+        "highPole": "Vulnerable & Open",
+        "score": 61,
+        "confidence": 100,
+        "evidenceCount": 12
+      },
+      {
+        "id": "conflict_style",
+        "name": "Conflict Engagement",
+        "lowPole": "Harmonizing & Avoiding",
+        "highPole": "Confrontational & Debating",
+        "score": 40,
+        "confidence": 100,
+        "evidenceCount": 12
+      },
+      {
+        "id": "feedback_style",
+        "name": "Feedback Style",
+        "lowPole": "Critique & Correcting",
+        "highPole": "Supportive & Encouraging",
+        "score": 61,
+        "confidence": 100,
+        "evidenceCount": 12
+      },
+      {
+        "id": "playfulness",
+        "name": "Playfulness",
+        "lowPole": "Serious & Gravitas",
+        "highPole": "Playful & Lighthearted",
+        "score": 60,
+        "confidence": 100,
+        "evidenceCount": 12
+      }
+    ],
+    "primaryArchetype": {
+      "id": "socratic-connector",
+      "name": "The Socratic Connector",
+      "description": "You connect deeply through thoughtful questioning and warm diplomatic presence, preferring collaboration and dialogue over direct commands.",
+      "idealVector": {
+        "social_energy": 80,
+        "directness": 30,
+        "reflectiveness": 70,
+        "expressiveness": 75,
+        "assertiveness": 30,
+        "adaptability": 80,
+        "pace": 35,
+        "focus_orientation": 80,
+        "vulnerability": 75,
+        "conflict_style": 30,
+        "feedback_style": 75,
+        "playfulness": 70
+      },
+      "minimumConfidence": 30
+    },
+    "secondaryArchetype": {
+      "id": "empathic-challenger",
+      "name": "The Empathic Challenger",
+      "description": "You combine raw honesty with intense social engagement, challenging group consensus directly out of care and interest in improvement.",
+      "idealVector": {
+        "social_energy": 85,
+        "directness": 85,
+        "reflectiveness": 40,
+        "expressiveness": 80,
+        "assertiveness": 85,
+        "adaptability": 40,
+        "pace": 80,
+        "focus_orientation": 75,
+        "vulnerability": 80,
+        "conflict_style": 85,
+        "feedback_style": 30,
+        "playfulness": 75
+      },
+      "minimumConfidence": 30
+    },
+    "insights": [
+      {
+        "id": "insight-receptive",
+        "title": "You are highly collaborative and receptive.",
+        "body": "You value other people's perspectives, yield to the group consensus, and create space for collective choices.",
+        "alternativeBody": "Others might view you as passive, indecisive, or hesitant to advocate for your own needs.",
+        "confidence": 100
+      },
+      {
+        "id": "insight-harmonizing",
+        "title": "You seek harmony and de-escalate tension.",
+        "body": "You use diplomacy, defusion, and patience to resolve friction, ensuring that discussions stay safe and calm.",
+        "alternativeBody": "Others might feel you avoid necessary conflict, sweeping critical arguments under the rug to maintain artificial peace.",
+        "confidence": 100
+      }
+    ],
+    "generatedAt": "2026-07-15T16:25:41.131Z",
+    "generationMode": "local"
   }
 }
