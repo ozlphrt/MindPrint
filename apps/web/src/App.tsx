@@ -286,9 +286,7 @@ export default function App() {
   };
 
   // Onboarding & Legal states
-  const [onboardingStep, setOnboardingStep] = useState<number>(() => {
-    return localStorage.getItem('mindprint_onboarding_completed') === 'true' ? -1 : -2;
-  });
+  const [onboardingStep, setOnboardingStep] = useState<number>(-2);
   const [legalConsentChecked, setLegalConsentChecked] = useState(false);
   const [showTermsModal, setShowTermsModal] = useState(false);
   const [showPrivacyModal, setShowPrivacyModal] = useState(false);

@@ -15,6 +15,9 @@ test.describe('Offline-First Assessment Journey E2E', () => {
       }
     });
     
+    // Click Begin Discovery on the welcome onboarding page
+    await page.locator('button:has-text("Begin Discovery")').click();
+    
     // Ensure we start on Question 1 of 12
     await expect(page.locator('text=Question 1 of 12')).toBeVisible();
     await expect(page.locator('text=Online')).toBeVisible();
@@ -42,6 +45,8 @@ test.describe('Offline-First Assessment Journey E2E', () => {
 
     // Simulate Device Crash/Refresh at Question 8
     await page.reload();
+    // Click Begin Discovery to resume the session from welcome page
+    await page.locator('button:has-text("Begin Discovery")').click();
     await expect(page.locator('text=Offline Mode')).toBeVisible();
     await expect(page.locator('text=Question 8 of 12')).toBeVisible();
 
