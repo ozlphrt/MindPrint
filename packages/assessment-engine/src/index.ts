@@ -163,7 +163,8 @@ export { generateQuestionPool };
 export function getNextQuestion(
   journeyVersion: JourneyVersion,
   responses: Response[],
-  currentQuestionId: string
+  currentQuestionId: string,
+  lang: string = 'en'
 ): string | null {
   const answeredCount = responses.length;
   
@@ -177,7 +178,7 @@ export function getNextQuestion(
   );
 
   // Phase 2: Adaptive IRT pathing from the 500-question pool
-  const pool = generateQuestionPool();
+  const pool = generateQuestionPool(lang);
   const shuffledPool = [...pool].sort(() => Math.random() - 0.5);
 
   // Find scenario tags of already answered questions

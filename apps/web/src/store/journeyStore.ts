@@ -18,12 +18,15 @@ import {
 import mockJourney from '../../../../content/journeys/how-others-experience-me.json';
 import { syncPendingOperations } from '../data/sync.ts';
 
+import { Language } from '../data/translations.ts';
+
 interface JourneyState {
   currentSession: JourneySession | null;
   currentQuestionId: string | null;
   responses: Response[];
   isOffline: boolean;
   isLoading: boolean;
+  currentLanguage: Language;
   
   // Actions
   initializeSession: (deviceId: string) => Promise<void>;
@@ -31,6 +34,7 @@ interface JourneyState {
   navigateBack: () => Promise<void>;
   completeJourney: () => Promise<Result | null>;
   setOfflineStatus: (isOffline: boolean) => void;
+  setLanguage: (lang: Language) => void;
 }
 
 export const useJourneyStore = create<JourneyState>((set, get) => ({
@@ -39,6 +43,11 @@ export const useJourneyStore = create<JourneyState>((set, get) => ({
   responses: [],
   isOffline: !navigator.onLine,
   isLoading: false,
+  currentLanguage: 'en',
+
+  setLanguage: (lang) => {
+    set({ currentLanguage: lang });
+  },
 
   setOfflineStatus: (isOffline) => {
     const wasOffline = get().isOffline;
@@ -76,7 +85,7 @@ export const useJourneyStore = create<JourneyState>((set, get) => ({
     } else {
       // Create new session
       const sessionId = crypto.randomUUID();
-      const pool = generateQuestionPool();
+      const pool = generateQuestionPool(get().currentLanguage);
       const firstQuestion = pool[Math.floor(Math.random() * pool.length)];
       const firstQuestionId = firstQuestion.id;
       
@@ -142,7 +151,7 @@ export const useJourneyStore = create<JourneyState>((set, get) => ({
     const updatedResponses = [...responses.filter(r => r.questionId !== currentQuestionId), newResponse];
 
     // Compute updated scores
-    const pool = generateQuestionPool();
+    const pool = generateQuestionPool(get().currentLanguage);
     const fullJourneyDef = {
       ...journeyDef,
       questions: [...journeyDef.questions, ...pool]
@@ -150,7 +159,7 @@ export const useJourneyStore = create<JourneyState>((set, get) => ({
     const updatedScores = calculateScores(fullJourneyDef, updatedResponses);
 
     // Determine next question
-    const nextQId = getNextQuestion(journeyDef, updatedResponses, currentQuestionId);
+    const nextQId = getNextQuestion(journeyDef, updatedResponses, currentQuestionId, get().currentLanguage);
 
     const updatedSession: JourneySession = {
       ...currentSession,
@@ -216,7 +225,7 @@ export const useJourneyStore = create<JourneyState>((set, get) => ({
     });
 
     const remainingResponses = responses.slice(0, -1);
-    const pool = generateQuestionPool();
+    const pool = generateQuestionPool(get().currentLanguage);
     const fullJourneyDef = {
       ...journeyDef,
       questions: [...journeyDef.questions, ...pool]
@@ -247,7 +256,7 @@ export const useJourneyStore = create<JourneyState>((set, get) => ({
     const journeyDef = mockJourney as unknown as JourneyVersion;
 
     // Build the final result
-    const pool = generateQuestionPool();
+    const pool = generateQuestionPool(get().currentLanguage);
     const fullJourneyDef = {
       ...journeyDef,
       questions: [...journeyDef.questions, ...pool]

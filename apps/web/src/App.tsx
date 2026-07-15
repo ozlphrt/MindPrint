@@ -6,11 +6,7 @@ import { db } from './data/db.ts';
 import '@mindprint/ui/src/index.css';
 import { useRegisterSW } from 'virtual:pwa-register/react';
 import { generateQuestionPool } from '@mindprint/assessment-engine';
-
-const fullJourney = {
-  ...mockJourney,
-  questions: [...mockJourney.questions, ...generateQuestionPool()]
-};
+import { TRANSLATIONS } from './data/translations.ts';
 
 const ShareCard = ({ result }: { result: any }) => {
   const [copied, setCopied] = useState(false);
@@ -121,34 +117,105 @@ const PersonalMap = ({ result }: { result: any }) => {
   );
 };
 
-const getArchetypeLikesDislikes = (archetypeId: string) => {
-  switch (archetypeId) {
-    case 'socratic-connector':
-      return {
-        like: "Diplomatic, empathetic, active listeners who ensure everyone feels included.",
+const getArchetypeLikesDislikes = (archetypeId: string, lang: string = 'en') => {
+  const data: Record<string, Record<string, { like: string, dislike: string }>> = {
+    en: {
+      'socratic-connector': {
+        like: "Deeply collaborative, warm, consensus-oriented, and guides dialogue gently.",
         dislike: "Can seem passive-aggressive, indecisive, or hesitant to take a clear stand."
-      };
-    case 'independent-explorer':
-      return {
+      },
+      'independent-explorer': {
         like: "Highly self-reliant, candid, efficient, and brings fresh independent ideas.",
         dislike: "Can seem cold, distant, uncollaborative, or dismissive of others' emotions."
-      };
-    case 'quiet-strategist':
-      return {
+      },
+      'quiet-strategist': {
         like: "Calm, observant, highly analytical, and offers deeply considered insights.",
         dislike: "Difficult to read, and prolonged silence can feel like critical evaluation."
-      };
-    case 'empathic-challenger':
-      return {
+      },
+      'empathic-challenger': {
         like: "Passionately honest, highly engaging, and pushes the team to grow out of care.",
         dislike: "Can be abrasive, confrontational, overwhelming, or quick to challenge."
-      };
-    default:
-      return {
-        like: "Authentic, adaptive, and highly responsive to personal surroundings.",
-        dislike: "May struggle with consistency when situations change rapidly."
-      };
-  }
+      }
+    },
+    fr: {
+      'socratic-connector': {
+        like: "Très collaboratif, chaleureux, orienté consensus et guide le dialogue en douceur.",
+        dislike: "Peut sembler passif-agressif, indécis ou hésitant à prendre position."
+      },
+      'independent-explorer': {
+        like: "Autonome, franc, efficace et apporte des idées indépendantes et fraîches.",
+        dislike: "Peut paraître froid, distant, peu collaboratif ou méprisant envers les émotions."
+      },
+      'quiet-strategist': {
+        like: "Calme, observateur, analytique et propose des réflexions mûrement réfléchies.",
+        dislike: "Difficile à cerner, et un long silence peut être perçu comme un jugement critique."
+      },
+      'empathic-challenger': {
+        like: "Honnête, passionné, engagé et pousse l'équipe à grandir par bienveillance.",
+        dislike: "Peut être abrasif, conflictuel, écrasant ou prompt à contester."
+      }
+    },
+    de: {
+      'socratic-connector': {
+        like: "Sehr kooperativ, warmherzig, konsensbewusst, lenkt Gespräche einfühlsam.",
+        dislike: "Kann passiv-agressiv, unentschlossen oder zögerlich bei klaren Aussagen wirken."
+      },
+      'independent-explorer': {
+        like: "Sehr selbstständig, offen, effizient, bringt frische unabhängige Ideen ein.",
+        dislike: "Kann kühl, distanziert, unkooperativ oder gefühlsabweisend wirken."
+      },
+      'quiet-strategist': {
+        like: "Ruhig, aufmerksam, sehr analytisch, bietet gut durchdachte Erkenntnisse.",
+        dislike: "Schwer zu lesen; langes Schweigen kann wie kritische Bewertung wirken."
+      },
+      'empathic-challenger': {
+        like: "Leidenschaftlich ehrlich, sehr engagiert, treibt das Team aus Fürsorge voran.",
+        dislike: "Kann schroff, konfrontativ, erdrückend oder schnell herausfordernd sein."
+      }
+    },
+    ru: {
+      'socratic-connector': {
+        like: "Стремится к сотрудничеству, теплый, дипломатичный, мягко направляет диалог.",
+        dislike: "Может казаться пассивно-агрессивным, нерешительным или уклоняющимся от позиции."
+      },
+      'independent-explorer': {
+        like: "Самодостаточный, искренний, эффективный, предлагает свежие независимые идеи.",
+        dislike: "Может казаться холодным, отстраненным, несклонным к сотрудничеству или чувствам других."
+      },
+      'quiet-strategist': {
+        like: "Спокойный, наблюдательный, аналитичный, предлагает глубокие выводы.",
+        dislike: "Трудно понять; долгое молчание может восприниматься как критическая оценка."
+      },
+      'empathic-challenger': {
+        like: "Страстно честный, вовлеченный, подталкивает команду к росту из лучших побуждений.",
+        dislike: "Может казаться резким, агрессивным, подавляющим или склонным спорить."
+      }
+    },
+    tr: {
+      'socratic-connector': {
+        like: "Derinden iş birlikçi, sıcak, uzlaşmacı ve diyaloğu nazikçe yönlendirir.",
+        dislike: "Pasif-agresif, kararsız veya net bir duruş sergilemekte tereddütlü görünebilir."
+      },
+      'independent-explorer': {
+        like: "Kendine son derece yeten, açık sözlü, verimli ve bağımsız fikirler sunan.",
+        dislike: "Soğuk, mesafeli, iş birliğine kapalı veya başkalarının duygularını önemsemez görünebilir."
+      },
+      'quiet-strategist': {
+        like: "Sakin, gözlemci, yüksek derecede analitik ve derin düşünülmüş fikirler sunan.",
+        dislike: "Okunması zor ve uzun sessizliği eleştirel bir yargılama gibi hissettirebilir."
+      },
+      'empathic-challenger': {
+        like: "Tutkuyla dürüst, son derece girişken ve gelişim odaklı şekilde ekibi zorlayan.",
+        dislike: "Kırıcı, çatışmacı, ezici veya meydan okumaya çok hevesli görünebilir."
+      }
+    }
+  };
+
+  const currentLang = data[lang] ? lang : 'en';
+  return data[currentLang][archetypeId] || {
+    like: lang === 'tr' ? "Otantik, uyumlu ve çevresine duyarlı." : "Authentic, adaptive, and highly responsive to personal surroundings.",
+    dislike: lang === 'tr' ? "Durumlar hızlı değiştiğinde tutarlılıkta zorlanabilir." : "May struggle with consistency when situations change rapidly."
+  };
 };
 
 export default function App() {
@@ -158,12 +225,36 @@ export default function App() {
     responses,
     isOffline,
     isLoading,
+    currentLanguage,
     initializeSession,
     submitAnswer,
     navigateBack,
     completeJourney,
-    setOfflineStatus
+    setOfflineStatus,
+    setLanguage
   } = useJourneyStore();
+
+  const pool = generateQuestionPool(currentLanguage);
+  
+  // Translate the static mockJourney questions
+  const translatedQuestions = mockJourney.questions.map(q => {
+    const tq = TRANSLATIONS[currentLanguage]?.questions?.[q.id];
+    if (!tq) return q;
+    return {
+      ...q,
+      prompt: tq.prompt,
+      instructions: tq.instructions || q.instructions,
+      answerOptions: q.answerOptions.map(opt => ({
+        ...opt,
+        label: tq.options?.[opt.id] || opt.label
+      }))
+    };
+  });
+
+  const journey = {
+    ...mockJourney,
+    questions: [...translatedQuestions, ...pool]
+  };
 
   const [deviceId] = useState(() => {
     let id = localStorage.getItem('mindprint_device_id');
@@ -432,6 +523,7 @@ export default function App() {
   }, [currentQuestionId]);
 
   if (onboardingStep === -2) {
+    const t = TRANSLATIONS[currentLanguage] || TRANSLATIONS.en;
     return (
       <div className="glass-panel animate-float animate-fade-in" style={{ 
         maxWidth: '520px', 
@@ -441,6 +533,32 @@ export default function App() {
         border: '1px solid rgba(207, 159, 61, 0.25)',
         boxShadow: '0 10px 40px rgba(0, 0, 0, 0.6), var(--shadow-glow)'
       }}>
+        {/* Language switcher */}
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '15px' }}>
+          <select 
+            value={currentLanguage} 
+            onChange={(e) => setLanguage(e.target.value as any)}
+            style={{
+              background: '#161616',
+              color: 'var(--accent-primary)',
+              border: '1.5px solid rgba(207, 159, 61, 0.4)',
+              borderRadius: '8px',
+              padding: '6px 12px',
+              fontSize: '0.85rem',
+              fontWeight: 600,
+              cursor: 'pointer',
+              outline: 'none',
+              boxShadow: 'var(--shadow-glow)'
+            }}
+          >
+            <option value="en">🇺🇸 English</option>
+            <option value="fr">🇫🇷 Français</option>
+            <option value="de">🇩🇪 Deutsch</option>
+            <option value="ru">🇷🇺 Русский</option>
+            <option value="tr">🇹🇷 Türkçe</option>
+          </select>
+        </div>
+
         {/* Animated Glow Circle Container around the logo */}
         <div className="animate-glow-pulse" style={{ 
           width: '120px', 
@@ -466,7 +584,7 @@ export default function App() {
           marginBottom: '8px',
           letterSpacing: '-0.5px'
         }}>
-          MindPrint
+          {t.welcomeTitle}
         </h1>
         
         <p style={{ 
@@ -477,7 +595,7 @@ export default function App() {
           textTransform: 'uppercase',
           letterSpacing: '1px'
         }}>
-          How do others experience you?
+          {t.welcomeSubtitle}
         </p>
 
         <p style={{ 
@@ -486,8 +604,7 @@ export default function App() {
           lineHeight: '1.6', 
           marginBottom: '32px'
         }}>
-          Discover the behavioral blindspots you cannot easily see from the inside. 
-          Through 12 adaptive, situation-based questions, MindPrint maps your social presence, directness, and reflection.
+          {t.welcomeDesc}
         </p>
 
         {/* Feature Highlights Grid */}
@@ -504,15 +621,39 @@ export default function App() {
         }}>
           <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
             <span style={{ color: 'var(--accent-primary)' }}>✦</span>
-            <span style={{ fontSize: '0.9rem', color: 'var(--text-primary)' }}><strong>Completely Anonymous</strong> (no PII or emails collected)</span>
+            <span style={{ fontSize: '0.9rem', color: 'var(--text-primary)' }}>
+              {t.anonymous.includes(' (') ? (
+                <>
+                  <strong>{t.anonymous.split(' (')[0]}</strong> ({t.anonymous.split(' (')[1]}
+                </>
+              ) : (
+                <strong>{t.anonymous}</strong>
+              )}
+            </span>
           </div>
           <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
             <span style={{ color: 'var(--accent-primary)' }}>🔒</span>
-            <span style={{ fontSize: '0.9rem', color: 'var(--text-primary)' }}><strong>Local-First Storage</strong> (data is private to your device)</span>
+            <span style={{ fontSize: '0.9rem', color: 'var(--text-primary)' }}>
+              {t.localFirst.includes(' (') ? (
+                <>
+                  <strong>{t.localFirst.split(' (')[0]}</strong> ({t.localFirst.split(' (')[1]}
+                </>
+              ) : (
+                <strong>{t.localFirst}</strong>
+              )}
+            </span>
           </div>
           <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
             <span style={{ color: 'var(--accent-primary)' }}>🔄</span>
-            <span style={{ fontSize: '0.9rem', color: 'var(--text-primary)' }}><strong>Cross-Device Sync</strong> (restore sessions anytime)</span>
+            <span style={{ fontSize: '0.9rem', color: 'var(--text-primary)' }}>
+              {t.crossDevice.includes(' (') ? (
+                <>
+                  <strong>{t.crossDevice.split(' (')[0]}</strong> ({t.crossDevice.split(' (')[1]}
+                </>
+              ) : (
+                <strong>{t.crossDevice}</strong>
+              )}
+            </span>
           </div>
         </div>
 
@@ -524,29 +665,29 @@ export default function App() {
             setOnboardingStep(-1);
           }}
         >
-          Begin Discovery
+          {t.beginBtn}
         </button>
 
         <div style={{ fontSize: '0.9rem' }}>
-          <span style={{ color: 'var(--text-muted)' }}>Returning user? </span>
+          <span style={{ color: 'var(--text-muted)' }}>{t.returningUser}</span>
           <span 
             onClick={() => setShowLoginModal(true)} 
             style={{ color: 'var(--accent-primary)', cursor: 'pointer', fontWeight: 600, textDecoration: 'underline' }}
           >
-            Log in to restore data
+            {t.loginRestore}
           </span>
         </div>
 
         {showLoginModal && (
           <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2000 }}>
             <div style={{ background: '#161616', border: '1px solid var(--accent-primary)', borderRadius: '12px', padding: '24px', maxWidth: '400px', width: '90%', textAlign: 'left' }}>
-              <h3 style={{ color: '#fff', marginBottom: '8px' }}>Log In</h3>
-              <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', marginBottom: '16px' }}>Enter your username and password to restore and sync assessments.</p>
+              <h3 style={{ color: '#fff', marginBottom: '8px' }}>{t.loginTitle}</h3>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', marginBottom: '16px' }}>{t.loginDesc}</p>
               <form onSubmit={handleLoginSubmit}>
                 <div style={{ marginBottom: '12px' }}>
                   <input 
                     type="text" 
-                    placeholder="Username" 
+                    placeholder={t.usernamePlaceholder} 
                     value={loginUsername}
                     onChange={(e) => setLoginUsername(e.target.value)}
                     required
@@ -556,7 +697,7 @@ export default function App() {
                 <div style={{ marginBottom: '16px' }}>
                   <input 
                     type="password" 
-                    placeholder="Password" 
+                    placeholder={t.passwordPlaceholder} 
                     value={loginPassword}
                     onChange={(e) => setLoginPassword(e.target.value)}
                     required
@@ -567,8 +708,8 @@ export default function App() {
                   <p style={{ color: 'var(--danger)', fontSize: '0.85rem', marginBottom: '12px' }}>{loginError}</p>
                 )}
                 <div style={{ display: 'flex', gap: '12px' }}>
-                  <button className="btn btn-secondary" type="button" onClick={() => setShowLoginModal(false)} style={{ flex: 1 }}>Cancel</button>
-                  <button className="btn btn-primary" type="submit" style={{ flex: 1 }}>Log In</button>
+                  <button className="btn btn-secondary" type="button" onClick={() => setShowLoginModal(false)} style={{ flex: 1 }}>{t.cancelBtn}</button>
+                  <button className="btn btn-primary" type="submit" style={{ flex: 1 }}>{t.loginTitle}</button>
                 </div>
               </form>
             </div>
@@ -590,19 +731,22 @@ export default function App() {
 
   // --- RENDERING RESULT SCREEN ---
   if (currentSession?.status === 'completed' && localResult) {
+    const t = TRANSLATIONS[currentLanguage] || TRANSLATIONS.en;
     return (
       <div className="glass-panel" style={{ maxWidth: '600px', margin: '40px auto', padding: '30px' }}>
         <div style={{ textAlign: 'center', marginBottom: '30px' }}>
           <img src="icon-512.png" alt="MindPrint Logo" style={{ width: '80px', height: '80px', borderRadius: '16px', marginBottom: '15px' }} />
           <h1 style={{ fontSize: '2rem', background: 'var(--accent-gradient)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: '8px' }}>
-            Your MindPrint
+            {t.resultsTitle}
           </h1>
-          <p style={{ color: 'var(--text-secondary)', marginBottom: '16px' }}>Persona profile results computed locally</p>
+          <p style={{ color: 'var(--text-secondary)', marginBottom: '16px' }}>{t.resultsDesc}</p>
         </div>
 
           {/* 5-Star Accuracy Rating */}
           <div style={{ background: 'rgba(255, 255, 255, 0.02)', border: '1px solid var(--border-card)', borderRadius: '12px', padding: '16px', marginBottom: '8px', display: 'inline-block', width: '100%', boxSizing: 'border-box' }}>
-            <p style={{ color: 'var(--text-secondary)', margin: '0 0 10px 0', fontSize: '0.9rem' }}>How accurate is your MindPrint profile?</p>
+            <p style={{ color: 'var(--text-secondary)', margin: '0 0 10px 0', fontSize: '0.9rem' }}>
+              {currentLanguage === 'fr' ? "Quelle est la précision de votre profil MindPrint ?" : currentLanguage === 'de' ? "Wie genau ist Ihr MindPrint-Profil?" : currentLanguage === 'ru' ? "Насколько точен ваш профиль MindPrint?" : currentLanguage === 'tr' ? "MindPrint profiliniz ne kadar doğru?" : "How accurate is your MindPrint profile?"}
+            </p>
             <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', fontSize: '1.6rem', lineHeight: 1 }}>
               {[1, 2, 3, 4, 5].map((star) => (
                 <span 
@@ -621,7 +765,11 @@ export default function App() {
                 </span>
               ))}
             </div>
-            {overallRating > 0 && <p style={{ fontSize: '0.75rem', color: 'var(--accent-primary)', margin: '8px 0 0 0' }}>Thank you for your rating!</p>}
+            {overallRating > 0 && (
+              <p style={{ fontSize: '0.75rem', color: 'var(--accent-primary)', margin: '8px 0 0 0' }}>
+                {currentLanguage === 'fr' ? "Merci pour votre évaluation !" : currentLanguage === 'de' ? "Vielen Dank für Ihre Bewertung!" : currentLanguage === 'ru' ? "Спасибо за вашу оценку!" : currentLanguage === 'tr' ? "Değerlendirmeniz için teşekkür ederiz!" : "Thank you for your rating!"}
+              </p>
+            )}
           </div>
 
         {/* Tab Navigation */}
@@ -641,7 +789,7 @@ export default function App() {
               borderRadius: '4px'
             }}
           >
-            Overview
+            {currentLanguage === 'fr' ? 'Aperçu' : currentLanguage === 'de' ? 'Übersicht' : currentLanguage === 'ru' ? 'Обзор' : currentLanguage === 'tr' ? 'Genel Bakış' : 'Overview'}
           </button>
           <button 
             onClick={() => setResultsTab('map')}
@@ -658,7 +806,7 @@ export default function App() {
               borderRadius: '4px'
             }}
           >
-            Personal Map
+            {currentLanguage === 'fr' ? 'Carte personnelle' : currentLanguage === 'de' ? 'Persönliche Karte' : currentLanguage === 'ru' ? 'Личная карта' : currentLanguage === 'tr' ? 'Kişisel Harita' : 'Personal Map'}
           </button>
           <button 
             onClick={() => setResultsTab('history')}
@@ -675,34 +823,33 @@ export default function App() {
               borderRadius: '4px'
             }}
           >
-            History
+            {currentLanguage === 'fr' ? 'Historique' : currentLanguage === 'de' ? 'Verlauf' : currentLanguage === 'ru' ? 'История' : currentLanguage === 'tr' ? 'Geçmiş' : 'History'}
           </button>
         </div>
 
         {resultsTab === 'overview' && (
           <>
-            {localResult.primaryArchetype && (
-              <div style={{ background: 'rgba(207, 159, 61, 0.08)', border: '1px solid rgba(207, 159, 61, 0.3)', borderRadius: '14px', padding: '20px', marginBottom: '24px' }}>
-                <span style={{ fontSize: '0.8rem', textTransform: 'uppercase', color: 'var(--accent-primary)', fontWeight: 700 }}>Primary Archetype</span>
-                <h2 style={{ fontSize: '1.6rem', marginTop: '4px', marginBottom: '8px', color: '#fff' }}>{localResult.primaryArchetype.name}</h2>
-                <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: '1.5', marginBottom: 0 }}>{localResult.primaryArchetype.description}</p>
-                {(() => {
-                  const feedback = getArchetypeLikesDislikes(localResult.primaryArchetype.id);
-                  return (
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginTop: '12px', paddingTop: '12px', borderTop: '1px solid rgba(207, 159, 61, 0.15)' }}>
-                      <div>
-                        <span style={{ fontSize: '0.75rem', color: 'var(--success)', fontWeight: 700, display: 'block', textTransform: 'uppercase' }}>💚 What others love</span>
-                        <span style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>{feedback.like}</span>
-                      </div>
-                      <div style={{ borderLeft: '1px solid rgba(255, 255, 255, 0.05)', paddingLeft: '12px' }}>
-                        <span style={{ fontSize: '0.75rem', color: 'var(--danger)', fontWeight: 700, display: 'block', textTransform: 'uppercase' }}>💔 What others dislike</span>
-                        <span style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>{feedback.dislike}</span>
-                      </div>
+            {localResult.primaryArchetype && (() => {
+              const primaryTrans = t.archetypes?.[localResult.primaryArchetype.id] || localResult.primaryArchetype;
+              const feedback = getArchetypeLikesDislikes(localResult.primaryArchetype.id, currentLanguage);
+              return (
+                <div style={{ background: 'rgba(207, 159, 61, 0.08)', border: '1px solid rgba(207, 159, 61, 0.3)', borderRadius: '14px', padding: '20px', marginBottom: '24px' }}>
+                  <span style={{ fontSize: '0.8rem', textTransform: 'uppercase', color: 'var(--accent-primary)', fontWeight: 700 }}>{t.primaryTitle}</span>
+                  <h2 style={{ fontSize: '1.6rem', marginTop: '4px', marginBottom: '8px', color: '#fff' }}>{primaryTrans.name}</h2>
+                  <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: '1.5', marginBottom: 0 }}>{primaryTrans.description}</p>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginTop: '12px', paddingTop: '12px', borderTop: '1px solid rgba(207, 159, 61, 0.15)' }}>
+                    <div>
+                      <span style={{ fontSize: '0.75rem', color: 'var(--success)', fontWeight: 700, display: 'block', textTransform: 'uppercase' }}>{t.loveTitle}</span>
+                      <span style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>{feedback.like}</span>
                     </div>
-                  );
-                })()}
-              </div>
-            )}
+                    <div style={{ borderLeft: '1px solid rgba(255, 255, 255, 0.05)', paddingLeft: '12px' }}>
+                      <span style={{ fontSize: '0.75rem', color: 'var(--danger)', fontWeight: 700, display: 'block', textTransform: 'uppercase' }}>{t.dislikeTitle}</span>
+                      <span style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>{feedback.dislike}</span>
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
 
             {localResult.primaryArchetype && (
               <div style={{ 
@@ -713,156 +860,162 @@ export default function App() {
                 marginBottom: '24px' 
               }}>
                 <span style={{ fontSize: '0.8rem', textTransform: 'uppercase', color: '#ffb703', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  ⚠️ Your Behavioral Blindspots
+                  {currentLanguage === 'fr' ? "⚠️ Vos angles morts comportementaux" : currentLanguage === 'de' ? "⚠️ Deine Verhaltensblindflecken" : currentLanguage === 'ru' ? "⚠️ Ваши поведенческие слепые зоны" : currentLanguage === 'tr' ? "⚠️ Davranışsal Kör Noktalarınız" : "⚠️ Your Behavioral Blindspots"}
                 </span>
                 <h3 style={{ fontSize: '1.15rem', marginTop: '8px', marginBottom: '15px', color: '#fff' }}>
-                  Self-Perception vs. Social Presence
+                  {currentLanguage === 'fr' ? "Perception de soi vs. Présence sociale" : currentLanguage === 'de' ? "Selbstwahrnehmung vs. Soziale Präsenz" : currentLanguage === 'ru' ? "Самовосприятие vs. Социальное присутствие" : currentLanguage === 'tr' ? "Kendini Algılama vs. Sosyal Varlık" : "Self-Perception vs. Social Presence"}
                 </h3>
                 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', background: 'rgba(0, 0, 0, 0.2)', padding: '14px', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.05)', marginBottom: '16px' }}>
                   <div>
-                    <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: 600 }}>What you tell yourself</span>
+                    <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: 600 }}>
+                      {currentLanguage === 'fr' ? "Ce que vous vous dites" : currentLanguage === 'de' ? "Was du dir selbst sagst" : currentLanguage === 'ru' ? "Что вы говорите себе" : currentLanguage === 'tr' ? "Kendinize söylediğiniz" : "What you tell yourself"}
+                    </span>
                     <p style={{ color: '#fff', fontSize: '0.85rem', margin: '4px 0 0 0', lineHeight: '1.4' }}>
-                      {localResult.primaryArchetype.id === 'socratic-connector' && "I am supportive, consensus-building, and try to guide others gently to realizations."}
-                      {localResult.primaryArchetype.id === 'independent-explorer' && "I am self-reliant, highly rational, and value truth and efficiency above all."}
-                      {localResult.primaryArchetype.id === 'quiet-strategist' && "I am observant, deliberate, and analyze situations deeply before offering input."}
-                      {localResult.primaryArchetype.id === 'empathic-challenger' && "I am honest, direct, and challenge group ideas because I care about doing things right."}
+                      {localResult.primaryArchetype.id === 'socratic-connector' && (currentLanguage === 'fr' ? "Je soutiens, je recherche le consensus et j'essaie de guider les autres en douceur." : currentLanguage === 'de' ? "Ich unterstütze, bin konsensorientiert und versuche andere behutsam zu leiten." : currentLanguage === 'ru' ? "Я поддерживаю, стремлюсь к согласию и стараюсь мягко направлять других к выводам." : currentLanguage === 'tr' ? "Destekleyiciyim, uzlaşmacıyım ve başkalarını doğrulara nazikçe yönlendirmeye çalışırım." : "I am supportive, consensus-building, and try to guide others gently to realizations.")}
+                      {localResult.primaryArchetype.id === 'independent-explorer' && (currentLanguage === 'fr' ? "Je suis autonome, rationnel et j'accorde de l'importance à la vérité et à l'efficacité." : currentLanguage === 'de' ? "Ich bin selbstständig, rational und schätze Wahrheit und Effizienz über alles." : currentLanguage === 'ru' ? "Я самостоятелен, рационален и ценю правду и эффективность превыше всего." : currentLanguage === 'tr' ? "Kendime yeterim, son derece rasyonelim; doğruluk ve verimliliğe her şeyden çok değer veririm." : "I am self-reliant, highly rational, and value truth and efficiency above all.")}
+                      {localResult.primaryArchetype.id === 'quiet-strategist' && (currentLanguage === 'fr' ? "J'observe, je suis réfléchi et j'analyse profondément les situations avant d'intervenir." : currentLanguage === 'de' ? "Ich beobachte, bin bedacht und analysiere Situationen tiefgehend vor Impulsen." : currentLanguage === 'ru' ? "Я наблюдателен, осмотрителен и глубоко анализирую ситуации перед тем, как высказаться." : currentLanguage === 'tr' ? "Gözlemciyim, temkinliyim ve fikir sunmadan önce durumları derinlemesine analiz ederim." : "I am observant, deliberate, and analyze situations deeply before offering input.")}
+                      {localResult.primaryArchetype.id === 'empathic-challenger' && (currentLanguage === 'fr' ? "Je suis honnête, direct et je conteste les idées du groupe car je veux bien faire." : currentLanguage === 'de' ? "Ich bin ehrlich, direkt und hinterfrage Gruppenideen, weil ich es richtig machen will." : currentLanguage === 'ru' ? "Я честен, прям и оспариваю идеи группы, потому что мне важно сделать все правильно." : currentLanguage === 'tr' ? "Dürüstüm, doğrudanım ve grup kararlarını işlerin doğru yapılması amacıyla sorgularım." : "I am honest, direct, and challenge group ideas because I care about doing things right.")}
                     </p>
                   </div>
                   <div style={{ borderLeft: '1px solid rgba(255, 255, 255, 0.1)', paddingLeft: '16px' }}>
-                    <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: '#ffb703', fontWeight: 600 }}>What others say about you</span>
+                    <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: '#ffb703', fontWeight: 600 }}>{t.sayTitle}</span>
                     <p style={{ color: '#fff', fontSize: '0.85rem', margin: '4px 0 0 0', lineHeight: '1.4' }}>
-                      {localResult.primaryArchetype.id === 'socratic-connector' && "You can be passive-aggressive, indecisive, or avoid taking a clear stand to protect your image."}
-                      {localResult.primaryArchetype.id === 'independent-explorer' && "You can be distant, cold, uncollaborative, or dismissive of other people's feelings."}
-                      {localResult.primaryArchetype.id === 'quiet-strategist' && "You can be aloof, disapproving, or completely disengaged from the social group."}
-                      {localResult.primaryArchetype.id === 'empathic-challenger' && "You can be abrasive, confrontational, overwhelming, or quick to attack other views."}
+                      {localResult.primaryArchetype.id === 'socratic-connector' && (currentLanguage === 'fr' ? "Vous pouvez sembler passif-agressif, indécis ou hésitant à prendre une position claire." : currentLanguage === 'de' ? "Kann passiv-agressiv, unentschlossen oder zögerlich bei klaren Aussagen wirken." : currentLanguage === 'ru' ? "Может казаться пассивно-агрессивным, нерешительным или уклоняющимся от позиции." : currentLanguage === 'tr' ? "Pasif-agresif, kararsız veya net bir duruş sergilemekte tereddütlü görünebilir." : "You can be passive-aggressive, indecisive, or avoid taking a clear stand to protect your image.")}
+                      {localResult.primaryArchetype.id === 'independent-explorer' && (currentLanguage === 'fr' ? "Vous pouvez paraître distant, froid, peu collaboratif ou méprisant envers les sentiments." : currentLanguage === 'de' ? "Kann kühl, distanziert, unkooperativ oder gefühlsabweisend wirken." : currentLanguage === 'ru' ? "Может казаться холодным, отстраненным, несклонным к сотрудничеству или чувствам других." : currentLanguage === 'tr' ? "Soğuk, mesafeli, iş birliğine kapalı veya başkalarının duygularını önemsemez görünebilir." : "You can be distant, cold, uncollaborative, or dismissive of other people's feelings.")}
+                      {localResult.primaryArchetype.id === 'quiet-strategist' && (currentLanguage === 'fr' ? "Vous pouvez paraître distant, désapprobateur ou complètement détaché du groupe." : currentLanguage === 'de' ? "Schwer zu lesen; langes Schweigen kann wie kritische Bewertung wirken." : currentLanguage === 'ru' ? "Трудно понять; долгое молчание может восприниматься как критическая оценка." : currentLanguage === 'tr' ? "Okunması zor ve uzun sessizliği eleştirel bir yargılama gibi hissettirebilir." : "You can be aloof, disapproving, or completely disengaged from the social group.")}
+                      {localResult.primaryArchetype.id === 'empathic-challenger' && (currentLanguage === 'fr' ? "Vous pouvez être abrasif, conflictuel, écrasant ou prompt à contester d'autres points de vue." : currentLanguage === 'de' ? "Kann schroff, konfrontativ, erdrückend oder schnell herausfordernd sein." : currentLanguage === 'ru' ? "Может казаться резким, агрессивным, подавляющим или склонным спорить." : currentLanguage === 'tr' ? "Kırıcı, çatışmacı, ezici veya meydan okumaya çok hevesli görünebilir." : "You can be abrasive, confrontational, overwhelming, or quick to attack other views.")}
                     </p>
                   </div>
                 </div>
 
                 <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: '1.5', margin: 0 }}>
-                  {localResult.primaryArchetype.id === 'socratic-connector' && 
-                    "Because you guide conversations through indirect questions, others might misinterpret you as passive-aggressive, indecisive, or slow to make a stand. They may feel you are hiding your true opinion."}
-                  {localResult.primaryArchetype.id === 'independent-explorer' && 
-                    "Your frank, self-reliant approach can make others experience you as distant, uncollaborative, or overly critical. They might feel you are isolating yourself or rejecting the group."}
-                  {localResult.primaryArchetype.id === 'quiet-strategist' && 
-                    "Because you process interactions deeply and stay silent, others might misinterpret your quietness as critical judgment, disapproval, or complete disinterest in the social group."}
-                  {localResult.primaryArchetype.id === 'empathic-challenger' && 
-                    "Your combination of high honesty and high energy can make others experience you as abrasive, confrontational, or overwhelming. They may feel attacked even when you act out of care."}
+                  {localResult.primaryArchetype.id === 'socratic-connector' && t.socraticExplanation}
+                  {localResult.primaryArchetype.id === 'independent-explorer' && t.explorerExplanation}
+                  {localResult.primaryArchetype.id === 'quiet-strategist' && t.strategistExplanation}
+                  {localResult.primaryArchetype.id === 'empathic-challenger' && t.challengerExplanation}
                 </p>
               </div>
             )}
 
-            {localResult.secondaryArchetype && (
-              <div style={{ background: 'rgba(166, 124, 30, 0.05)', border: '1px solid rgba(166, 124, 30, 0.2)', borderRadius: '14px', padding: '20px', marginBottom: '24px' }}>
-                <span style={{ fontSize: '0.8rem', textTransform: 'uppercase', color: 'var(--text-secondary)', fontWeight: 700 }}>Secondary Archetype</span>
-                <h2 style={{ fontSize: '1.4rem', marginTop: '4px', marginBottom: '8px', color: '#fff' }}>{localResult.secondaryArchetype.name}</h2>
-                <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: '1.5', marginBottom: 0 }}>{localResult.secondaryArchetype.description}</p>
-                {(() => {
-                  const feedback = getArchetypeLikesDislikes(localResult.secondaryArchetype.id);
-                  return (
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginTop: '12px', paddingTop: '12px', borderTop: '1px solid rgba(166, 124, 30, 0.15)' }}>
-                      <div>
-                        <span style={{ fontSize: '0.75rem', color: 'var(--success)', fontWeight: 700, display: 'block', textTransform: 'uppercase' }}>💚 What others love</span>
-                        <span style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>{feedback.like}</span>
-                      </div>
-                      <div style={{ borderLeft: '1px solid rgba(255, 255, 255, 0.05)', paddingLeft: '12px' }}>
-                        <span style={{ fontSize: '0.75rem', color: 'var(--danger)', fontWeight: 700, display: 'block', textTransform: 'uppercase' }}>💔 What others dislike</span>
-                        <span style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>{feedback.dislike}</span>
-                      </div>
+            {localResult.secondaryArchetype && (() => {
+              const secondaryTrans = t.archetypes?.[localResult.secondaryArchetype.id] || localResult.secondaryArchetype;
+              const feedback = getArchetypeLikesDislikes(localResult.secondaryArchetype.id, currentLanguage);
+              return (
+                <div style={{ background: 'rgba(166, 124, 30, 0.05)', border: '1px solid rgba(166, 124, 30, 0.2)', borderRadius: '14px', padding: '20px', marginBottom: '24px' }}>
+                  <span style={{ fontSize: '0.8rem', textTransform: 'uppercase', color: 'var(--text-secondary)', fontWeight: 700 }}>{t.secondaryTitle}</span>
+                  <h2 style={{ fontSize: '1.4rem', marginTop: '4px', marginBottom: '8px', color: '#fff' }}>{secondaryTrans.name}</h2>
+                  <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: '1.5', marginBottom: 0 }}>{secondaryTrans.description}</p>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginTop: '12px', paddingTop: '12px', borderTop: '1px solid rgba(166, 124, 30, 0.15)' }}>
+                    <div>
+                      <span style={{ fontSize: '0.75rem', color: 'var(--success)', fontWeight: 700, display: 'block', textTransform: 'uppercase' }}>{t.loveTitle}</span>
+                      <span style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>{feedback.like}</span>
                     </div>
-                  );
-                })()}
-              </div>
-            )}
-
-            <div style={{ marginBottom: '30px' }}>
-              <h3 style={{ fontSize: '1.1rem', marginBottom: '15px', color: '#fff' }}>Your Profile Dimensions</h3>
-              {localResult.dimensions.map((dim: any) => (
-                <div key={dim.id} style={{ marginBottom: '16px' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem', marginBottom: '6px' }}>
-                    <span style={{ fontWeight: 600 }}>{dim.name}</span>
-                    <span style={{ color: 'var(--accent-primary)', fontWeight: 600 }}>{dim.score}%</span>
-                  </div>
-                  <div style={{ height: '8px', background: 'rgba(255, 255, 255, 0.08)', borderRadius: '4px', position: 'relative', margin: '8px 0' }}>
-                    <div style={{
-                      position: 'absolute',
-                      left: `${dim.score}%`,
-                      top: '50%',
-                      width: '14px',
-                      height: '14px',
-                      background: 'var(--accent-primary)',
-                      borderRadius: '50%',
-                      transform: 'translate(-50%, -50%)',
-                      boxShadow: '0 0 10px var(--accent-primary)',
-                      zIndex: 2,
-                      transition: 'left 0.5s ease-out'
-                    }} />
-                  </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '4px', marginBottom: '16px' }}>
-                    <span>{dim.lowPole}</span>
-                    <span>{dim.highPole}</span>
+                    <div style={{ borderLeft: '1px solid rgba(255, 255, 255, 0.05)', paddingLeft: '12px' }}>
+                      <span style={{ fontSize: '0.75rem', color: 'var(--danger)', fontWeight: 700, display: 'block', textTransform: 'uppercase' }}>{t.dislikeTitle}</span>
+                      <span style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>{feedback.dislike}</span>
+                    </div>
                   </div>
                 </div>
-              ))}
+              );
+            })()}
+
+            <div style={{ marginBottom: '30px' }}>
+              <h3 style={{ fontSize: '1.1rem', marginBottom: '15px', color: '#fff' }}>{t.dimensionsTitle}</h3>
+              {localResult.dimensions.map((dim: any) => {
+                const dimTrans = t.dimensions?.[dim.id] || dim;
+                return (
+                  <div key={dim.id} style={{ marginBottom: '16px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem', marginBottom: '6px' }}>
+                      <span style={{ fontWeight: 600 }}>{dimTrans.name}</span>
+                      <span style={{ color: 'var(--accent-primary)', fontWeight: 600 }}>{dim.score}%</span>
+                    </div>
+                    <div style={{ height: '8px', background: 'rgba(255, 255, 255, 0.08)', borderRadius: '4px', position: 'relative', margin: '8px 0' }}>
+                      <div style={{
+                        position: 'absolute',
+                        left: `${dim.score}%`,
+                        top: '50%',
+                        width: '14px',
+                        height: '14px',
+                        background: 'var(--accent-primary)',
+                        borderRadius: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        boxShadow: '0 0 10px var(--accent-primary)',
+                        zIndex: 2,
+                        transition: 'left 0.5s ease-out'
+                      }} />
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '4px', marginBottom: '16px' }}>
+                      <span>{dimTrans.lowPole}</span>
+                      <span>{dimTrans.highPole}</span>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
 
             {localResult.insights.length > 0 && (
               <div style={{ marginBottom: '30px' }}>
-                <h3 style={{ fontSize: '1.1rem', marginBottom: '15px', color: '#fff' }}>Core Insights</h3>
-                {localResult.insights.map((ins: any) => (
-                  <div key={ins.id} style={{ background: 'rgba(255, 255, 255, 0.02)', border: '1px solid var(--border-card)', borderRadius: '12px', padding: '16px', marginBottom: '12px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <h4 style={{ color: 'var(--accent-primary)', margin: 0, fontSize: '1rem' }}>{ins.title}</h4>
-                      <div style={{ display: 'flex', gap: '8px' }}>
-                        <button 
-                          onClick={() => {
-                            const newInsightFeedbacks = { ...insightFeedbacks, [ins.id]: 'up' as const };
-                            setInsightFeedbacks(newInsightFeedbacks);
-                            handleFeedbackSubmit('insight', undefined, ins.id, 'up');
-                          }}
-                          style={{
-                            background: insightFeedbacks[ins.id] === 'up' ? 'var(--accent-primary)' : 'rgba(255, 255, 255, 0.05)',
-                            border: 'none',
-                            borderRadius: '4px',
-                            color: '#fff',
-                            padding: '4px 8px',
-                            cursor: 'pointer',
-                            fontSize: '0.75rem',
-                            transition: 'background 0.2s ease'
-                          }}
-                        >
-                          👍
-                        </button>
-                        <button 
-                          onClick={() => {
-                            const newInsightFeedbacks = { ...insightFeedbacks, [ins.id]: 'down' as const };
-                            setInsightFeedbacks(newInsightFeedbacks);
-                            handleFeedbackSubmit('insight', undefined, ins.id, 'down');
-                          }}
-                          style={{
-                            background: insightFeedbacks[ins.id] === 'down' ? 'var(--accent-primary)' : 'rgba(255, 255, 255, 0.05)',
-                            border: 'none',
-                            borderRadius: '4px',
-                            color: '#fff',
-                            padding: '4px 8px',
-                            cursor: 'pointer',
-                            fontSize: '0.75rem',
-                            transition: 'background 0.2s ease'
-                          }}
-                        >
-                          👎
-                        </button>
+                <h3 style={{ fontSize: '1.1rem', marginBottom: '15px', color: '#fff' }}>{t.insightsTitle}</h3>
+                {localResult.insights.map((ins: any) => {
+                  const insTrans = t.insights?.[ins.id];
+                  const insTitle = insTrans?.title || ins.title;
+                  const insBody = insTrans?.bodyTemplate || ins.body;
+                  const insAltBody = insTrans?.alternativeTemplate || ins.alternativeBody;
+                  return (
+                    <div key={ins.id} style={{ background: 'rgba(255, 255, 255, 0.02)', border: '1px solid var(--border-card)', borderRadius: '12px', padding: '16px', marginBottom: '12px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <h4 style={{ color: 'var(--accent-primary)', margin: 0, fontSize: '1rem' }}>{insTitle}</h4>
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                          <button 
+                            onClick={() => {
+                              const newInsightFeedbacks = { ...insightFeedbacks, [ins.id]: 'up' as const };
+                              setInsightFeedbacks(newInsightFeedbacks);
+                              handleFeedbackSubmit('insight', undefined, ins.id, 'up');
+                            }}
+                            style={{
+                              background: insightFeedbacks[ins.id] === 'up' ? 'var(--accent-primary)' : 'rgba(255, 255, 255, 0.05)',
+                              border: 'none',
+                              borderRadius: '4px',
+                              color: '#fff',
+                              padding: '4px 8px',
+                              cursor: 'pointer',
+                              fontSize: '0.75rem',
+                              transition: 'background 0.2s ease'
+                            }}
+                          >
+                            👍
+                          </button>
+                          <button 
+                            onClick={() => {
+                              const newInsightFeedbacks = { ...insightFeedbacks, [ins.id]: 'down' as const };
+                              setInsightFeedbacks(newInsightFeedbacks);
+                              handleFeedbackSubmit('insight', undefined, ins.id, 'down');
+                            }}
+                            style={{
+                              background: insightFeedbacks[ins.id] === 'down' ? 'var(--accent-primary)' : 'rgba(255, 255, 255, 0.05)',
+                              border: 'none',
+                              borderRadius: '4px',
+                              color: '#fff',
+                              padding: '4px 8px',
+                              cursor: 'pointer',
+                              fontSize: '0.75rem',
+                              transition: 'background 0.2s ease'
+                            }}
+                          >
+                            👎
+                          </button>
+                        </div>
                       </div>
+                      <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: '1.4', marginTop: '8px', marginBottom: 0 }}>{insBody}</p>
+                      {insAltBody && (
+                        <div style={{ marginTop: '12px', paddingTop: '12px', borderTop: '1px solid rgba(255, 255, 255, 0.05)', fontSize: '0.85rem', color: '#ffb703' }}>
+                          <strong>{currentLanguage === 'fr' ? "⚠️ Avertissement de point mort :" : currentLanguage === 'de' ? "⚠️ Blindwinkel-Warnung:" : currentLanguage === 'ru' ? "⚠️ Предупреждение о слепой зоне:" : currentLanguage === 'tr' ? "⚠️ Kör Nokta Uyarısı:" : "⚠️ Blindspot Warning:"}</strong> {insAltBody}
+                        </div>
+                      )}
                     </div>
-                    <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: '1.4', marginTop: '8px', marginBottom: 0 }}>{ins.body}</p>
-                    {ins.alternativeBody && (
-                      <div style={{ marginTop: '12px', paddingTop: '12px', borderTop: '1px solid rgba(255, 255, 255, 0.05)', fontSize: '0.85rem', color: '#ffb703' }}>
-                        <strong>⚠️ Blindspot Warning:</strong> {ins.alternativeBody}
-                      </div>
-                    )}
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </>
@@ -1000,8 +1153,6 @@ export default function App() {
     );
   }
 
-  // Find current question details
-  const journey = fullJourney;
   const currentQuestion = journey.questions.find(q => q.id === currentQuestionId);
 
   // --- RENDERING QUESTION SCREENS ---
@@ -1048,11 +1199,13 @@ export default function App() {
 
     const isSubmitDisabled = selectedRanks.length < (currentQuestion.minSelections ?? 1);
 
+    const t = TRANSLATIONS[currentLanguage] || TRANSLATIONS.en;
+
     return (
       <div className="glass-panel" style={{ maxWidth: '600px', margin: '40px auto', width: '90%' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', fontSize: '0.85rem' }}>
           <span style={{ color: 'var(--text-secondary)' }}>
-            Question {answeredCount + 1} of {totalQuestions}
+            {t.questionProgress.replace('{current}', String(answeredCount + 1)).replace('{total}', String(totalQuestions))}
             <span 
               onClick={async () => {
                 await db.journeySessions.clear();
@@ -1068,7 +1221,7 @@ export default function App() {
             </span>
           </span>
           <span style={{ background: isOffline ? 'var(--danger)' : 'var(--success)', padding: '3px 8px', borderRadius: '20px', color: '#fff', fontSize: '0.75rem', fontWeight: 600 }}>
-            {isOffline ? 'Offline Mode' : 'Online'}
+            {isOffline ? t.syncStatusOffline : t.syncStatusOnline}
           </span>
         </div>
 
@@ -1134,7 +1287,7 @@ export default function App() {
         <div style={{ display: 'flex', justifyContent: 'space-between', gap: '12px' }}>
           {answeredCount > 0 && (
             <button className="btn btn-secondary" style={{ flex: 1 }} onClick={navigateBack}>
-              Back
+              {currentLanguage === 'fr' ? 'Retour' : currentLanguage === 'de' ? 'Zurück' : currentLanguage === 'ru' ? 'Назад' : currentLanguage === 'tr' ? 'Geri' : 'Back'}
             </button>
           )}
           {(currentQuestion.type === 'ranked_choice' || currentQuestion.type === 'single_choice') && (
@@ -1144,7 +1297,7 @@ export default function App() {
               disabled={isSubmitDisabled}
               onClick={() => submitAnswer(selectedRanks)}
             >
-              Continue
+              {t.continueBtn}
             </button>
           )}
         </div>
@@ -1153,6 +1306,7 @@ export default function App() {
   }
 
   // --- RENDERING LAUNCH/COMPLETE SCREEN ---
+  const tLanding = TRANSLATIONS[currentLanguage] || TRANSLATIONS.en;
   return (
     <div className="glass-panel" style={{ maxWidth: '600px', margin: '80px auto', textAlign: 'center', padding: '40px' }}>
       <img src="icon-512.png" alt="MindPrint Logo" style={{ width: '100px', height: '100px', borderRadius: '16px', marginBottom: '20px' }} />
@@ -1160,16 +1314,16 @@ export default function App() {
         MindPrint
       </h1>
       <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem', marginBottom: '30px', lineHeight: '1.6' }}>
-        Understand the patterns in how others experience you. Fully functional offline, with secure local persistence.
+        {tLanding.welcomeSubtitle}
       </p>
 
       <button className="btn btn-primary" style={{ width: '100%', padding: '14px 28px', marginBottom: isInstallable ? '12px' : '0px' }} onClick={completeJourney}>
-        View Results
+        {tLanding.viewResultsBtn}
       </button>
 
       {isInstallable && (
         <button className="btn btn-secondary" style={{ width: '100%', padding: '14px 28px', border: '1px solid var(--accent-primary)', color: 'var(--accent-primary)' }} onClick={handleInstallClick}>
-          Install MindPrint App
+          {currentLanguage === 'fr' ? "Installer l'application MindPrint" : currentLanguage === 'de' ? "MindPrint App installieren" : currentLanguage === 'ru' ? "Установить MindPrint" : currentLanguage === 'tr' ? "MindPrint Uygulamasını Yükle" : "Install MindPrint App"}
         </button>
       )}
 
