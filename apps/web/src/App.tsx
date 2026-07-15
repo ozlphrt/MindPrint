@@ -490,8 +490,11 @@ export default function App() {
   const renderShareModal = () => {
     if (!showShareModal) return null;
 
-    const feedbackUrl = `https://ozlphrt.github.io/MindPrint/?feedbackFor=${encodeURIComponent(registeredUser || 'Guest_' + deviceId.slice(0, 6))}`;
-    const appUrl = "https://ozlphrt.github.io/MindPrint/";
+    const currentBase = typeof window !== 'undefined' 
+      ? `${window.location.protocol}//${window.location.host}${window.location.pathname}`
+      : 'https://ozlphrt.github.io/MindPrint/';
+    const feedbackUrl = `${currentBase}?feedbackFor=${encodeURIComponent(registeredUser || 'Guest_' + deviceId.slice(0, 6))}`;
+    const appUrl = currentBase;
     const activeUrl = shareTab === 'feedback' ? feedbackUrl : appUrl;
 
     const trTitle = shareTab === 'feedback' ? "Geri Bildirim Topla" : "Uygulamayı Paylaş";
