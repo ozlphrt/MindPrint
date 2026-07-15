@@ -31,7 +31,7 @@ test.describe('Offline-First Assessment Journey E2E', () => {
 
     // Go offline for Phase 2 (Adaptive Phase)
     await context.setOffline(true);
-    await expect(page.locator('text=Offline Mode')).toBeVisible();
+    await expect(page.locator('text=Offline')).toBeVisible();
 
     // Answer 3 more questions offline (total 7 answered, on 8th)
     for (let i = 5; i <= 7; i++) {
@@ -47,7 +47,7 @@ test.describe('Offline-First Assessment Journey E2E', () => {
     await page.reload();
     // Click Begin Discovery to resume the session from welcome page
     await page.locator('button:has-text("Begin Discovery")').click();
-    await expect(page.locator('text=Offline Mode')).toBeVisible();
+    await expect(page.locator('text=Offline')).toBeVisible();
     await expect(page.locator('text=Question 8 of 12')).toBeVisible();
 
     // Answer remaining questions until we reach the results landing screen

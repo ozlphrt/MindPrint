@@ -282,6 +282,7 @@ export default function App() {
   const [loginPassword, setLoginPassword] = useState('');
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
+  const [showShareModal, setShowShareModal] = useState(false);
 
   useEffect(() => {
     if (resultsTab === 'history' && registeredUser) {
@@ -293,6 +294,12 @@ export default function App() {
         .catch(err => console.error('[History] Fetch failed:', err));
     }
   }, [resultsTab, registeredUser]);
+
+  const handleLogout = () => {
+    localStorage.removeItem('mindprint_username');
+    setRegisteredUser(null);
+    window.location.reload();
+  };
 
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -559,7 +566,11 @@ export default function App() {
         {/* Language switcher & Signed in status */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', position: 'relative' }}>
           {registeredUser ? (
-            <span style={{ fontSize: '0.8rem', color: 'var(--success)', fontWeight: 600 }}>
+            <span 
+              onClick={handleLogout}
+              title={currentLanguage === 'tr' ? "Çıkış Yap" : "Log Out"}
+              style={{ fontSize: '0.8rem', color: 'var(--success)', fontWeight: 600, cursor: 'pointer' }}
+            >
               👤 {registeredUser}
             </span>
           ) : (
@@ -692,13 +703,22 @@ export default function App() {
           {t.beginBtn}
         </button>
 
-        <div style={{ fontSize: '0.8rem' }}>
-          <span style={{ color: 'var(--text-muted)' }}>{t.returningUser}</span>
+        <div style={{ fontSize: '0.8rem', display: 'flex', justifyContent: 'center', gap: '12px', flexWrap: 'wrap' }}>
+          <div>
+            <span style={{ color: 'var(--text-muted)' }}>{t.returningUser}</span>
+            <span 
+              onClick={() => setShowLoginModal(true)} 
+              style={{ color: 'var(--accent-primary)', cursor: 'pointer', fontWeight: 600, textDecoration: 'underline' }}
+            >
+              {t.loginRestore}
+            </span>
+          </div>
+          <span style={{ color: 'var(--text-muted)' }}>•</span>
           <span 
-            onClick={() => setShowLoginModal(true)} 
+            onClick={() => setShowShareModal(true)} 
             style={{ color: 'var(--accent-primary)', cursor: 'pointer', fontWeight: 600, textDecoration: 'underline' }}
           >
-            {t.loginRestore}
+            {currentLanguage === 'tr' ? "Paylaş" : "Share"}
           </span>
         </div>
 
@@ -758,13 +778,38 @@ export default function App() {
     const t = TRANSLATIONS[currentLanguage] || TRANSLATIONS.en;
     return (
       <div className="glass-panel" style={{ maxWidth: '600px', margin: '40px auto', padding: '30px' }}>
-        {registeredUser && (
-          <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '15px' }}>
-            <span style={{ fontSize: '0.82rem', color: 'var(--success)', fontWeight: 600, background: 'rgba(46, 204, 113, 0.1)', padding: '4px 8px', borderRadius: '12px', border: '1px solid rgba(46, 204, 113, 0.2)' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
+          <button
+            onClick={() => setShowShareModal(true)}
+            style={{ 
+              fontSize: '0.8rem', 
+              background: 'rgba(207, 159, 61, 0.1)', 
+              color: 'var(--accent-primary)', 
+              border: '1px solid rgba(207, 159, 61, 0.25)', 
+              borderRadius: '12px', 
+              padding: '4px 10px', 
+              fontWeight: 600, 
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+              outline: 'none'
+            }}
+          >
+            🔗 {currentLanguage === 'tr' ? "Paylaş" : "Share"}
+          </button>
+          {registeredUser ? (
+            <span 
+              onClick={handleLogout}
+              title={currentLanguage === 'tr' ? "Çıkış Yap" : "Log Out"}
+              style={{ fontSize: '0.82rem', color: 'var(--success)', fontWeight: 600, background: 'rgba(46, 204, 113, 0.1)', padding: '4px 8px', borderRadius: '12px', border: '1px solid rgba(46, 204, 113, 0.2)', cursor: 'pointer' }}
+            >
               👤 {registeredUser}
             </span>
-          </div>
-        )}
+          ) : (
+            <div />
+          )}
+        </div>
         <div style={{ textAlign: 'center', marginBottom: '30px' }}>
           <img src="icon-512.png" alt="MindPrint Logo" style={{ width: '80px', height: '80px', borderRadius: '16px', marginBottom: '15px' }} />
           <h1 style={{ fontSize: '2rem', background: 'var(--accent-gradient)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: '8px' }}>
@@ -1261,7 +1306,11 @@ export default function App() {
           </span>
           <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             {registeredUser && (
-              <span style={{ color: 'var(--success)', fontWeight: 600, borderRight: '1px solid rgba(255,255,255,0.1)', paddingRight: '8px', fontSize: '0.8rem' }}>
+              <span 
+                onClick={handleLogout}
+                title={currentLanguage === 'tr' ? "Çıkış Yap" : "Log Out"}
+                style={{ color: 'var(--success)', fontWeight: 600, borderRight: '1px solid rgba(255,255,255,0.1)', paddingRight: '8px', fontSize: '0.8rem', cursor: 'pointer' }}
+              >
                 👤 {registeredUser}
               </span>
             )}
@@ -1430,6 +1479,34 @@ export default function App() {
                 <button className="btn btn-primary" type="submit" style={{ flex: 1 }}>Log In</button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+      {showShareModal && (
+        <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.85)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 3000 }}>
+          <div style={{ background: '#161616', border: '1px solid var(--accent-primary)', borderRadius: '12px', padding: '24px', maxWidth: '320px', width: '90%', textAlign: 'center', boxShadow: 'var(--shadow-glow)' }}>
+            <h3 style={{ color: '#fff', marginBottom: '6px', fontSize: '1.2rem' }}>
+              {currentLanguage === 'tr' ? "Uygulamayı Paylaş" : "Share MindPrint"}
+            </h3>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.78rem', marginBottom: '16px', lineHeight: 1.3 }}>
+              {currentLanguage === 'tr' ? "Cihazlar arasında anında geçiş yapmak için bu QR kodunu taratın." : "Scan this QR code to quickly open this app on another device."}
+            </p>
+            
+            <div style={{ background: '#fff', padding: '12px', borderRadius: '8px', display: 'inline-block', marginBottom: '16px' }}>
+              <img 
+                src={`https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(window.location.origin)}`} 
+                alt="QR Code" 
+                style={{ width: '160px', height: '160px', display: 'block' }} 
+              />
+            </div>
+
+            <button
+              className="btn btn-secondary"
+              style={{ width: '100%', padding: '10px' }}
+              onClick={() => setShowShareModal(false)}
+            >
+              {currentLanguage === 'tr' ? "Kapat" : "Close"}
+            </button>
           </div>
         </div>
       )}
