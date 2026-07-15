@@ -1198,7 +1198,11 @@ export default function App() {
               await db.responses.clear();
               await db.localResults.clear();
               await db.syncOperations.clear();
+              const simUsers = localStorage.getItem('mindprint_simulated_users');
               localStorage.clear();
+              if (simUsers) {
+                localStorage.setItem('mindprint_simulated_users', simUsers);
+              }
               setOnboardingStep(-2);
               setLegalConsentChecked(false);
               setRegisteredUser(null);
@@ -1269,7 +1273,11 @@ export default function App() {
                 await db.journeySessions.clear();
                 await db.responses.clear();
                 await db.localResults.clear();
+                const simUsers = localStorage.getItem('mindprint_simulated_users');
                 localStorage.clear();
+                if (simUsers) {
+                  localStorage.setItem('mindprint_simulated_users', simUsers);
+                }
                 setOnboardingStep(-2);
                 window.location.reload();
               }}
