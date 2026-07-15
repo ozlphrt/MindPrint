@@ -823,6 +823,7 @@ export default function App() {
 
   if (onboardingStep === -2) {
     const t = TRANSLATIONS[currentLanguage] || TRANSLATIONS.en;
+    const isFeedbackInvitation = typeof window !== 'undefined' && !!new URLSearchParams(window.location.search).get('feedbackFor');
     const languages = [
       { code: 'en', flag: 'us', label: 'English' },
       { code: 'fr', flag: 'fr', label: 'Français' },
@@ -1045,7 +1046,7 @@ export default function App() {
           </div>
         </div>
 
-        {hasCompletedSessions && (
+        {hasCompletedSessions && !isFeedbackInvitation && (
           <button 
             className="btn btn-secondary" 
             style={{ 
@@ -1089,37 +1090,38 @@ export default function App() {
           {t.beginBtn}
         </button>
 
-        <div style={{ fontSize: '0.8rem', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-          {!registeredUser && (
-            <>
-              <div>
-                <span style={{ color: 'var(--text-muted)' }}>{t.returningUser}</span>
-                <span 
-                  onClick={() => setShowLoginModal(true)} 
-                  style={{ color: 'var(--accent-primary)', cursor: 'pointer', fontWeight: 600, textDecoration: 'underline' }}
-                >
-                  {t.loginRestore}
-                </span>
-              </div>
-              <span style={{ color: 'var(--text-muted)' }}>•</span>
-            </>
-          )}
-          <span 
-            onClick={() => setShowShareModal(true)} 
-            title={currentLanguage === 'tr' ? "Paylaş" : "Share"}
-            style={{ 
-              color: 'var(--accent-primary)', 
-              cursor: 'pointer', 
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: '6px',
-              borderRadius: '6px',
-              background: 'rgba(207, 159, 61, 0.1)',
-              border: '1px solid rgba(207, 159, 61, 0.2)',
-              transition: 'background 0.2s ease, transform 0.1s ease'
-            }}
-          >
+        {!isFeedbackInvitation && (
+          <div style={{ fontSize: '0.8rem', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+            {!registeredUser && (
+              <>
+                <div>
+                  <span style={{ color: 'var(--text-muted)' }}>{t.returningUser}</span>
+                  <span 
+                    onClick={() => setShowLoginModal(true)} 
+                    style={{ color: 'var(--accent-primary)', cursor: 'pointer', fontWeight: 600, textDecoration: 'underline' }}
+                  >
+                    {t.loginRestore}
+                  </span>
+                </div>
+                <span style={{ color: 'var(--text-muted)' }}>•</span>
+              </>
+            )}
+            <span 
+              onClick={() => setShowShareModal(true)} 
+              title={currentLanguage === 'tr' ? "Paylaş" : "Share"}
+              style={{ 
+                color: 'var(--accent-primary)', 
+                cursor: 'pointer', 
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '6px',
+                borderRadius: '6px',
+                background: 'rgba(207, 159, 61, 0.1)',
+                border: '1px solid rgba(207, 159, 61, 0.2)',
+                transition: 'background 0.2s ease, transform 0.1s ease'
+              }}
+            >
             <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" style={{ display: 'block' }}>
               <circle cx="18" cy="5" r="3" fill="currentColor" />
               <circle cx="6" cy="12" r="3" fill="currentColor" />
@@ -1129,6 +1131,7 @@ export default function App() {
             </svg>
           </span>
         </div>
+      )}
 
         {showLoginModal && (
           <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2000 }}>

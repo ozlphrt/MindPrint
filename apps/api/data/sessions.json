@@ -1830,5 +1830,80 @@
     },
     "deviceId": "5f81f51c-719d-403f-8570-ebb387ab2414",
     "syncStatus": "pending"
+  },
+  "882d39fc-317e-44a3-8c05-2b599dbc3ed4": {
+    "id": "882d39fc-317e-44a3-8c05-2b599dbc3ed4",
+    "journeyId": "how-others-experience-me",
+    "journeyVersion": "1.0.0",
+    "status": "in_progress",
+    "currentQuestionId": "q-p-385",
+    "startedAt": "2026-07-15T16:12:50.239Z",
+    "updatedAt": "2026-07-15T16:12:51.247Z",
+    "completedAt": null,
+    "responseCount": 3,
+    "scoreSnapshot": {
+      "directness": {
+        "score": 33,
+        "confidence": 75,
+        "evidenceCount": 3
+      },
+      "social_energy": {
+        "score": 83,
+        "confidence": 75,
+        "evidenceCount": 3
+      },
+      "reflectiveness": {
+        "score": 0,
+        "confidence": 75,
+        "evidenceCount": 3
+      },
+      "expressiveness": {
+        "score": 82,
+        "confidence": 75,
+        "evidenceCount": 3
+      },
+      "assertiveness": {
+        "score": 49,
+        "confidence": 75,
+        "evidenceCount": 3
+      },
+      "adaptability": {
+        "score": 80,
+        "confidence": 75,
+        "evidenceCount": 3
+      },
+      "pace": {
+        "score": 80,
+        "confidence": 75,
+        "evidenceCount": 3
+      },
+      "focus_orientation": {
+        "score": 69,
+        "confidence": 75,
+        "evidenceCount": 3
+      },
+      "vulnerability": {
+        "score": 78,
+        "confidence": 75,
+        "evidenceCount": 3
+      },
+      "conflict_style": {
+        "score": 46,
+        "confidence": 75,
+        "evidenceCount": 3
+      },
+      "feedback_style": {
+        "score": 68,
+        "confidence": 75,
+        "evidenceCount": 3
+      },
+      "playfulness": {
+        "score": 76,
+        "confidence": 75,
+        "evidenceCount": 3
+      }
+    },
+    "deviceId": "e45c9619-f91d-48a0-9ab9-db8274c983cd",
+    "syncStatus": "pending"
   }
 }
