@@ -526,15 +526,15 @@ export default function App() {
     const t = TRANSLATIONS[currentLanguage] || TRANSLATIONS.en;
     return (
       <div className="glass-panel animate-float animate-fade-in" style={{ 
-        maxWidth: '520px', 
-        margin: '80px auto', 
-        padding: '45px 35px', 
+        maxWidth: '460px', 
+        margin: '15px auto', 
+        padding: '24px 28px', 
         textAlign: 'center',
         border: '1px solid rgba(207, 159, 61, 0.25)',
         boxShadow: '0 10px 40px rgba(0, 0, 0, 0.6), var(--shadow-glow)'
       }}>
         {/* Language switcher */}
-        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '15px' }}>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '8px' }}>
           <select 
             value={currentLanguage} 
             onChange={(e) => setLanguage(e.target.value as any)}
@@ -543,8 +543,8 @@ export default function App() {
               color: 'var(--accent-primary)',
               border: '1.5px solid rgba(207, 159, 61, 0.4)',
               borderRadius: '8px',
-              padding: '6px 12px',
-              fontSize: '0.85rem',
+              padding: '4px 8px',
+              fontSize: '0.8rem',
               fontWeight: 600,
               cursor: 'pointer',
               outline: 'none',
@@ -561,27 +561,27 @@ export default function App() {
 
         {/* Animated Glow Circle Container around the logo */}
         <div className="animate-glow-pulse" style={{ 
-          width: '120px', 
-          height: '120px', 
-          margin: '0 auto 28px auto', 
+          width: '75px', 
+          height: '75px', 
+          margin: '0 auto 12px auto', 
           borderRadius: '50%', 
           background: 'rgba(207, 159, 61, 0.05)',
           border: '1px solid rgba(207, 159, 61, 0.2)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          padding: '12px'
+          padding: '8px'
         }}>
-          <img src="icon-512.png" alt="MindPrint Logo" style={{ width: '80px', height: '80px', borderRadius: '16px' }} />
+          <img src="icon-512.png" alt="MindPrint Logo" style={{ width: '50px', height: '50px', borderRadius: '10px' }} />
         </div>
 
         <h1 style={{ 
-          fontSize: '2.4rem', 
+          fontSize: '1.9rem', 
           fontWeight: 800,
           background: 'var(--accent-gradient)',
           WebkitBackgroundClip: 'text',
           WebkitTextFillColor: 'transparent',
-          marginBottom: '8px',
+          marginBottom: '2px',
           letterSpacing: '-0.5px'
         }}>
           {t.welcomeTitle}
@@ -589,9 +589,9 @@ export default function App() {
         
         <p style={{ 
           color: 'var(--accent-primary)', 
-          fontSize: '1rem', 
+          fontSize: '0.85rem', 
           fontWeight: 600, 
-          marginBottom: '24px',
+          marginBottom: '10px',
           textTransform: 'uppercase',
           letterSpacing: '1px'
         }}>
@@ -600,9 +600,9 @@ export default function App() {
 
         <p style={{ 
           color: 'var(--text-secondary)', 
-          fontSize: '0.98rem', 
-          lineHeight: '1.6', 
-          marginBottom: '32px'
+          fontSize: '0.88rem', 
+          lineHeight: '1.4', 
+          marginBottom: '16px'
         }}>
           {t.welcomeDesc}
         </p>
@@ -611,17 +611,17 @@ export default function App() {
         <div style={{ 
           display: 'grid', 
           gridTemplateColumns: '1fr', 
-          gap: '12px', 
+          gap: '8px', 
           textAlign: 'left', 
-          marginBottom: '35px',
+          marginBottom: '18px',
           background: 'rgba(255, 255, 255, 0.01)',
           border: '1px solid rgba(255, 255, 255, 0.05)',
-          borderRadius: '12px',
-          padding: '18px'
+          borderRadius: '10px',
+          padding: '12px'
         }}>
-          <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-            <span style={{ color: 'var(--accent-primary)' }}>✦</span>
-            <span style={{ fontSize: '0.9rem', color: 'var(--text-primary)' }}>
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+            <span style={{ color: 'var(--accent-primary)', fontSize: '0.85rem' }}>✦</span>
+            <span style={{ fontSize: '0.8rem', color: 'var(--text-primary)' }}>
               {t.anonymous.includes(' (') ? (
                 <>
                   <strong>{t.anonymous.split(' (')[0]}</strong> ({t.anonymous.split(' (')[1]}
@@ -631,9 +631,9 @@ export default function App() {
               )}
             </span>
           </div>
-          <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-            <span style={{ color: 'var(--accent-primary)' }}>🔒</span>
-            <span style={{ fontSize: '0.9rem', color: 'var(--text-primary)' }}>
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+            <span style={{ color: 'var(--accent-primary)', fontSize: '0.85rem' }}>🔒</span>
+            <span style={{ fontSize: '0.8rem', color: 'var(--text-primary)' }}>
               {t.localFirst.includes(' (') ? (
                 <>
                   <strong>{t.localFirst.split(' (')[0]}</strong> ({t.localFirst.split(' (')[1]}
@@ -643,9 +643,9 @@ export default function App() {
               )}
             </span>
           </div>
-          <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-            <span style={{ color: 'var(--accent-primary)' }}>🔄</span>
-            <span style={{ fontSize: '0.9rem', color: 'var(--text-primary)' }}>
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+            <span style={{ color: 'var(--accent-primary)', fontSize: '0.85rem' }}>🔄</span>
+            <span style={{ fontSize: '0.8rem', color: 'var(--text-primary)' }}>
               {t.crossDevice.includes(' (') ? (
                 <>
                   <strong>{t.crossDevice.split(' (')[0]}</strong> ({t.crossDevice.split(' (')[1]}
@@ -659,7 +659,7 @@ export default function App() {
 
         <button 
           className="btn btn-primary" 
-          style={{ width: '100%', padding: '16px', fontSize: '1.1rem', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '0.5px' }} 
+          style={{ width: '100%', padding: '12px', fontSize: '1rem', marginBottom: '14px', textTransform: 'uppercase', letterSpacing: '0.5px' }} 
           onClick={() => {
             localStorage.setItem('mindprint_onboarding_completed', 'true');
             setOnboardingStep(-1);
@@ -668,7 +668,7 @@ export default function App() {
           {t.beginBtn}
         </button>
 
-        <div style={{ fontSize: '0.9rem' }}>
+        <div style={{ fontSize: '0.82rem' }}>
           <span style={{ color: 'var(--text-muted)' }}>{t.returningUser}</span>
           <span 
             onClick={() => setShowLoginModal(true)} 
