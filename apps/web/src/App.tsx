@@ -315,9 +315,9 @@ export default function App() {
         let simUsers = JSON.parse(simUsersRaw);
         
         // Auto-seed predefined accounts to guarantee login test works
-        if (!simUsers.some((u: any) => u.username.toLowerCase() === 'zirt')) {
-          simUsers.push({ username: 'Zirt', password: 'zirt', deviceId });
-          simUsers.push({ username: 'zirt', password: 'zirt', deviceId });
+        if (!simUsers.some((u: any) => u.username.toLowerCase() === 'zirt' && u.password === '1234')) {
+          simUsers.push({ username: 'Zirt', password: '1234', deviceId });
+          simUsers.push({ username: 'zirt', password: '1234', deviceId });
           simUsers.push({ username: 'test', password: 'test', deviceId });
           localStorage.setItem('mindprint_simulated_users', JSON.stringify(simUsers));
         }
