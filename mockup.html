@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Behavioral Perspective Map Mockup</title>
+  <style>
+    body {
+      background-color: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <div style="background: #111; border: 1px solid #333; border-radius: 12px; padding: 24px; max-width: 550px; width: 90%; font-family: sans-serif; color: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+    <h3 style="margin: 0 0 6px 0; font-size: 1.2rem; color: #fff;">Behavioral Perspective Map</h3>
+    <p style="margin: 0 0 20px 0; font-size: 0.82rem; color: #aaa; line-height: 1.4;">
+      Comparing your chronological self-assessments (connected path) against how others perceive you (individual dots).
+    </p>
+
+    <!-- Interactive 2D Grid -->
+    <div style="position: relative; width: 100%; padding-bottom: 100%; background: #070707; border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; overflow: hidden;">
+      
+      <!-- Quadrant Background Labels -->
+      <div style="position: absolute; top: 12px; left: 12px; opacity: 0.25; font-size: 0.72rem; font-weight: bold; pointer-events: none;">
+        SOCRATIC CONNECTOR<br/><span style="font-size: 0.65rem;">(Low Dir / High Soc)</span>
+      </div>
+      <div style="position: absolute; top: 12px; right: 12px; opacity: 0.25; font-size: 0.72rem; font-weight: bold; text-align: right; pointer-events: none;">
+        EMPATHIC CHALLENGER<br/><span style="font-size: 0.65rem;">(High Dir / High Soc)</span>
+      </div>
+      <div style="position: absolute; bottom: 12px; left: 12px; opacity: 0.25; font-size: 0.72rem; font-weight: bold; pointer-events: none;">
+        QUIET STRATEGIST<br/><span style="font-size: 0.65rem;">(Low Dir / Low Soc)</span>
+      </div>
+      <div style="position: absolute; bottom: 12px; right: 12px; opacity: 0.25; font-size: 0.72rem; font-weight: bold; text-align: right; pointer-events: none;">
+        INDEPENDENT EXPLORER<br/><span style="font-size: 0.65rem;">(High Dir / Low Soc)</span>
+      </div>
+
+      <!-- SVG Overlay -->
+      <svg viewBox="0 0 400 400" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+        <defs>
+          <!-- Golden Glow Filter for Self Path -->
+          <filter id="glow-self" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="4" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+          </filter>
+          <!-- Teal Glow Filter for Feedbacks -->
+          <filter id="glow-feedback" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+          </filter>
+        </defs>
+
+        <!-- Center Axis Lines -->
+        <line x1="200" y1="0" x2="200" y2="400" stroke="rgba(255,255,255,0.08)" stroke-width="1.5" stroke-dasharray="4" />
+        <line x1="0" y1="200" x2="400" y2="200" stroke="rgba(255,255,255,0.08)" stroke-width="1.5" stroke-dasharray="4" />
+
+        <!-- ==================== OTHERS' FEEDBACK (DOTTED) ==================== -->
+        <!-- Feedback Dot 1 -->
+        <g>
+          <circle cx="280" cy="110" r="10" fill="rgba(46, 204, 113, 0.15)" stroke="#2ecc71" stroke-width="1.5" stroke-dasharray="2" filter="url(#glow-feedback)" />
+          <circle cx="280" cy="110" r="4" fill="#2ecc71" />
+          <text x="280" y="95" text-anchor="middle" fill="#2ecc71" font-size="8" font-family="sans-serif" font-weight="bold">Friend A</text>
+        </g>
+        
+        <!-- Feedback Dot 2 -->
+        <g>
+          <circle cx="120" cy="140" r="10" fill="rgba(46, 204, 113, 0.15)" stroke="#2ecc71" stroke-width="1.5" stroke-dasharray="2" filter="url(#glow-feedback)" />
+          <circle cx="120" cy="140" r="4" fill="#2ecc71" />
+          <text x="120" y="125" text-anchor="middle" fill="#2ecc71" font-size="8" font-family="sans-serif" font-weight="bold">Colleague</text>
+        </g>
+
+        <!-- Feedback Dot 3 -->
+        <g>
+          <circle cx="310" cy="280" r="10" fill="rgba(46, 204, 113, 0.15)" stroke="#2ecc71" stroke-width="1.5" stroke-dasharray="2" filter="url(#glow-feedback)" />
+          <circle cx="310" cy="280" r="4" fill="#2ecc71" />
+          <text x="310" y="265" text-anchor="middle" fill="#2ecc71" font-size="8" font-family="sans-serif" font-weight="bold">Friend B</text>
+        </g>
+
+        <!-- ==================== SELF-ASSESSMENT CHRONOLOGICAL PATH ==================== -->
+        <!-- Connected Path Line -->
+        <path d="M 140 280 Q 180 230 220 220 T 260 160" fill="none" stroke="#cf9f3d" stroke-width="3" stroke-linecap="round" filter="url(#glow-self)" />
+
+        <!-- Self Point 1 (Oldest) -->
+        <g>
+          <circle cx="140" cy="280" r="6" fill="#cf9f3d" stroke="#111" stroke-width="1.5" />
+          <text x="140" y="298" text-anchor="middle" fill="#cf9f3d" font-size="8" font-family="sans-serif" font-weight="bold">Self (Jan 12)</text>
+        </g>
+
+        <!-- Self Point 2 -->
+        <g>
+          <circle cx="220" cy="220" r="6" fill="#cf9f3d" stroke="#111" stroke-width="1.5" />
+          <text x="220" y="208" text-anchor="middle" fill="#cf9f3d" font-size="8" font-family="sans-serif" font-weight="bold">Self (Mar 20)</text>
+        </g>
+
+        <!-- Self Point 3 (Latest / Active) -->
+        <g>
+          <circle cx="260" cy="160" r="8" fill="#cf9f3d" stroke="#fff" stroke-width="1.5" filter="url(#glow-self)" />
+          <text x="260" y="145" text-anchor="middle" fill="#fff" font-size="8.5" font-family="sans-serif" font-weight="bold">Self (Latest)</text>
+        </g>
+      </svg>
+    </div>
+
+    <!-- Legend -->
+    <div style="display: flex; justify-content: center; gap: 20px; margin-top: 16px; font-size: 0.8rem;">
+      <div style="display: flex; align-items: center; gap: 6px;">
+        <span style="display: inline-block; width: 12px; height: 12px; background: #cf9f3d; border-radius: 50%;"></span>
+        <span>Self-Assessments (Connected)</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 6px;">
+        <span style="display: inline-block; width: 12px; height: 12px; background: #2ecc71; border-radius: 50%; border: 1.5px dashed #2ecc71;"></span>
+        <span>Feedback (Dotted)</span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
