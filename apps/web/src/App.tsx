@@ -908,9 +908,21 @@ export default function App() {
           <span style={{ color: 'var(--text-muted)' }}>•</span>
           <span 
             onClick={() => setShowShareModal(true)} 
-            style={{ color: 'var(--accent-primary)', cursor: 'pointer', fontWeight: 600, textDecoration: 'underline' }}
+            title={currentLanguage === 'tr' ? "Paylaş" : "Share"}
+            style={{ 
+              color: 'var(--accent-primary)', 
+              cursor: 'pointer', 
+              fontSize: '1rem',
+              fontWeight: 600, 
+              display: 'inline-flex',
+              alignItems: 'center',
+              padding: '2px 6px',
+              borderRadius: '4px',
+              background: 'rgba(207, 159, 61, 0.1)',
+              border: '1px solid rgba(207, 159, 61, 0.2)'
+            }}
           >
-            {currentLanguage === 'tr' ? "Paylaş" : "Share"}
+            🔗
           </span>
         </div>
 
