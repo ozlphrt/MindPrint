@@ -645,6 +645,28 @@ export default function App() {
   const [showTermsModal, setShowTermsModal] = useState(false);
   const [showPrivacyModal, setShowPrivacyModal] = useState(false);
 
+  const [hasCompletedSessions, setHasCompletedSessions] = useState(false);
+  const [lastCompletedSession, setLastCompletedSession] = useState<any | null>(null);
+
+  useEffect(() => {
+    async function checkCompleted() {
+      try {
+        const completed = await db.journeySessions.where('status').equals('completed').toArray();
+        if (completed.length > 0) {
+          completed.sort((a, b) => new Date(b.completedAt || b.startedAt).getTime() - new Date(a.completedAt || a.startedAt).getTime());
+          setHasCompletedSessions(true);
+          setLastCompletedSession(completed[0]);
+        } else {
+          setHasCompletedSessions(false);
+          setLastCompletedSession(null);
+        }
+      } catch (err) {
+        console.warn('Could not check completed sessions:', err);
+      }
+    }
+    checkCompleted();
+  }, [currentSession]);
+
   const handleRegisterUpgrade = async (e: React.FormEvent) => {
     e.preventDefault();
     setUpgradeError(null);
@@ -1011,6 +1033,39 @@ export default function App() {
             </span>
           </div>
         </div>
+
+        {hasCompletedSessions && (
+          <button 
+            className="btn btn-secondary" 
+            style={{ 
+              width: '100%', 
+              padding: '12px', 
+              fontSize: '0.95rem', 
+              marginBottom: '12px', 
+              textTransform: 'uppercase', 
+              letterSpacing: '0.5px',
+              border: '1.5px solid var(--accent-primary)',
+              background: 'rgba(207, 159, 61, 0.05)',
+              color: 'var(--accent-primary)',
+              borderRadius: '8px',
+              cursor: 'pointer',
+              fontWeight: 600
+            }} 
+            onClick={async () => {
+              if (lastCompletedSession) {
+                const res = await db.localResults.get(lastCompletedSession.id);
+                if (res) {
+                  setLocalResult(res);
+                  useJourneyStore.setState({ currentSession: lastCompletedSession });
+                }
+              }
+              localStorage.setItem('mindprint_onboarding_completed', 'true');
+              setOnboardingStep(-1);
+            }}
+          >
+            {currentLanguage === 'tr' ? "Sonuçlarımı Gör" : "View Last Results"}
+          </button>
+        )}
 
         <button 
           className="btn btn-primary" 
