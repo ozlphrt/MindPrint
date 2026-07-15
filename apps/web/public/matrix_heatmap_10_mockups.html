@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>10 Matrix & Heatmap Grid Mockups</title>
+  <style>
+    :root {
+      --accent-primary: #cf9f3d;
+      --accent-gradient: linear-gradient(135deg, #cf9f3d 0%, #ffb703 100%);
+      --bg-dark: #070707;
+      --card-bg: rgba(255, 255, 255, 0.02);
+      --border-color: rgba(255, 255, 255, 0.05);
+      --text-main: #ffffff;
+      --text-muted: #777777;
+    }
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin: 0;
+      padding: 40px 20px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 28px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .option-card {
+      background: #111;
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .badge {
+      display: inline-block;
+      align-self: flex-start;
+      background: rgba(207, 159, 61, 0.15);
+      color: var(--accent-primary);
+      border: 1px solid rgba(207, 159, 61, 0.3);
+      padding: 3px 8px;
+      border-radius: 20px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+    .map-container {
+      position: relative;
+      width: 100%;
+      padding-bottom: 100%;
+      background: #0a0a0a;
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+    .quad-label {
+      position: absolute;
+      font-size: 0.55rem;
+      font-weight: bold;
+      opacity: 0.3;
+      pointer-events: none;
+      color: #fff;
+    }
+    svg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div style="max-width: 1200px; margin: 0 auto 30px auto; text-align: center;">
+    <h1 style="background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 2.2rem; margin: 0 0 10px 0;">10 Matrix & Heatmap Grid Mockups</h1>
+    <p style="color: #aaa; margin: 0; font-size: 0.95rem;">Exploring creative visual layouts to display behavioral perspective maps and density distributions.</p>
+  </div>
+
+  <div class="grid">
+    <!-- Var 1: Classic Radial Pockets -->
+    <div class="option-card">
+      <div>
+        <span class="badge">Var 1: Soft Heatmap Pockets</span>
+        <div class="map-container">
+          <svg viewBox="0 0 400 400">
+            <defs>
+              <radialGradient id="h1" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#cf9f3d" stop-opacity="0.2"/>
+                <stop offset="100%" stop-color="transparent" stop-opacity="0"/>
+              </radialGradient>
+              <radialGradient id="h2" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#2ecc71" stop-opacity="0.2"/>
+                <stop offset="100%" stop-color="transparent" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+            <circle cx="260" cy="160" r="70" fill="url(#h1)" />
+            <circle cx="140" cy="180" r="70" fill="url(#h2)" />
+            <line x1="200" y1="0" x2="200" y2="400" stroke="rgba(255,255,255,0.06)" stroke-dasharray="4"/>
+            <line x1="0" y1="200" x2="400" y2="200" stroke="rgba(255,255,255,0.06)" stroke-dasharray="4"/>
+            <path d="M 140 280 L 220 220 L 260 160" fill="none" stroke="#cf9f3d" stroke-width="3" />
+            <circle cx="260" cy="160" r="6" fill="#cf9f3d" />
+            <circle cx="140" cy="180" r="6" fill="#2ecc71" />
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Var 2: Neon Radar Rings -->
+    <div class="option-card">
+      <div>
+        <span class="badge">Var 2: Concentric Radar Targets</span>
+        <div class="map-container" style="background: #040804;">
+          <svg viewBox="0 0 400 400">
+            <circle cx="200" cy="200" r="180" fill="none" stroke="rgba(46, 204, 113, 0.08)" stroke-width="1.5" />
+            <circle cx="200" cy="200" r="120" fill="none" stroke="rgba(46, 204, 113, 0.12)" stroke-width="1.5" />
+            <circle cx="200" cy="200" r="60" fill="none" stroke="rgba(46, 204, 113, 0.16)" stroke-width="1.5" />
+            <line x1="200" y1="0" x2="200" y2="400" stroke="rgba(46, 204, 113, 0.15)"/>
+            <line x1="0" y1="200" x2="400" y2="200" stroke="rgba(46, 204, 113, 0.15)"/>
+            <path d="M 140 280 L 220 220 L 260 160" fill="none" stroke="#cf9f3d" stroke-width="2" stroke-dasharray="2" />
+            <circle cx="260" cy="160" r="5" fill="#ffb703" />
+            <circle cx="140" cy="180" r="5" fill="#2ecc71" />
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Var 3: Glassmorphic Neon Blur -->
+    <div class="option-card">
+      <div>
+        <span class="badge">Var 3: Glassmorphic Orb Glow</span>
+        <div class="map-container" style="background: #000;">
+          <div style="position: absolute; width: 120px; height: 120px; background: rgba(0, 150, 255, 0.15); border-radius: 50%; filter: blur(35px); left: 160px; top: 100px;"></div>
+          <div style="position: absolute; width: 120px; height: 120px; background: rgba(180, 0, 255, 0.15); border-radius: 50%; filter: blur(35px); left: 80px; top: 140px;"></div>
+          <svg viewBox="0 0 400 400">
+            <line x1="200" y1="0" x2="200" y2="400" stroke="rgba(255,255,255,0.06)" />
+            <line x1="0" y1="200" x2="400" y2="200" stroke="rgba(255,255,255,0.06)" />
+            <path d="M 140 280 L 220 220 L 260 160" fill="none" stroke="#fff" stroke-width="2" />
+            <circle cx="260" cy="160" r="6" fill="#fff" />
+            <circle cx="140" cy="180" r="6" fill="rgba(0, 150, 255, 0.8)" />
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Var 4: Topographical Contour Lines -->
+    <div class="option-card">
+      <div>
+        <span class="badge">Var 4: Topo Contour Lines</span>
+        <div class="map-container">
+          <svg viewBox="0 0 400 400">
+            <!-- Heat contours around (260, 160) -->
+            <circle cx="260" cy="160" r="50" fill="none" stroke="rgba(207,159,61,0.12)" stroke-width="1.5"/>
+            <circle cx="260" cy="160" r="30" fill="none" stroke="rgba(207,159,61,0.18)" stroke-width="1.5"/>
+            <!-- Heat contours around (140, 180) -->
+            <circle cx="140" cy="180" r="50" fill="none" stroke="rgba(46,204,113,0.12)" stroke-width="1.5"/>
+            <circle cx="140" cy="180" r="30" fill="none" stroke="rgba(46,204,113,0.18)" stroke-width="1.5"/>
+            <line x1="200" y1="0" x2="200" y2="400" stroke="rgba(255,255,255,0.05)" />
+            <line x1="0" y1="200" x2="400" y2="200" stroke="rgba(255,255,255,0.05)" />
+            <path d="M 140 280 L 220 220 L 260 160" fill="none" stroke="#cf9f3d" stroke-width="2" />
+            <circle cx="260" cy="160" r="6" fill="#cf9f3d" />
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Var 5: Dark Dotted Grid Matrix -->
+    <div class="option-card">
+      <div>
+        <span class="badge">Var 5: Dot Matrix Grid</span>
+        <div class="map-container" style="background: #090909;">
+          <svg viewBox="0 0 400 400">
+            <defs>
+              <pattern id="dotpattern" width="20" height="20" patternUnits="userSpaceOnUse">
+                <circle cx="2" cy="2" r="1" fill="rgba(255,255,255,0.12)" />
+              </pattern>
+            </defs>
+            <rect width="400" height="400" fill="url(#dotpattern)" />
+            <line x1="200" y1="0" x2="200" y2="400" stroke="rgba(255,255,255,0.2)" stroke-width="1" />
+            <line x1="0" y1="200" x2="400" y2="200" stroke="rgba(255,255,255,0.2)" stroke-width="1" />
+            <path d="M 140 280 L 220 220 L 260 160" fill="none" stroke="var(--accent-primary)" stroke-width="3" />
+            <circle cx="260" cy="160" r="6" fill="var(--accent-primary)" />
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Var 6: Hexagonal Mesh Grid -->
+    <div class="option-card">
+      <div>
+        <span class="badge">Var 6: Hexagonal Mesh Grid</span>
+        <div class="map-container">
+          <svg viewBox="0 0 400 400">
+            <defs>
+              <pattern id="hexpattern" width="28" height="48" patternUnits="userSpaceOnUse" patternTransform="scale(0.8)">
+                <path d="M 0 0 L 14 8 L 28 0 M 14 8 L 14 24 L 0 32 M 14 24 L 28 32 M 0 32 L 14 40 L 28 32 M 14 40 L 14 48" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1" />
+              </pattern>
+            </defs>
+            <rect width="400" height="400" fill="url(#hexpattern)" />
+            <line x1="200" y1="0" x2="200" y2="400" stroke="rgba(255,255,255,0.08)" />
+            <line x1="0" y1="200" x2="400" y2="200" stroke="rgba(255,255,255,0.08)" />
+            <path d="M 140 280 L 220 220 L 260 160" fill="none" stroke="#cf9f3d" stroke-width="3" />
+            <circle cx="260" cy="160" r="6" fill="#cf9f3d" />
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Var 7: Dynamic Flow Vectors -->
+    <div class="option-card">
+      <div>
+        <span class="badge">Var 7: Particle Vector Flow</span>
+        <div class="map-container">
+          <svg viewBox="0 0 400 400">
+            <!-- Flow field background lines -->
+            <path d="M 100 100 Q 150 120 200 200 T 300 300" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1.5"/>
+            <path d="M 80 120 Q 130 140 180 220 T 280 320" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1.5"/>
+            <line x1="200" y1="0" x2="200" y2="400" stroke="rgba(255,255,255,0.05)" />
+            <line x1="0" y1="200" x2="400" y2="200" stroke="rgba(255,255,255,0.05)" />
+            <path d="M 140 280 L 220 220 L 260 160" fill="none" stroke="#cf9f3d" stroke-width="3" />
+            <circle cx="260" cy="160" r="6" fill="#cf9f3d" />
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Var 8: Split Glass Panel Quadrants -->
+    <div class="option-card">
+      <div>
+        <span class="badge">Var 8: Glass Panel Quadrants</span>
+        <div class="map-container" style="background: #000;">
+          <!-- Top Left Panel -->
+          <div style="position: absolute; top: 0; left: 0; width: 50%; height: 50%; background: rgba(46,204,113,0.02); border-right: 1px solid rgba(255,255,255,0.03); border-bottom: 1px solid rgba(255,255,255,0.03);"></div>
+          <!-- Top Right Panel -->
+          <div style="position: absolute; top: 0; right: 0; width: 50%; height: 50%; background: rgba(231,76,60,0.02); border-bottom: 1px solid rgba(255,255,255,0.03);"></div>
+          <!-- Bottom Left Panel -->
+          <div style="position: absolute; bottom: 0; left: 0; width: 50%; height: 50%; background: rgba(155,89,182,0.02); border-right: 1px solid rgba(255,255,255,0.03);"></div>
+          <!-- Bottom Right Panel -->
+          <div style="position: absolute; bottom: 0; right: 0; width: 50%; height: 50%; background: rgba(52,152,219,0.02);"></div>
+          <svg viewBox="0 0 400 400">
+            <line x1="200" y1="0" x2="200" y2="400" stroke="rgba(255,255,255,0.08)" />
+            <line x1="0" y1="200" x2="400" y2="200" stroke="rgba(255,255,255,0.08)" />
+            <path d="M 140 280 L 220 220 L 260 160" fill="none" stroke="#cf9f3d" stroke-width="3" />
+            <circle cx="260" cy="160" r="6" fill="#cf9f3d" />
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Var 9: Holographic HUD Display -->
+    <div class="option-card">
+      <div>
+        <span class="badge">Var 9: Holographic HUD</span>
+        <div class="map-container" style="background: #02050b; border: 1.5px solid rgba(0, 180, 255, 0.25);">
+          <svg viewBox="0 0 400 400">
+            <line x1="200" y1="0" x2="200" y2="400" stroke="rgba(0,180,255,0.3)" />
+            <line x1="0" y1="200" x2="400" y2="200" stroke="rgba(0,180,255,0.3)" />
+            <!-- Crosshairs around points -->
+            <path d="M 250 160 L 270 160 M 260 150 L 260 170" stroke="rgba(0,180,255,0.8)" stroke-width="1.5" />
+            <circle cx="260" cy="160" r="12" fill="none" stroke="rgba(0,180,255,0.5)" stroke-width="1" stroke-dasharray="2" />
+            <path d="M 140 280 L 220 220 L 260 160" fill="none" stroke="rgba(0,180,255,0.8)" stroke-width="2" />
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Var 10: Scientific Density Surface -->
+    <div class="option-card">
+      <div>
+        <span class="badge">Var 10: Smooth Density Surface</span>
+        <div class="map-container" style="background: radial-gradient(circle at 65% 40%, rgba(207,159,61,0.2) 0%, rgba(46,204,113,0.15) 30%, #000 70%);">
+          <svg viewBox="0 0 400 400">
+            <line x1="200" y1="0" x2="200" y2="400" stroke="rgba(255,255,255,0.06)" />
+            <line x1="0" y1="200" x2="400" y2="200" stroke="rgba(255,255,255,0.06)" />
+            <path d="M 140 280 L 220 220 L 260 160" fill="none" stroke="#fff" stroke-width="2.5" />
+            <circle cx="260" cy="160" r="6" fill="#fff" />
+            <circle cx="140" cy="180" r="6" fill="#fff" />
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

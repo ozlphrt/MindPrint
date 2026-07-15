@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unified Dashboard with Isometric Map Mockup</title>
+  <style>
+    :root {
+      --accent-primary: #cf9f3d;
+      --accent-gradient: linear-gradient(135deg, #cf9f3d 0%, #ffb703 100%);
+      --bg-dark: #070707;
+      --card-bg: rgba(255, 255, 255, 0.02);
+      --border-color: rgba(255, 255, 255, 0.05);
+      --text-main: #ffffff;
+      --text-muted: #888888;
+      --success: #2ecc71;
+    }
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin: 0;
+      padding: 40px 20px;
+      display: flex;
+      justify-content: center;
+    }
+    .dashboard {
+      max-width: 1000px;
+      width: 100%;
+      background: #111;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 20px;
+      padding: 32px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.8);
+    }
+    .header-main {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    h1 {
+      margin: 0 0 8px 0;
+      font-size: 2.2rem;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px;
+    }
+    .layout-cols {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 32px;
+    }
+    @media (max-width: 768px) {
+      .layout-cols {
+        grid-template-columns: 1fr;
+      }
+    }
+    .section-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin: 0 0 6px 0;
+      color: #fff;
+    }
+    .section-desc {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin: 0 0 20px 0;
+      line-height: 1.4;
+    }
+
+    /* Left: 3D Isometric Map CSS */
+    .map-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 24px;
+      position: relative;
+    }
+    .isometric-stage {
+      position: relative;
+      width: 100%;
+      padding-bottom: 90%;
+      background: #090909;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.03);
+      overflow: hidden;
+    }
+
+    /* Right: Refined Sliders CSS */
+    .sliders-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 24px;
+    }
+    .dimension-card {
+      background: rgba(255,255,255,0.01);
+      border: 1px solid rgba(255,255,255,0.04);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 12px;
+      transition: border-color 0.2s ease, transform 0.2s ease;
+    }
+    .dimension-card:hover {
+      border-color: rgba(207, 159, 61, 0.3);
+      transform: translateY(-2px);
+    }
+    .dim-title {
+      font-size: 0.88rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    .slider-track {
+      position: relative;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 2px;
+      margin: 18px 0 8px 0;
+    }
+    .center-tick {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 2px;
+      height: 10px;
+      background: rgba(255,255,255,0.4);
+      transform: translate(-50%, -50%);
+      z-index: 1;
+    }
+    .slider-fill {
+      position: absolute;
+      top: 0;
+      height: 100%;
+      background: var(--accent-primary);
+      border-radius: 2px;
+    }
+    .slider-thumb-pill {
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      background: var(--accent-primary);
+      color: #000;
+      box-shadow: 0 0 12px var(--accent-primary);
+      border: 1.5px solid #fff;
+      border-radius: 20px;
+      padding: 2px 8px;
+      font-size: 0.68rem;
+      font-weight: bold;
+      z-index: 2;
+    }
+    .poles {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.72rem;
+      margin-top: 4px;
+    }
+    .pole-active {
+      font-weight: bold;
+      color: var(--accent-primary);
+    }
+    .pole-inactive {
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard">
+    <div class="header-main">
+      <h1>Behavioral Perspective Dashboard</h1>
+      <p style="color: #aaa; margin: 0; font-size: 0.95rem;">Premium visual mockup combining 3D Isometric grid towers with refined midpoint spectrum lines.</p>
+    </div>
+
+    <div class="layout-cols">
+      <!-- Left Column: 3D Map -->
+      <div class="map-card">
+        <h3 class="section-title">Behavioral Perspective Map (3D)</h3>
+        <p class="section-desc">Comparing your chronological self-assessments (gold towers) against how others perceive you (green towers) in isometric 3D space.</p>
+        
+        <div class="isometric-stage">
+          <svg viewBox="0 0 400 360">
+            <!-- Grid Axis plane -->
+            <path d="M 200 60 L 360 160 L 200 260 L 40 160 Z" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1.5" />
+            <path d="M 200 60 L 200 260" stroke="rgba(255,255,255,0.03)" stroke-dasharray="3"/>
+            <path d="M 40 160 L 360 160" stroke="rgba(255,255,255,0.03)" stroke-dasharray="3"/>
+
+            <!-- Labels on plane -->
+            <text x="200" y="45" text-anchor="middle" fill="var(--text-muted)" font-size="8" font-weight="bold">HIGH SOCIAL ENERGY</text>
+            <text x="200" y="275" text-anchor="middle" fill="var(--text-muted)" font-size="8" font-weight="bold">LOW SOCIAL ENERGY</text>
+            <text x="30" y="163" text-anchor="end" fill="var(--text-muted)" font-size="8" font-weight="bold">INDIRECT</text>
+            <text x="370" y="163" text-anchor="start" fill="var(--text-muted)" font-size="8" font-weight="bold">DIRECT</text>
+
+            <!-- ==================== 3D TOWERS ==================== -->
+
+            <!-- Quadrant 1: Socratic Connector (Low Dir / High Soc) -->
+            <!-- Self (Gold) Tower - Height: 50 -->
+            <g transform="translate(130, 110)">
+              <polygon points="0,0 -12,-8 0,-16 12,-8" fill="#cf9f3d" opacity="0.8"/>
+              <polygon points="-12,-8 0,0 0,50 -12,42" fill="#a67c1e" />
+              <polygon points="0,0 12,-8 12,42 0,50" fill="#8c6412" />
+              <text x="0" y="-22" text-anchor="middle" fill="#cf9f3d" font-size="8" font-weight="bold">Self (1x)</text>
+            </g>
+            <!-- Feedback (Green) Tower - Height: 80 -->
+            <g transform="translate(160, 130)">
+              <polygon points="0,0 -12,-8 0,-16 12,-8" fill="#2ecc71" opacity="0.8"/>
+              <polygon points="-12,-8 0,0 0,80 -12,72" fill="#27ae60" />
+              <polygon points="0,0 12,-8 12,72 0,80" fill="#16a085" />
+              <text x="0" y="-22" text-anchor="middle" fill="#2ecc71" font-size="8" font-weight="bold">Feedback (3x)</text>
+            </g>
+
+            <!-- Quadrant 2: Empathic Challenger (High Dir / High Soc) -->
+            <!-- Feedback (Green) Tower - Height: 40 -->
+            <g transform="translate(260, 120)">
+              <polygon points="0,0 -12,-8 0,-16 12,-8" fill="#2ecc71" opacity="0.8"/>
+              <polygon points="-12,-8 0,0 0,40 -12,32" fill="#27ae60" />
+              <polygon points="0,0 12,-8 12,32 0,40" fill="#16a085" />
+              <text x="0" y="-22" text-anchor="middle" fill="#2ecc71" font-size="8" font-weight="bold">Feedback (1x)</text>
+            </g>
+
+            <!-- Legend inside stage -->
+            <g transform="translate(20, 320)">
+              <circle cx="10" cy="10" r="5" fill="var(--accent-primary)"/>
+              <text x="22" y="13" fill="var(--text-muted)" font-size="8" font-weight="bold">SELF ASSESSMENTS</text>
+              <circle cx="150" cy="10" r="5" fill="var(--success)"/>
+              <text x="162" y="13" fill="var(--text-muted)" font-size="8" font-weight="bold">PEER FEEDBACKS</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Right Column: Sliders -->
+      <div class="sliders-card">
+        <h3 class="section-title">Profile Dimensions</h3>
+        <p class="section-desc">Details of your alignment across key dimensions, showing variance from the 50% midpoint.</p>
+
+        <!-- Slider 1 -->
+        <div class="dimension-card">
+          <div class="dim-title">Directness</div>
+          <div class="slider-track">
+            <div class="center-tick"></div>
+            <!-- Flows from 50% to 68% -->
+            <div class="slider-fill" style="left: 50%; width: 18%;"></div>
+            <div class="slider-thumb-pill" style="left: 68%;">68%</div>
+          </div>
+          <div class="poles">
+            <span class="pole-inactive">Diplomatic & Indirect</span>
+            <span class="pole-active">Frank & Direct</span>
+          </div>
+        </div>
+
+        <!-- Slider 2 -->
+        <div class="dimension-card">
+          <div class="dim-title">Social Energy</div>
+          <div class="slider-track">
+            <div class="center-tick"></div>
+            <!-- Flows from 50% to 75% -->
+            <div class="slider-fill" style="left: 50%; width: 25%;"></div>
+            <div class="slider-thumb-pill" style="left: 75%;">75%</div>
+          </div>
+          <div class="poles">
+            <span class="pole-inactive">Reserved & Introspective</span>
+            <span class="pole-active">Outgoing & Expressive</span>
+          </div>
+        </div>
+
+        <!-- Slider 3 -->
+        <div class="dimension-card">
+          <div class="dim-title">Reflectiveness</div>
+          <div class="slider-track">
+            <div class="center-tick"></div>
+            <!-- Flows from 17% to 50% (Leftward) -->
+            <div class="slider-fill" style="left: 17%; width: 33%;"></div>
+            <div class="slider-thumb-pill" style="left: 17%;">17%</div>
+          </div>
+          <div class="poles">
+            <span class="pole-active">Action & Spontaneous</span>
+            <span class="pole-inactive">Deliberate & Analytical</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

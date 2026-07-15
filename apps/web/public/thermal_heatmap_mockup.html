@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thermal Density Heatmap Mockup</title>
+  <style>
+    body {
+      background-color: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      font-family: sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <div style="background: #111; border: 1px solid #333; border-radius: 12px; padding: 24px; max-width: 500px; width: 90%; color: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+    <h3 style="margin: 0 0 6px 0; font-size: 1.2rem;">Thermal Perspective Map</h3>
+    <p style="margin: 0 0 20px 0; font-size: 0.82rem; color: #aaa; line-height: 1.4;">
+      Visualizing coordinate densities using a geographic thermal heatmap (Red: peak, Yellow: moderate-high, Green: moderate, Blue: low).
+    </p>
+
+    <!-- Grid Container -->
+    <div style="position: relative; width: 100%; padding-bottom: 100%; background: #070707; border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; overflow: hidden;">
+      
+      <!-- Quadrant Background Labels -->
+      <div style="position: absolute; top: 12px; left: 12px; opacity: 0.2; font-size: 0.72rem; font-weight: bold; pointer-events: none;">
+        SOCRATIC CONNECTOR
+      </div>
+      <div style="position: absolute; top: 12px; right: 12px; opacity: 0.2; font-size: 0.72rem; font-weight: bold; text-align: right; pointer-events: none;">
+        EMPATHIC CHALLENGER
+      </div>
+      <div style="position: absolute; bottom: 12px; left: 12px; opacity: 0.2; font-size: 0.72rem; font-weight: bold; pointer-events: none;">
+        QUIET STRATEGIST
+      </div>
+      <div style="position: absolute; bottom: 12px; right: 12px; opacity: 0.2; font-size: 0.72rem; font-weight: bold; text-align: right; pointer-events: none;">
+        INDEPENDENT EXPLORER
+      </div>
+
+      <!-- SVG Overlay -->
+      <svg viewBox="0 0 400 400" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+        <defs>
+          <!-- Thermal Heatmap Gradient -->
+          <radialGradient id="thermal-heat" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#ff3b30" stop-opacity="0.45" /> <!-- Hot Red Core -->
+            <stop offset="25%" stop-color="#ff9500" stop-opacity="0.38" /> <!-- Orange -->
+            <stop offset="50%" stop-color="#ffcc00" stop-opacity="0.3" /> <!-- Yellow -->
+            <stop offset="75%" stop-color="#4cd964" stop-opacity="0.22" /> <!-- Green -->
+            <stop offset="90%" stop-color="#007aff" stop-opacity="0.12" /> <!-- Blue -->
+            <stop offset="100%" stop-color="#007aff" stop-opacity="0" /> <!-- Transparent edge -->
+          </radialGradient>
+
+          <!-- Blur filter to make overlapping areas compile into a smooth contour -->
+          <filter id="thermal-blur">
+            <feGaussianBlur stdDeviation="10" />
+          </filter>
+        </defs>
+
+        <!-- Center Axis Lines -->
+        <line x1="200" y1="0" x2="200" y2="400" stroke="rgba(255,255,255,0.06)" stroke-width="1.5" stroke-dasharray="4" />
+        <line x1="0" y1="200" x2="400" y2="200" stroke="rgba(255,255,255,0.06)" stroke-width="1.5" stroke-dasharray="4" />
+
+        <!-- ==================== BACKGROUND THERMAL BLURS ==================== -->
+        <g filter="url(#thermal-blur)">
+          <!-- Render overlapping blurs at coordinate hotspots -->
+          <!-- Hotspot 1 (Self coordinates) -->
+          <circle cx="220" cy="220" r="70" fill="url(#thermal-heat)" />
+          <circle cx="260" cy="160" r="70" fill="url(#thermal-heat)" />
+          
+          <!-- Hotspot 2 (Peer feedback coordinates) -->
+          <circle cx="270" cy="150" r="70" fill="url(#thermal-heat)" />
+          <circle cx="280" cy="180" r="70" fill="url(#thermal-heat)" />
+          <circle cx="140" cy="170" r="70" fill="url(#thermal-heat)" />
+        </g>
+
+        <!-- ==================== PLOTTED NODES & PATH ==================== -->
+        <!-- Chronological Self Path -->
+        <path d="M 140 280 Q 180 230 220 220 T 260 160" fill="none" stroke="#fff" stroke-width="2.5" opacity="0.8" />
+        
+        <!-- Self points -->
+        <circle cx="140" cy="280" r="6" fill="#fff" stroke="#111" stroke-width="1.5" />
+        <circle cx="220" cy="220" r="6" fill="#fff" stroke="#111" stroke-width="1.5" />
+        <circle cx="260" cy="160" r="7" fill="#fff" stroke="#cf9f3d" stroke-width="2" />
+
+        <!-- Feedback points -->
+        <circle cx="270" cy="150" r="5" fill="#2ecc71" stroke="#fff" stroke-width="1" />
+        <circle cx="280" cy="180" r="5" fill="#2ecc71" stroke="#fff" stroke-width="1" />
+        <circle cx="140" cy="170" r="5" fill="#2ecc71" stroke="#fff" stroke-width="1" />
+      </svg>
+    </div>
+
+    <!-- Legend -->
+    <div style="display: flex; justify-content: center; gap: 15px; margin-top: 16px; font-size: 0.78rem;">
+      <div style="display: flex; align-items: center; gap: 6px;">
+        <span style="display: inline-block; width: 12px; height: 12px; background: #fff; border-radius: 50%;"></span>
+        <span>Self-Assessments</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 6px;">
+        <span style="display: inline-block; width: 12px; height: 12px; background: #2ecc71; border-radius: 50%;"></span>
+        <span>Feedback</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 4px; margin-left: 10px;">
+        <span style="display: inline-block; width: 30px; height: 10px; background: linear-gradient(to right, #007aff, #4cd964, #ffcc00, #ff3b30); border-radius: 2px;"></span>
+        <span>Heat Scale</span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

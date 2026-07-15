@@ -147,26 +147,28 @@ const PersonalMap = ({ result, allSessions = [] }: { result: any; allSessions?: 
               <feGaussianBlur stdDeviation="3" result="blur" />
               <feComposite in="SourceGraphic" in2="blur" operator="over" />
             </filter>
-            {/* Heatmap gradients */}
-            <radialGradient id="heat-self" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stopColor="var(--accent-primary)" stopOpacity="0.18" />
-              <stop offset="60%" stopColor="var(--accent-primary)" stopOpacity="0.05" />
-              <stop offset="100%" stopColor="var(--accent-primary)" stopOpacity="0" />
+            {/* Geographic thermal heatmap gradient */}
+            <radialGradient id="thermal-heat" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="#ff3b30" stopOpacity="0.45" /> <!-- Hot Red Core -->
+              <stop offset="25%" stopColor="#ff9500" stopOpacity="0.38" /> <!-- Orange -->
+              <stop offset="50%" stopColor="#ffcc00" stopOpacity="0.3" /> <!-- Yellow -->
+              <stop offset="75%" stopColor="#4cd964" stopOpacity="0.22" /> <!-- Green -->
+              <stop offset="90%" stopColor="#007aff" stopOpacity="0.12" /> <!-- Blue -->
+              <stop offset="100%" stopColor="#007aff" stopOpacity="0" /> <!-- Transparent -->
             </radialGradient>
-            <radialGradient id="heat-feedback" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stopColor="#2ecc71" stopOpacity="0.18" />
-              <stop offset="60%" stopColor="#2ecc71" stopOpacity="0.05" />
-              <stop offset="100%" stopColor="#2ecc71" stopOpacity="0" />
-            </radialGradient>
+            <!-- Blurring layer to merge overlapping thermal pockets -->
+            <filter id="thermal-blur">
+              <feGaussianBlur stdDeviation="10" />
+            </filter>
           </defs>
 
-          {/* Background Heatmap Layer */}
-          <g id="heatmap-layer">
+          {/* Background Heatmap Layer with Thermal Blur */}
+          <g id="heatmap-layer" filter="url(#thermal-blur)">
             {selfPoints.map((pt, idx) => (
-              <circle key={`heat-self-${idx}`} cx={pt.cx} cy={pt.cy} r="65" fill="url(#heat-self)" />
+              <circle key={`heat-self-${idx}`} cx={pt.cx} cy={pt.cy} r="70" fill="url(#thermal-heat)" />
             ))}
             {feedbackPoints.map((pt, idx) => (
-              <circle key={`heat-feed-${idx}`} cx={pt.cx} cy={pt.cy} r="65" fill="url(#heat-feedback)" />
+              <circle key={`heat-feed-${idx}`} cx={pt.cx} cy={pt.cy} r="70" fill="url(#thermal-heat)" />
             ))}
           </g>
 
