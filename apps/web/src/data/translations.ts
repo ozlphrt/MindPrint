@@ -1019,28 +1019,28 @@ export const TRANSLATIONS: Record<Language, any> = {
   },
   tr: {
     welcomeTitle: "MindPrint",
-    welcomeSubtitle: "Başkaları sizi nasıl deneyimliyor?",
-    welcomeDesc: "İçeriden bakıldığında fark edilmesi kolay olmayan davranışsal kör noktalarınızı keşfedin. 12 adet adaptif, senaryo odaklı soru ile MindPrint sosyal varlığınızı, doğrudanlığınızı ve derin düşünme eğiliminizi haritalandırır.",
-    anonymous: "Tamamen Anonim (kişisel bilgi veya e-posta toplanmaz)",
-    localFirst: "Yerel Öncelikli Depolama (veriler cihazınızda gizli kalır)",
-    crossDevice: "Cihazlar Arası Senkronizasyon (oturumları dilediğiniz zaman geri yükleyin)",
+    welcomeSubtitle: "Çevrenizdekiler sizi nasıl algılıyor?",
+    welcomeDesc: "Kendi kendinize fark etmesi zor olan davranışsal kör noktalarınızı keşfedin. 12 adet uyarlanabilir senaryo sorusuyla MindPrint; sosyal duruşunuzu, doğrudanlığınızı ve analitik düşünme eğilimlerinizi haritalandırır.",
+    anonymous: "Tamamen Anonim (hişbir kişisel bilgi veya e-posta toplanmaz)",
+    localFirst: "Yerel Depolama (verileriniz cihazınızda gizli kalır)",
+    crossDevice: "Senkronizasyon (oturumları dilediğiniz zaman geri yükleyin)",
     beginBtn: "Keşfe Başla",
     returningUser: "Zaten kayıtlı mısınız? ",
-    loginRestore: "Verileri geri yüklemek için giriş yapın",
+    loginRestore: "Giriş yapın",
     loginTitle: "Giriş Yap",
-    loginDesc: "Değerlendirmelerinizi geri yüklemek ve eşitlemek için kullanıcı adı ve şifrenizi girin.",
+    loginDesc: "Profilinizi geri yüklemek ve senkronize etmek için kullanıcı adı ve şifrenizi girin.",
     usernamePlaceholder: "Kullanıcı Adı",
     passwordPlaceholder: "Şifre",
     cancelBtn: "İptal",
     resultsTitle: "Sizin MindPrint'iniz",
-    resultsDesc: "Sosyal ve profesyonel dinamiklerde başkaları tarafından bu şekilde algılanıyorsunuz.",
+    resultsDesc: "Sosyal ve profesyonel ilişkilerinizde çevrenize yansıttığınız izlenim.",
     primaryTitle: "Birincil Arketipler",
     secondaryTitle: "İkincil Arketipler",
-    loveTitle: "💚 Başkalarının en çok sevdiği yönleriniz",
-    dislikeTitle: "💔 Başkalarının sizi zor bulduğu yönleriniz",
-    sayTitle: "Başkaları sizin hakkınızda ne söylüyor?",
+    loveTitle: "💚 Çevrenizin en çok değer verdiği yönleriniz",
+    dislikeTitle: "💔 İletişimde zorlayıcı olabilen yönleriniz",
+    sayTitle: "Dışarıdan nasıl görünüyorsunuz?",
     dimensionsTitle: "Profil Boyutlarınız",
-    insightsTitle: "Temel Çıkarımlar",
+    insightsTitle: "Gözlemler ve İpuçları",
     upgradeTitle: "Sonuçları Kalıcı Olarak Kaydet",
     upgradeDesc: "Sonuçlarınızı güvence altına almak için bir kullanıcı adı ve şifre seçin. Gizliliğinize önem veriyoruz ve e-posta adresinizi talep etmiyoruz.",
     upgradeBtn: "Kalıcı Hesap Oluştur",
@@ -1055,32 +1055,32 @@ export const TRANSLATIONS: Record<Language, any> = {
     selectOptionMsg: "Devam etmek için cevap seçeneği/seçenekleri belirleyin",
     congratulations: "Tebrikler!",
     assessmentComplete: "Keşif yolculuğunuzu başarıyla tamamladınız.",
-    socraticExplanation: "Konuşmaları dolaylı sorularla yönlendirdiğiniz için, başkaları sizi pasif-agresif, kararsız veya fikir belirtmekte yavaş biri olarak algılayabilir. Gerçek fikrinizi sakladığınızı düşünebilirler.",
-    explorerExplanation: "Açık sözlü ve bağımsız yaklaşımınız, başkalarının sizi mesafeli, iş birliğine kapalı veya aşırı eleştirel biri olarak deneyimlemesine neden olabilir. Gruptan kendinizi soyutladığınızı hissedebilirler.",
-    strategistExplanation: "Etkileşimleri derinlemesine analiz ettiğiniz ve sessiz kaldığınız için, başkaları bu sessizliğinizi eleştirel bir yargı, onaylamama veya gruba karşı tamamen ilgisizlik olarak yanlış yorumlayabilir.",
-    challengerExplanation: "Yüksek dürüstlük ve yüksek enerjinizin birleşimi, başkalarının sizi kırıcı, çatışmacı veya ezici biri olarak deneyimlemesine yol açabilir. İyi niyetle hareket etseniz bile saldırıya uğramış hissedebilirler.",
+    socraticExplanation: "Görüşlerinizi dolaylı yollardan veya sorularla ifade etmeniz, çevreniz tarafından kararsızlık ya da net bir duruş sergilemekten kaçınma olarak yorumlanabilir.",
+    explorerExplanation: "Net ve bağımsız yaklaşımınız, çevrenizde soğuk, mesafeli veya fazla eleştirel bir imaj yaratabilir.",
+    strategistExplanation: "Sessiz ve analitik yapınız, çevrenizdekiler tarafından ilgisizlik, onaylamama veya gizli bir eleştiri olarak yanlış algılanabilir.",
+    challengerExplanation: "Açık sözlülüğünüz ve yüksek enerjiniz, iyi niyetli olsanız dahi çevrenizdekiler üzerinde baskıcı veya çatışmacı bir etki bırakabilir.",
     dimensions: {
-      directness: { name: "Doğrudanlık", lowPole: "Diplomatik & Dolaylı", highPole: "Açık & Doğrudan" },
-      social_energy: { name: "Sosyal Enerji", lowPole: "Mesafeli & İçe Dönük", highPole: "Girişken & Dışa Dönük" },
-      reflectiveness: { name: "Derin Düşünme", lowPole: "Eylem Odaklı & Spontane", highPole: "Temkinli & Analitik" },
-      expressiveness: { name: "Kendini İfade", lowPole: "Objektif & Mesafeli", highPole: "Sıcak & Samimi" },
-      assertiveness: { name: "Atılganlık", lowPole: "Alıcı & Uyumlu", highPole: "Girişken & Dominant" },
-      adaptability: { name: "Uyum Sağlama", lowPole: "İstikrarlı & Dengeli", highPole: "Esnek & Çevik" },
-      pace: { name: "Tempo", lowPole: "Temkinli & Sabırlı", highPole: "Hızlı & Aceleci" },
-      focus_orientation: { name: "Odak Noktası", lowPole: "Görev & Mantık Odaklı", highPole: "İlişki & Uyum Odaklı" },
-      vulnerability: { name: "Açık Yüreklilik", lowPole: "Stoik & Mesafeli", highPole: "Kırılgan & Açık" },
-      conflict_style: { name: "Çatışma Yönetimi", lowPole: "Uyumcu & Kaçınmacı", highPole: "Tartışmacı & Yüzleşmeci" },
-      feedback_style: { name: "Geri Bildirim Stili", lowPole: "Eleştirel & Düzeltici", highPole: "Destekleyici & Teşvik Edici" },
-      playfulness: { name: "Şakacılık", lowPole: "Ciddi & Ağırbaşlı", highPole: "Şakacı & Neşeli" }
+      directness: { name: "Doğrudanlık", lowPole: "Diplomatik", highPole: "Açık Sözlü" },
+      social_energy: { name: "Sosyal Enerji", lowPole: "İçe Dönük", highPole: "Dışa Dönük" },
+      reflectiveness: { name: "Analitik Düşünce", lowPole: "Eylem Odaklı", highPole: "Düşünsel & Planlı" },
+      expressiveness: { name: "Duygusal İfade", lowPole: "Mesafeli", highPole: "Sıcak & Samimi" },
+      assertiveness: { name: "Girişkenlik", lowPole: "Uyumlu", highPole: "Dominant" },
+      adaptability: { name: "Esneklik", lowPole: "Kararlı", highPole: "Uyum Sağlayan" },
+      pace: { name: "Tempo", lowPole: "Sakin", highPole: "Hızlı" },
+      focus_orientation: { name: "Odak Noktası", lowPole: "İş & Mantık", highPole: "İlişki & Duygu" },
+      vulnerability: { name: "Açık Yüreklilik", lowPole: "Temkinli & Kapalı", highPole: "İçten & Açık" },
+      conflict_style: { name: "Çatışma Yönetimi", lowPole: "Kaçınmacı", highPole: "Yüzleşmeci" },
+      feedback_style: { name: "Geri Bildirim", lowPole: "Geliştirici & Eleştirel", highPole: "Destekleyici" },
+      playfulness: { name: "Mizaç", lowPole: "Ciddi & Resmi", highPole: "Eğlenceli & Rahat" }
     },
     archetypes: {
       "socratic-connector": {
         name: "Sokratik Bağlayıcı",
-        description: "Derin sorular ve sıcak diplomatik varlığınızla derin bağlar kurarsınız. Doğrudan emirler yerine iş birliği ve diyaloğu tercih edersiniz."
+        description: "Sorular sorarak ve diplomatik bir yaklaşımla derin bağlar kurarsınız. Doğrudan yönlendirmeler yerine iş birliği ve diyaloğu tercih edersiniz."
       },
       "independent-explorer": {
         name: "Bağımsız Kaşif",
-        description: "Özerkliğe ve doğrudan eyleme büyük değer verirsiniz. Fikirleri bağımsızca keşfeder ve açık sözlü duruşunuzu çekinmeden paylaşırsınız."
+        description: "Özerkliğe ve eyleme değer verirsiniz. Fikirleri bağımsızca keşfeder ve açık sözlü duruşunuzu paylaşmaktan çekinmezsiniz."
       },
       "quiet-strategist": {
         name: "Sessiz Stratejist",
@@ -1088,7 +1088,7 @@ export const TRANSLATIONS: Record<Language, any> = {
       },
       "empathic-challenger": {
         name: "Empatik Meydan Okuyan",
-        description: "Yüksek dürüstlüğü yüksek sosyal etkileşimle birleştirirsiniz. Grup kararlarını gelişim amacı doğrultusunda doğrudan sorgularsınız."
+        description: "Dürüstlüğü yüksek sosyal etkileşimle birleştirirsiniz. Grup kararlarını gelişim amacı doğrultusunda doğrudan sorgularsınız."
       }
     },
     insights: {
