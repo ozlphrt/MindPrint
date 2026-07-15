@@ -208,44 +208,75 @@ export default function App() {
     setLoginError(null);
 
     try {
-      const response = await fetch('http://localhost:3000/v1/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: loginUsername, password: loginPassword, deviceId }),
-      });
+      let data;
+      let offlineSim = false;
+      try {
+        const response = await fetch('http://localhost:3000/v1/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username: loginUsername, password: loginPassword, deviceId }),
+        });
 
-      if (!response.ok) {
-        const errData = await response.json();
-        throw new Error(errData.error || 'Login failed');
+        if (!response.ok) {
+          const errData = await response.json();
+          throw new Error(errData.error || 'Login failed');
+        }
+        data = await response.json();
+      } catch (netErr: any) {
+        if (netErr.message && netErr.message.includes('Login failed')) {
+          throw netErr;
+        }
+        console.warn('Network login failed, trying local simulation:', netErr);
+        const simUsersRaw = localStorage.getItem('mindprint_simulated_users') || '[]';
+        const simUsers = JSON.parse(simUsersRaw);
+        const matched = simUsers.find((u: any) => u.username === loginUsername && u.password === loginPassword);
+        if (!matched) {
+          throw new Error('Incorrect credentials or account not found in local simulation.');
+        }
+        data = { username: loginUsername };
+        offlineSim = true;
       }
 
-      const data = await response.json();
       localStorage.setItem('mindprint_username', data.username);
       setRegisteredUser(data.username);
       setShowLoginModal(false);
 
-      // Fetch historical sessions to load into local IndexedDB
-      const sessRes = await fetch(`http://localhost:3000/v1/user/sessions?username=${data.username}`);
-      const sessData = await sessRes.json();
+      if (!offlineSim) {
+        try {
+          const sessRes = await fetch(`http://localhost:3000/v1/user/sessions?username=${data.username}`);
+          const sessData = await sessRes.json();
 
-      if (sessData.sessions && sessData.sessions.length > 0) {
-        await db.transaction('rw', [db.journeySessions, db.localResults], async () => {
-          for (const item of sessData.sessions) {
-            if (item.session) {
-              await db.journeySessions.put(item.session);
-            }
-            if (item.result) {
-              await db.localResults.put(item.result);
+          if (sessData.sessions && sessData.sessions.length > 0) {
+            await db.transaction('rw', [db.journeySessions, db.localResults], async () => {
+              for (const item of sessData.sessions) {
+                if (item.session) {
+                  await db.journeySessions.put(item.session);
+                }
+                if (item.result) {
+                  await db.localResults.put(item.result);
+                }
+              }
+            });
+
+            const mostRecent = sessData.sessions[sessData.sessions.length - 1];
+            if (mostRecent.session) {
+              useJourneyStore.setState({ currentSession: mostRecent.session });
+              if (mostRecent.result) {
+                setLocalResult(mostRecent.result);
+              }
             }
           }
-        });
-
-        // Load the most recent session's results
-        const mostRecent = sessData.sessions[sessData.sessions.length - 1];
-        if (mostRecent.session) {
-          useJourneyStore.setState({ currentSession: mostRecent.session });
-          if (mostRecent.result) {
-            setLocalResult(mostRecent.result);
+        } catch (apiErr) {
+          console.warn('Could not fetch historical sessions from API:', apiErr);
+        }
+      } else {
+        const allSessions = await db.journeySessions.toArray();
+        if (allSessions.length > 0) {
+          const mostRecentSess = allSessions[allSessions.length - 1];
+          useJourneyStore.setState({ currentSession: mostRecentSess });
+          const mostRecentResult = await db.localResults.get(mostRecentSess.id);
+          if (mostRecentResult) {
+            setLocalResult(mostRecentResult);
           }
         }
       }
@@ -268,18 +299,34 @@ export default function App() {
     setUpgradeSuccess(false);
 
     try {
-      const response = await fetch('http://localhost:3000/v1/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password, deviceId }),
-      });
+      let data;
+      try {
+        const response = await fetch('http://localhost:3000/v1/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password, deviceId }),
+        });
 
-      if (!response.ok) {
-        const errData = await response.json();
-        throw new Error(errData.error || 'Upgrade failed');
+        if (!response.ok) {
+          const errData = await response.json();
+          throw new Error(errData.error || 'Upgrade failed');
+        }
+        data = await response.json();
+      } catch (netErr: any) {
+        if (netErr.message && netErr.message.includes('Upgrade failed')) {
+          throw netErr;
+        }
+        console.warn('Network register failed, falling back to local simulation:', netErr);
+        const simUsersRaw = localStorage.getItem('mindprint_simulated_users') || '[]';
+        const simUsers = JSON.parse(simUsersRaw);
+        if (simUsers.some((u: any) => u.username === username)) {
+          throw new Error('Username already exists in local simulation');
+        }
+        simUsers.push({ username, password, deviceId });
+        localStorage.setItem('mindprint_simulated_users', JSON.stringify(simUsers));
+        data = { username };
       }
 
-      const data = await response.json();
       localStorage.setItem('mindprint_username', data.username);
       setRegisteredUser(data.username);
       setUpgradeSuccess(true);
