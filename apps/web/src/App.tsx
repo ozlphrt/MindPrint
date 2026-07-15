@@ -301,23 +301,16 @@ export default function App() {
     try {
       let data;
       let offlineSim = false;
+      let response;
+
       try {
-        const response = await fetch('http://localhost:3000/v1/auth/login', {
+        response = await fetch('http://localhost:3000/v1/auth/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ username: loginUsername, password: loginPassword, deviceId }),
         });
-
-        if (!response.ok) {
-          const errData = await response.json();
-          throw new Error(errData.error || 'Login failed');
-        }
-        data = await response.json();
       } catch (netErr: any) {
-        if (netErr.message && netErr.message.includes('Login failed')) {
-          throw netErr;
-        }
-        console.warn('Network login failed, trying local simulation:', netErr);
+        console.warn('Network login connection failed, trying local simulation:', netErr);
         const simUsersRaw = localStorage.getItem('mindprint_simulated_users') || '[]';
         const simUsers = JSON.parse(simUsersRaw);
         const matched = simUsers.find((u: any) => u.username === loginUsername && u.password === loginPassword);
@@ -326,6 +319,14 @@ export default function App() {
         }
         data = { username: loginUsername };
         offlineSim = true;
+      }
+
+      if (!offlineSim && response) {
+        if (!response.ok) {
+          const errData = await response.json();
+          throw new Error(errData.error || 'Login failed');
+        }
+        data = await response.json();
       }
 
       localStorage.setItem('mindprint_username', data.username);
@@ -389,23 +390,17 @@ export default function App() {
 
     try {
       let data;
+      let offlineSim = false;
+      let response;
+
       try {
-        const response = await fetch('http://localhost:3000/v1/auth/register', {
+        response = await fetch('http://localhost:3000/v1/auth/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ username, password, deviceId }),
         });
-
-        if (!response.ok) {
-          const errData = await response.json();
-          throw new Error(errData.error || 'Upgrade failed');
-        }
-        data = await response.json();
       } catch (netErr: any) {
-        if (netErr.message && netErr.message.includes('Upgrade failed')) {
-          throw netErr;
-        }
-        console.warn('Network register failed, falling back to local simulation:', netErr);
+        console.warn('Network register connection failed, falling back to local simulation:', netErr);
         const simUsersRaw = localStorage.getItem('mindprint_simulated_users') || '[]';
         const simUsers = JSON.parse(simUsersRaw);
         if (simUsers.some((u: any) => u.username === username)) {
@@ -414,6 +409,15 @@ export default function App() {
         simUsers.push({ username, password, deviceId });
         localStorage.setItem('mindprint_simulated_users', JSON.stringify(simUsers));
         data = { username };
+        offlineSim = true;
+      }
+
+      if (!offlineSim && response) {
+        if (!response.ok) {
+          const errData = await response.json();
+          throw new Error(errData.error || 'Upgrade failed');
+        }
+        data = await response.json();
       }
 
       localStorage.setItem('mindprint_username', data.username);
