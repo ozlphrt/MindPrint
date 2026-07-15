@@ -516,8 +516,11 @@ export default function App() {
       } catch (netErr: any) {
         console.warn('Network login connection failed, trying local simulation:', netErr);
         
-        if (loginUsername.toLowerCase() === 'zirt' && loginPassword === '1234') {
-          data = { username: 'Zirt' };
+        if (
+          (loginUsername.toLowerCase() === 'zirt' && loginPassword === '1234') ||
+          (loginUsername.toLowerCase() === 'firt' && loginPassword === '1234')
+        ) {
+          data = { username: loginUsername.toLowerCase() === 'firt' ? 'Firt' : 'Zirt' };
           offlineSim = true;
         } else {
           const simUsersRaw = localStorage.getItem('mindprint_simulated_users') || '[]';

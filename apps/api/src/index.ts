@@ -11,6 +11,8 @@ await fastify.register(cors, {
 const sessionsStore = new Map<string, any>();
 const resultsStore = new Map<string, any>();
 const usersStore = new Map<string, any>(); // username -> { password, deviceId }
+usersStore.set('Zirt', { password: '1234' });
+usersStore.set('Firt', { password: '1234' });
 
 fastify.get('/v1/health', async () => {
   return { status: 'ok', timestamp: new Date().toISOString() };
@@ -111,7 +113,8 @@ fastify.post('/v1/auth/login', async (request, reply) => {
     return reply.code(400).send({ error: 'Username and password are required' });
   }
 
-  const user = usersStore.get(username);
+  const matchedKey = Array.from(usersStore.keys()).find(k => k.toLowerCase() === username.toLowerCase());
+  const user = matchedKey ? usersStore.get(matchedKey) : null;
   if (!user || user.password !== password) {
     return reply.code(401).send({ error: 'Invalid username or password' });
   }
@@ -125,7 +128,7 @@ fastify.post('/v1/auth/login', async (request, reply) => {
 
   return reply.code(200).send({
     status: 'success',
-    username,
+    username: matchedKey || username,
     token: `mock-token-${crypto.randomUUID()}`
   });
 });
