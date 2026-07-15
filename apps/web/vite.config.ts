@@ -10,6 +10,7 @@ export default defineConfig({
       strategy: 'generateSW',
       registerType: 'prompt',
       injectRegister: 'auto',
+      includeAssets: ['favicon.ico', 'icon-192.png', 'icon-512.png', 'icon-1024.png', 'logo.svg'],
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2}'],
         runtimeCaching: [
