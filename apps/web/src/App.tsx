@@ -149,14 +149,14 @@ const PersonalMap = ({ result, allSessions = [] }: { result: any; allSessions?: 
             </filter>
             {/* Geographic thermal heatmap gradient */}
             <radialGradient id="thermal-heat" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stopColor="#ff3b30" stopOpacity="0.45" /> <!-- Hot Red Core -->
-              <stop offset="25%" stopColor="#ff9500" stopOpacity="0.38" /> <!-- Orange -->
-              <stop offset="50%" stopColor="#ffcc00" stopOpacity="0.3" /> <!-- Yellow -->
-              <stop offset="75%" stopColor="#4cd964" stopOpacity="0.22" /> <!-- Green -->
-              <stop offset="90%" stopColor="#007aff" stopOpacity="0.12" /> <!-- Blue -->
-              <stop offset="100%" stopColor="#007aff" stopOpacity="0" /> <!-- Transparent -->
+              <stop offset="0%" stopColor="#ff3b30" stopOpacity="0.45" />
+              <stop offset="25%" stopColor="#ff9500" stopOpacity="0.38" />
+              <stop offset="50%" stopColor="#ffcc00" stopOpacity="0.3" />
+              <stop offset="75%" stopColor="#4cd964" stopOpacity="0.22" />
+              <stop offset="90%" stopColor="#007aff" stopOpacity="0.12" />
+              <stop offset="100%" stopColor="#007aff" stopOpacity="0" />
             </radialGradient>
-            <!-- Blurring layer to merge overlapping thermal pockets -->
+            {/* Blurring layer to merge overlapping thermal pockets */}
             <filter id="thermal-blur">
               <feGaussianBlur stdDeviation="10" />
             </filter>
