@@ -7,6 +7,7 @@ const getApiBaseUrl = () => {
     if (/^(192\.168\.|10\.|172\.)/.test(hostname)) {
       return `http://${hostname}:3000`;
     }
+    return 'https://mindprint-api.onrender.com';
   }
   return 'http://localhost:3000';
 };
