@@ -82,6 +82,32 @@ export async function loginOnlineUser(username: string, passwordHash: string, de
   return data;
 }
 
+// 4b. Unified Login & Registration
+export async function unifiedLoginRegister(username: string, passwordHash: string, deviceId: string) {
+  const userRef = doc(firestore, 'users', username.toLowerCase());
+  const userDoc = await getDoc(userRef);
+  if (!userDoc.exists()) {
+    // Register new user
+    await setDoc(userRef, {
+      username,
+      passwordHash,
+      deviceId,
+      createdAt: new Date().toISOString()
+    });
+    return { username, isNew: true };
+  } else {
+    // Login existing user
+    const data = userDoc.data();
+    if (data.passwordHash !== passwordHash) {
+      throw new Error('Incorrect password for this username');
+    }
+    if (data.deviceId !== deviceId) {
+      await setDoc(userRef, { ...data, deviceId }, { merge: true });
+    }
+    return { username: data.username, isNew: false };
+  }
+}
+
 // 5. Sync/Upload local sessions to cloud
 export async function uploadSessionToCloud(sessionId: string, session: any, result: any) {
   const cleanSession = session ? JSON.parse(JSON.stringify(session)) : null;

@@ -11,6 +11,7 @@ import {
   subscribeToReceivedFeedback, 
   registerOnlineUser, 
   loginOnlineUser, 
+  unifiedLoginRegister,
   fetchUserCloudSessions 
 } from './data/firebase.ts';
 
@@ -396,12 +397,7 @@ export default function App() {
   const [selectedRanks, setSelectedRanks] = useState<RankedSelection[]>([]);
   const [localResult, setLocalResult] = useState<any>(null);
 
-  // Anonymous Account Upgrade States
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
   const [registeredUser, setRegisteredUser] = useState<string | null>(() => localStorage.getItem('mindprint_username'));
-  const [upgradeError, setUpgradeError] = useState<string | null>(null);
-  const [upgradeSuccess, setUpgradeSuccess] = useState(false);
   const [resultsTab, setResultsTab] = useState<'overview' | 'map' | 'history'>('overview');
   const [historySessions, setHistorySessions] = useState<any[]>([]);
   const [allMapSessions, setAllMapSessions] = useState<any[]>([]);
@@ -603,27 +599,82 @@ export default function App() {
     );
   };
 
-  const handleLoginSubmit = async (e: React.FormEvent) => {
+  const renderLoginModal = () => {
+    if (!showLoginModal) return null;
+    const t = TRANSLATIONS[currentLanguage] || TRANSLATIONS.en;
+    return (
+      <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.85)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 3000 }}>
+        <div style={{ background: '#161616', border: '1px solid var(--accent-primary)', borderRadius: '12px', padding: '24px', maxWidth: '380px', width: '90%', textAlign: 'left', boxShadow: 'var(--shadow-glow)' }}>
+          <h3 style={{ color: '#fff', marginBottom: '8px', fontSize: '1.25rem', fontWeight: 700 }}>Save & Sync Results</h3>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', marginBottom: '16px', lineHeight: 1.4 }}>
+            Enter a username and password. This will automatically log you in if you have an account, or create a new permanent account to secure your data.
+          </p>
+          <form onSubmit={handleAuthSubmit}>
+            <div style={{ marginBottom: '12px' }}>
+              <input 
+                type="text" 
+                placeholder={t.usernamePlaceholder || "Username"} 
+                value={loginUsername}
+                onChange={(e) => setLoginUsername(e.target.value)}
+                required
+                style={{ width: '100%', padding: '10px 14px', background: '#0d0d0d', border: '1px solid var(--border-card)', borderRadius: '8px', color: '#fff', fontSize: '0.9rem', outline: 'none' }}
+              />
+            </div>
+            <div style={{ marginBottom: '16px' }}>
+              <input 
+                type="password" 
+                placeholder={t.passwordPlaceholder || "Password"} 
+                value={loginPassword}
+                onChange={(e) => setLoginPassword(e.target.value)}
+                required
+                style={{ width: '100%', padding: '10px 14px', background: '#0d0d0d', border: '1px solid var(--border-card)', borderRadius: '8px', color: '#fff', fontSize: '0.9rem', outline: 'none' }}
+              />
+            </div>
+            {loginError && (
+              <p style={{ color: 'var(--danger)', fontSize: '0.85rem', marginBottom: '12px' }}>{loginError}</p>
+            )}
+            <div style={{ display: 'flex', gap: '12px' }}>
+              <button className="btn btn-secondary" type="button" onClick={() => setShowLoginModal(false)} style={{ flex: 1 }}>{t.cancelBtn || "Cancel"}</button>
+              <button className="btn btn-primary" type="submit" style={{ flex: 1 }}>Submit</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    );
+  };
+
+  const handleAuthSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoginError(null);
+
+    const inputUser = loginUsername.trim();
+    const inputPass = loginPassword;
+
+    if (!inputUser || !inputPass) return;
 
     try {
       let data;
       try {
-        data = await loginOnlineUser(loginUsername, loginPassword, deviceId);
+        data = await unifiedLoginRegister(inputUser, inputPass, deviceId);
       } catch (netErr: any) {
-        console.warn('Network login connection failed, trying local simulation:', netErr);
+        console.warn('Network auth connection failed, trying local simulation:', netErr);
         
         const simUsersRaw = localStorage.getItem('mindprint_simulated_users') || '[]';
         let simUsers = JSON.parse(simUsersRaw);
-        const matched = simUsers.find((u: any) => 
-          u.username.toLowerCase() === loginUsername.toLowerCase() && 
-          u.password.toLowerCase() === loginPassword.toLowerCase()
-        );
+        const matched = simUsers.find((u: any) => u.username.toLowerCase() === inputUser.toLowerCase());
+        
         if (!matched) {
-          throw new Error('Incorrect credentials or account not found in local simulation.');
+          // Register simulated user
+          simUsers.push({ username: inputUser, password: inputPass, deviceId });
+          localStorage.setItem('mindprint_simulated_users', JSON.stringify(simUsers));
+          data = { username: inputUser, isNew: true };
+        } else {
+          // Login simulated user
+          if (matched.password !== inputPass) {
+            throw new Error('Incorrect password for this username');
+          }
+          data = { username: matched.username, isNew: false };
         }
-        data = { username: matched.username };
       }
 
       localStorage.setItem('mindprint_username', data.username);
@@ -689,35 +740,6 @@ export default function App() {
     }
     checkCompleted();
   }, [currentSession]);
-
-  const handleRegisterUpgrade = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setUpgradeError(null);
-    setUpgradeSuccess(false);
-
-    try {
-      let data;
-      try {
-        data = await registerOnlineUser(username, password, deviceId);
-      } catch (netErr: any) {
-        console.warn('Network register connection failed, falling back to local simulation:', netErr);
-        const simUsersRaw = localStorage.getItem('mindprint_simulated_users') || '[]';
-        const simUsers = JSON.parse(simUsersRaw);
-        if (simUsers.some((u: any) => u.username === username)) {
-          throw new Error('Username already exists in local simulation');
-        }
-        simUsers.push({ username, password, deviceId });
-        localStorage.setItem('mindprint_simulated_users', JSON.stringify(simUsers));
-        data = { username };
-      }
-
-      localStorage.setItem('mindprint_username', data.username);
-      setRegisteredUser(data.username);
-      setUpgradeSuccess(true);
-    } catch (err: any) {
-      setUpgradeError(err.message);
-    }
-  };
 
   // Results Rating and Feedback States
   const [overallRating, setOverallRating] = useState(0);
@@ -1058,43 +1080,7 @@ export default function App() {
         </div>
       )}
 
-        {showLoginModal && (
-          <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2000 }}>
-            <div style={{ background: '#161616', border: '1px solid var(--accent-primary)', borderRadius: '12px', padding: '24px', maxWidth: '400px', width: '90%', textAlign: 'left' }}>
-              <h3 style={{ color: '#fff', marginBottom: '8px' }}>{t.loginTitle}</h3>
-              <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', marginBottom: '16px' }}>{t.loginDesc}</p>
-              <form onSubmit={handleLoginSubmit}>
-                <div style={{ marginBottom: '12px' }}>
-                  <input 
-                    type="text" 
-                    placeholder={t.usernamePlaceholder} 
-                    value={loginUsername}
-                    onChange={(e) => setLoginUsername(e.target.value)}
-                    required
-                    style={{ width: '100%', padding: '10px 14px', background: '#0d0d0d', border: '1px solid var(--border-card)', borderRadius: '8px', color: '#fff', fontSize: '0.9rem', outline: 'none' }}
-                  />
-                </div>
-                <div style={{ marginBottom: '16px' }}>
-                  <input 
-                    type="password" 
-                    placeholder={t.passwordPlaceholder} 
-                    value={loginPassword}
-                    onChange={(e) => setLoginPassword(e.target.value)}
-                    required
-                    style={{ width: '100%', padding: '10px 14px', background: '#0d0d0d', border: '1px solid var(--border-card)', borderRadius: '8px', color: '#fff', fontSize: '0.9rem', outline: 'none' }}
-                  />
-                </div>
-                {loginError && (
-                  <p style={{ color: 'var(--danger)', fontSize: '0.85rem', marginBottom: '12px' }}>{loginError}</p>
-                )}
-                <div style={{ display: 'flex', gap: '12px' }}>
-                  <button className="btn btn-secondary" type="button" onClick={() => setShowLoginModal(false)} style={{ flex: 1 }}>{t.cancelBtn}</button>
-                  <button className="btn btn-primary" type="submit" style={{ flex: 1 }}>{t.loginTitle}</button>
-                </div>
-              </form>
-            </div>
-          </div>
-        )}
+        {renderLoginModal()}
         {renderShareModal()}
       </div>
     );
@@ -1540,7 +1526,7 @@ export default function App() {
           <PersonalMap result={localResult} allSessions={allMapSessions} />
         )}
 
-        {/* Save Result / Log In Container */}
+        {/* Save & Sync Results Container */}
         <div style={{ background: 'rgba(255, 255, 255, 0.02)', border: '1px solid var(--border-card)', borderRadius: '12px', padding: '20px', marginBottom: '24px' }}>
           {registeredUser ? (
             <p style={{ color: 'var(--success)', fontSize: '0.95rem', margin: 0 }}>
@@ -1548,18 +1534,18 @@ export default function App() {
             </p>
           ) : (
             <div>
-              <h3 style={{ fontSize: '1.1rem', marginBottom: '8px', color: '#fff' }}>Save Result Permanently</h3>
-              <form onSubmit={handleRegisterUpgrade} style={{ marginBottom: '16px' }}>
+              <h3 style={{ fontSize: '1.1rem', marginBottom: '8px', color: '#fff' }}>Save & Sync Results</h3>
+              <form onSubmit={handleAuthSubmit} style={{ marginBottom: '0px' }}>
                 <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginBottom: '14px', lineHeight: '1.4' }}>
-                  Choose a username and password to secure your results. We value your privacy and do NOT collect email addresses.
+                  Enter a username and password to secure your results. If you already have an account, this will log you in to sync your data. If you are new, it will create your account.
                 </p>
                 
                 <div style={{ marginBottom: '12px' }}>
                   <input 
                     type="text" 
                     placeholder="Username" 
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
+                    value={loginUsername}
+                    onChange={(e) => setLoginUsername(e.target.value)}
                     required
                     style={{ width: '100%', padding: '10px 14px', background: '#0d0d0d', border: '1px solid var(--border-card)', borderRadius: '8px', color: '#fff', fontSize: '0.9rem', outline: 'none' }}
                   />
@@ -1568,31 +1554,21 @@ export default function App() {
                   <input 
                     type="password" 
                     placeholder="Password" 
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    value={loginPassword}
+                    onChange={(e) => setLoginPassword(e.target.value)}
                     required
                     style={{ width: '100%', padding: '10px 14px', background: '#0d0d0d', border: '1px solid var(--border-card)', borderRadius: '8px', color: '#fff', fontSize: '0.9rem', outline: 'none' }}
                   />
                 </div>
 
-                {upgradeError && (
-                  <p style={{ color: 'var(--danger)', fontSize: '0.85rem', marginBottom: '12px' }}>{upgradeError}</p>
-                )}
-                {upgradeSuccess && (
-                  <p style={{ color: 'var(--success)', fontSize: '0.85rem', marginBottom: '12px' }}>Account created successfully!</p>
+                {loginError && (
+                  <p style={{ color: 'var(--danger)', fontSize: '0.85rem', marginBottom: '12px' }}>{loginError}</p>
                 )}
 
                 <button className="btn btn-primary" type="submit" style={{ width: '100%', padding: '10px' }}>
-                  Upgrade to Permanent Account
+                  Save & Sync Results
                 </button>
               </form>
-
-              <div style={{ borderTop: '1px solid rgba(255, 255, 255, 0.05)', paddingTop: '16px', textAlign: 'center' }}>
-                <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginBottom: '10px' }}>Already registered?</p>
-                <button className="btn btn-secondary" onClick={() => setShowLoginModal(true)} style={{ width: '100%', padding: '10px' }}>
-                  Log In to Sync Data
-                </button>
-              </div>
             </div>
           )}
         </div>
@@ -1629,6 +1605,7 @@ export default function App() {
           </button>
         </div>
         {renderShareModal()}
+        {renderLoginModal()}
       </div>
       </>
     );
@@ -1869,43 +1846,7 @@ export default function App() {
           </button>
         </div>
       )}
-      {showLoginModal && (
-        <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2000 }}>
-          <div style={{ background: '#161616', border: '1px solid var(--accent-primary)', borderRadius: '12px', padding: '24px', maxWidth: '400px', width: '90%' }}>
-            <h3 style={{ color: '#fff', marginBottom: '8px' }}>Log In</h3>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', marginBottom: '16px' }}>Enter your username and password to restore and sync assessments.</p>
-            <form onSubmit={handleLoginSubmit}>
-              <div style={{ marginBottom: '12px' }}>
-                <input 
-                  type="text" 
-                  placeholder="Username" 
-                  value={loginUsername}
-                  onChange={(e) => setLoginUsername(e.target.value)}
-                  required
-                  style={{ width: '100%', padding: '10px 14px', background: '#0d0d0d', border: '1px solid var(--border-card)', borderRadius: '8px', color: '#fff', fontSize: '0.9rem', outline: 'none' }}
-                />
-              </div>
-              <div style={{ marginBottom: '16px' }}>
-                <input 
-                  type="password" 
-                  placeholder="Password" 
-                  value={loginPassword}
-                  onChange={(e) => setLoginPassword(e.target.value)}
-                  required
-                  style={{ width: '100%', padding: '10px 14px', background: '#0d0d0d', border: '1px solid var(--border-card)', borderRadius: '8px', color: '#fff', fontSize: '0.9rem', outline: 'none' }}
-                />
-              </div>
-              {loginError && (
-                <p style={{ color: 'var(--danger)', fontSize: '0.85rem', marginBottom: '12px' }}>{loginError}</p>
-              )}
-              <div style={{ display: 'flex', gap: '12px' }}>
-                <button className="btn btn-secondary" type="button" onClick={() => setShowLoginModal(false)} style={{ flex: 1 }}>Cancel</button>
-                <button className="btn btn-primary" type="submit" style={{ flex: 1 }}>Log In</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      {renderLoginModal()}
       {renderShareModal()}
     </div>
   );
