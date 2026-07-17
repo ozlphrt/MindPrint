@@ -834,86 +834,18 @@ export default function App() {
         border: '1px solid rgba(207, 159, 61, 0.25)',
         boxShadow: '0 10px 40px rgba(0, 0, 0, 0.6), var(--shadow-glow)'
       }}>
-        {/* Language switcher & Signed in status */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', position: 'relative' }}>
-          {registeredUser ? (
+        {/* Onboarding Header / Signed in status */}
+        {registeredUser && (
+          <div style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', marginBottom: '14px' }}>
             <span 
               onClick={handleLogout}
-              title={currentLanguage === 'tr' ? "Çıkış Yap" : "Log Out"}
+              title="Log Out"
               style={{ fontSize: '0.8rem', color: 'var(--success)', fontWeight: 600, cursor: 'pointer' }}
             >
               👤 {registeredUser}
             </span>
-          ) : (
-            <div />
-          )}
-          
-          <button
-            onClick={() => setIsLangOpen(!isLangOpen)}
-            style={{
-              background: '#161616',
-              border: '1.5px solid rgba(207, 159, 61, 0.4)',
-              borderRadius: '8px',
-              padding: '4px 8px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '4px',
-              cursor: 'pointer',
-              color: '#fff',
-              outline: 'none'
-            }}
-          >
-            <img 
-              src={`https://flagcdn.com/w40/${currentLangObj.flag}.png`} 
-              alt={currentLangObj.label} 
-              style={{ width: '16px', height: '11px', borderRadius: '1px', objectFit: 'cover' }} 
-            />
-            <span style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>▼</span>
-          </button>
-
-          {isLangOpen && (
-            <div style={{
-              position: 'absolute',
-              top: '32px',
-              right: 0,
-              background: '#161616',
-              border: '1px solid rgba(207, 159, 61, 0.3)',
-              borderRadius: '8px',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.5)',
-              zIndex: 100,
-              padding: '4px 0',
-              minWidth: '110px'
-            }}>
-              {languages.map((lang) => (
-                <div
-                  key={lang.code}
-                  onClick={() => {
-                    setLanguage(lang.code as any);
-                    setIsLangOpen(false);
-                  }}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    padding: '6px 10px',
-                    cursor: 'pointer',
-                    transition: 'background 0.2s ease',
-                    background: currentLanguage === lang.code ? 'rgba(207, 159, 61, 0.1)' : 'transparent',
-                  }}
-                  onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(207, 159, 61, 0.15)'}
-                  onMouseLeave={(e) => e.currentTarget.style.background = currentLanguage === lang.code ? 'rgba(207, 159, 61, 0.1)' : 'transparent'}
-                >
-                  <img 
-                    src={`https://flagcdn.com/w40/${lang.flag}.png`} 
-                    alt={lang.label} 
-                    style={{ width: '16px', height: '11px', borderRadius: '1px', objectFit: 'cover' }} 
-                  />
-                  <span style={{ fontSize: '0.8rem', color: '#fff' }}>{lang.label}</span>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+          </div>
+        )}
 
         {/* Feedback Mode Banner */}
         {(() => {

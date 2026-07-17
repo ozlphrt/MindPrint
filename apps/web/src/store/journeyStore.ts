@@ -27,7 +27,7 @@ interface JourneyState {
   responses: Response[];
   isOffline: boolean;
   isLoading: boolean;
-  currentLanguage: Language;
+  currentLanguage: 'en';
   
   // Actions
   initializeSession: (deviceId: string) => Promise<void>;
@@ -35,7 +35,6 @@ interface JourneyState {
   navigateBack: () => Promise<void>;
   completeJourney: () => Promise<Result | null>;
   setOfflineStatus: (isOffline: boolean) => void;
-  setLanguage: (lang: Language) => void;
 }
 
 export const useJourneyStore = create<JourneyState>((set, get) => ({
@@ -45,10 +44,6 @@ export const useJourneyStore = create<JourneyState>((set, get) => ({
   isOffline: !navigator.onLine,
   isLoading: false,
   currentLanguage: 'en',
-
-  setLanguage: (lang) => {
-    set({ currentLanguage: lang });
-  },
 
   setOfflineStatus: (isOffline) => {
     const wasOffline = get().isOffline;

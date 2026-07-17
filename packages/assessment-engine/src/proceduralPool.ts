@@ -227,164 +227,6 @@ const leisureConflicts: ScenarioBase[] = [
   }
 ];
 
-// Helper dictionaries for on-the-fly PWA translations in generated questions
-const TRANSLATIONS: Record<string, {
-  subj: Record<string, string>;
-  con: Record<string, string>;
-  opt: Record<string, string>;
-  instructions_single: string;
-  instructions_ranked: string;
-  opt_single_desc: string;
-  opt_ranked_desc: string;
-}> = {
-  tr: {
-    instructions_single: "En uygun tek bir cevabı seçin.",
-    instructions_ranked: "Bir ana eylem ve en fazla iki ikincil eylem seçin.",
-    opt_single_desc: "En uygun tek bir cevabı seçin.",
-    opt_ranked_desc: "Bir ana eylem ve en fazla iki ikincil eylem seçin.",
-    subj: {
-      'Someone': "Biri", 'A friend': "Bir arkadaş", 'A colleague': "Bir meslektaş", 'Your partner': "Partneriniz",
-      'A companion': "Bir yol arkadaşı", 'A peer': "Bir akran", 'A person': "Bir kişi", 'Your guest': "Misafiriniz",
-      'A guest': "Bir misafir", 'A visitor': "Bir ziyaretçi", 'A stranger': "Bir yabancı", 'A fellow guest': "Başka bir misafir",
-      'A server': "Bir garson", 'A waiter': "Bir garson", 'The server': "Garson", 'The waiter': "Garson",
-      'A driver': "Bir şoför", 'The driver': "Şoför", 'A cab driver': "Bir taksi şoförü", 'The cab driver': "Taksi şoförü",
-      'A cashier': "Bir kasiyer", 'The cashier': "Kasiyer", 'A vendor': "Bir satıcı", 'The vendor': "Satıcı",
-      'A receptionist': "Bir resepsiyonist", 'The host': "Ev sahibi", 'A clerk': "Bir görevli", 'The clerk': "Görevli",
-      'A courier': "Bir kurye", 'The courier': "Kurye", 'A delivery driver': "Bir kurye", 'The delivery driver': "Kurye",
-      'A trainer': "Bir eğitmen", 'The instructor': "Eğitmen", 'A coach': "Bir koç", 'The coach': "Koç",
-      'A passenger': "Bir yolcu", 'An individual': "Bir birey", 'A business': "Bir işletme", 'A company': "Bir şirket",
-      'A contractor': "Bir yüklenici", 'A supplier': "Bir tedarikçi", 'A technician': "Bir teknisyen", 'The technician': "Teknisyen",
-      'A mechanic': "Bir tamirci", 'An assistant': "Bir asistan", 'A member': "Bir üye", 'A student': "Bir öğrenci",
-      'A patron': "Bir müşteri", 'An attendee': "Bir katılımcı", 'A hiker': "Bir yürüyüşçü", 'A tourist': "Bir turist",
-      'A teammate': "Bir ekip arkadaşı", 'Your roommate': "Oda arkadaşınız", 'A classmate': "Bir sınıf arkadaşı",
-      'A client': "Bir müşteri", 'A delivery person': "Bir kurye", 'A service technician': "Bir servis teknisyeni"
-    },
-    con: {
-      'arrives extremely late to meet you': "buluşmanıza çok geç geliyor",
-      'shares a private story about you to a group': "bir grupta sizinle ilgili özel bir hikaye paylaşıyor",
-      'disagrees loudly with your opinion': "görüşünüze yüksek sesle karşı çıkıyor",
-      'brings uninvited guests to your small dinner': "ufak akşam yemeğinize davetsiz misafirler getiriyor",
-      'dominates the group conversation completely': "grup sohbetini tamamen tekeline alıyor",
-      'complains loudly about the food and music': "yemekten ve müzikten yüksek sesle şikayet ediyor",
-      'asks intrusive questions about your finances': "maddi durumunuz hakkında haddini aşan sorular soruyor",
-      'complains persistently about the service quality': "sürekli ve ısrarla servis kalitesinden şikayet ediyor",
-      'spoils the ending of a movie you wanted to watch': "izlemek istediğiniz filmin sonunu önceden söylüyor",
-      'ignores your messages about changing plans': "plan değişiklikleriyle ilgili mesajlarınızı görmezden geliyor",
-      'serves you the wrong meal order': "sipariş ettiğinizden farklı bir yemek getiriyor",
-      'demands a higher transit fare than estimated': "ulaşım için tahmin edilenden daha yüksek ücret istiyor",
-      'accuses you of short-paying a bill': "faturayı eksik ödediğinizi iddia ediyor",
-      'loses your reservation booking': "rezervasyonunuzu kaybediyor",
-      'leaves your package out in the rain': "paketinizi dışarıda yağmur altında bırakıyor",
-      'cancels a scheduled training session last minute': "planlanan antrenmanı son dakikada iptal ediyor",
-      'plays loud music on their phone on a train': "trende telefonundan yüksek sesle müzik çalıyor",
-      'makes a billing error on your invoice': "faturanızda hesaplama hatası yapıyor",
-      'fails to complete a repair on schedule': "onarımı söz verdiği tarihte bitiremiyor",
-      'ignores your polite request for assistance': "yardım talebinizi görmezden geliyor",
-      'takes the last reserved seat you booked': "ayırttığınız son koltuğu kapıyor",
-      'takes photos of you without asking': "izniniz olmadan fotoğrafınızı çekiyor",
-      'arrives late to the activity group start': "grup aktivitesinin başlangıcına geç kalıyor",
-      'plays audio out loud without headphones': "kulaklıksız şekilde sesi dışarıya vererek dinliyor",
-      'cuts in front of you in the queue': "sırada önünüze kaynak yapıyor",
-      'leaves trash on the shared trail': "ortak yürüyüş yoluna çöp bırakıyor",
-      'ignores the quiet zone rules in a library': "kütüphanedeki sessiz alan kuralına uymuyor",
-      'disrupts the class demonstration': "dersteki sunumu sabote ediyor",
-      'blocks your view during the gallery exhibition': "sergide görüş açınızı kapatıyor",
-      'takes your gear by mistake': "ekipmanınızı yanlışlıkla alıyor",
-      // Combinatorial Actions
-      "spills a hot beverage on your research notes": "araştırma notlarınızın üzerine sıcak bir içecek döküyor",
-      "accidentally knocks your folder into the mud": "klasörünüzü yanlışlıkla çamura düşürüyor",
-      "scratches your table surface with a heavy box": "ağır bir kutuyla masanızın yüzeyini çiziyor",
-      "tears a page from your favorite book": "en sevdiğiniz kitaptan bir sayfa yırtıyor",
-      "breaks a ceramic mug you left out": "ortada bıraktığınız seramik bardağı kırıyor",
-      "loses a tool you lent them yesterday": "dün ödünç verdiğiniz bir aleti kaybediyor",
-      "dents your bicycle frame while parking theirs": "bisikletini park ederken sizinkinin gövdesini yamultuyor",
-      "gets oil stains on your project documents": "proje belgelerinizin üzerine yağ lekesi bulaştırıyor",
-      "drops your expensive camera on the floor": "pahalı kameranızı yere düşürüyor",
-      "leaves your window open during a heavy rainstorm": "sağanak yağmur sırasında pencerenizi açık bırakıyor",
-      "uses your personal glass without washing it": "kişisel bardağınızı yıkamadan kullanıyor",
-      "knocks over a vase of flowers on your table": "masanızdaki çiçek vazosunu deviriyor",
-      "misplaces your apartment keys": "dairenizin anahtarlarını kaybediyor",
-      "takes credit for your design pitch deck": "tasarım sunumunuzu kendi başarısı gibi gösteriyor",
-      "assigns their own low-priority tasks to you": "kendi düşük öncelikli işlerini size yıkıyor",
-      "ignores your messages about project deadlines": "proje teslim tarihleriyle ilgili mesajlarınızı görmezden geliyor",
-      "criticizes your performance in public": "herkesin içinde performansınızı eleştiriyor",
-      "talks over your slides during a group review": "grup değerlendirmesi sırasında slaytlarınızın üzerine konuşuyor",
-      "arrives late to your joint presentation slot": "ortak sunum saatinize geç kalıyor",
-      "changes the shared database configuration without warning": "haber vermeden ortak veri tabanı yapılandırmasını değiştiriyor",
-      "reads your personal notes on the office desk": "ofis masanızdaki kişisel notlarınızı okuyor",
-      "discards your printouts from the copy machine": "fotokopi makinesindeki çıktılarınızı çöpe atıyor",
-      "occupies your reserved meeting room": "rezerve ettiğiniz toplantı odasını işgal ediyor",
-      "rejects your feedback without reading it": "geri bildiriminizi okumadan reddediyor",
-      "demands changes to the project at the last minute": "son dakikada projede değişiklikler talep ediyor",
-      "plays loud videos on their phone speakers": "telefon hoparlöründen yüksek sesle videolar oynatıyor",
-      "cuts directly in front of you in the queue": "sırada doğrudan önünüze geçiyor",
-      "parks their bicycle in your driveway space": "bisikletini garaj yolunuza park ediyor",
-      "leaves trash on your shared bench": "ortak kullandığınız bankın üzerine çöp bırakıyor",
-      "talks loudly on a call during quiet hours": "sessiz saatlerde telefonda yüksek sesle konuşuyor",
-      "blocks the sliding elevator doors": "asansörün sürgülü kapılarını engelliyor",
-      "smokes in a non-smoking waiting area": "sigara içilmeyen bekleme alanında sigara içiyor",
-      "stands too close to you in a line": "sırada size çok yakın duruyor",
-      "takes the seat you reserved online": "internetten rezerve ettiğiniz koltuğa oturuyor",
-      "plays music late into the night": "gece geç saatlere kadar yüksek sesle müzik çalıyor",
-      "leaves their dog unleashed in the lobby": "köpeğini lobide tasmasız bırakıyor",
-      "shares a secret you told them in confidence": "sır olarak verdiğiniz bir bilgiyi başkalarıyla paylaşıyor",
-      "brings uninvited guests to your dinner": "akşam yemeğinize davetsiz misafirler getiriyor",
-      "asks intrusive questions about your budget": "maddi bütçeniz hakkında haddini aşan sorular soruyor",
-      "makes a sarcastic joke at your expense": "sizinle alay eden iğneleyici bir şaka yapıyor",
-      "invades your personal space while speaking": "konuşurken kişisel alanınızı ihlal ediyor",
-      "gives unsolicited advice about your future": "geleceğiniz hakkında istenmeyen tavsiyeler veriyor",
-      "borrows your keys without asking": "anahtarlarınızı sormadan ödünç alıyor",
-      "makes plan modifications without telling you": "size haber vermeden planlarda değişiklik yapıyor",
-      "invites themselves to your weekend trip": "kendini hafta sonu gezinize davet ettiriyor",
-      "criticizes your taste in front of others": "başkalarının önünde zevkinizi eleştiriyor",
-      "takes your phone to read messages": "mesajları okumak için telefonunuzu alıyor",
-      "cancels your plans at the last second": "planlarınızı son saniyede iptal ediyor",
-      // Combinatorial Locations
-      "in the shared office lobby": "ortak ofis lobisinde",
-      "at a crowded local cafe": "kalabalık bir kafede",
-      "during an important group meeting": "önemli bir grup toplantısında",
-      "in a quiet public library": "sessiz bir kütüphanede",
-      "at a small dinner party": "ufak bir akşam yemeğinde",
-      "on a busy commuter train": "yoğun bir banliyö treninde",
-      "in your apartment building": "apartman binanızda",
-      "at a local community center": "yerel bir topluluk merkezinde",
-      "in the campus study room": "kampüs çalışma odasında",
-      "in a busy department store": "yoğun bir mağazada",
-      "at a weekend neighborhood picnic": "hafta sonu mahalle pikniğinde",
-      "in a design studio workspace": "tasarım stüdyosu çalışma alanında",
-      "at the train platform": "tren peronunda",
-      "in a shared kitchen area": "ortak mutfak alanında",
-      "near the building entrance": "bina girişinin yakınında"
-    },
-    opt: {
-      'Tell them directly that the delay is disrespectful.': "Gecikmenin saygısızlık olduğunu doğrudan söylemek.",
-      'Welcome them warmly and laugh off the wait.': "Sıcak bir şekilde karşılayıp beklemeyi gülerek geçiştirmek.",
-      'Quietly check the time and wait for their explanation.': "Sessizce saate bakıp açıklama yapmasını beklemek.",
-      'Tell them immediately that this was a breach of trust.': "Bunun bir güven ihlali olduğunu hemen belirtmek.",
-      'Laugh along with the story to keep the mood light.': "Ortamı yumuşatmak için hikayeye gülerek eşlik etmek.",
-      'Reflect quietly on why they felt the need to share it.': "Neden bunu paylaşma gereği duyduğunu sessizce düşünmek.",
-      'State your counterargument firmly and defend your view.': "Karşı argümanınızı net bir şekilde sunup görüşünüzü savunmak.",
-      'Steer the conversation to another topic to defuse it.': "Gerilimi azaltmak için konuyu başka bir yere çekmek.",
-      'Listen in silence and analyze their perspective.': "Sessizce dinleyip onların bakış açısını analiz etmek.",
-      'Candidly ask them why they did not check with you first.': "Neden önce size danışmadığını açıkça sormak.",
-      'Pull up extra chairs immediately and welcome them.': "Hemen ekstra sandalye çekip onları sıcak bir şekilde buyur etmek.",
-      'Accept it quietly and adjust your hosting plans.': "Sessizce kabul edip ev sahipliği planlarını buna göre ayarlamak.",
-      'Interrupt politely to share your own thoughts.': "Kendi fikirlerinizi paylaşmak için kibarca araya girmek.",
-      // New combinatorial options translations
-      "State the value of the damaged item directly and request a replacement.": "Zararın karşılanmasını veya eşyanın yenisiyle değiştirilmesini doğrudan talep etmek.",
-      "Brush off the accident with a warm smile to show you care more about the relationship.": "Aramızdaki ilişkiyi daha çok önemsediğimi göstermek için kazayı sıcak bir gülümsemeyle geçiştirmek.",
-      "Quietly inspect the items to see if they can be repaired before saying anything.": "Bir şey söylemeden önce eşyayı sessizce inceleyip tamir edilip edilemeyeceğine bakmak.",
-      "Schedule a direct meeting immediately to resolve the collaboration boundary.": "İş birliği sınırlarını netleştirmek için hemen doğrudan bir toplantı ayarlamak.",
-      "Suggest a collaborative compromise to complete the work in a friendly manner.": "İşi dostane bir şekilde tamamlamak için ortak bir uzlaşı önermek.",
-      "Review the project notes privately first to ensure you have the facts straight.": "Gerçekleri netleştirmek için önce proje notlarını özel olarak incelemek.",
-      "Ask them directly and firmly to respect the public space rules.": "Ortak alan kurallarına uymalarını doğrudan ve kararlı bir şekilde rica etmek.",
-      "Make a light-hearted joke about the situation to ease any tension in the area.": "Ortamdaki gerginliği azaltmak için durumla ilgili şaka yollu bir yorum yapmak.",
-      "Observe the crowd's reaction and decide if it is safer to just walk away.": "Çevredeki insanların tepkisini gözlemleyip oradan sakince uzaklaşmanın daha güvenli olup olmayacağına karar vermek.",
-      "Tell them frankly that their behavior was a breach of your personal trust.": "Bu davranışın kişisel güveninizi zedelediğini açıkça belirtmek.",
-      "Laugh off the awkward remark and shift the group discussion to a lighter topic.": "Bu tuhaf yorumu gülerek geçiştirmek ve grup sohbetini daha hafif bir konuya yönlendirmek.",
-      "Ponder their underlying motives in silence before responding." : "Cevap vermeden önce arkasında yatan asıl nedeni sessizce tartmak."
-    }  }
-};
 
 export function generateQuestionPool(lang: string = 'en'): Question[] {
   const pool: Question[] = [];
@@ -489,8 +331,6 @@ export function generateQuestionPool(lang: string = 'en'): Question[] {
     }
   };
 
-  const trans = TRANSLATIONS[lang];
-
   for (let i = 0; i < 500; i++) {
     const actionIndex = i % conflictActions.length;
     const action = conflictActions[actionIndex];
@@ -514,19 +354,7 @@ export function generateQuestionPool(lang: string = 'en'): Question[] {
     let socLabel = templates.soc;
     let refLabel = templates.ref;
 
-    // Localize templates if translation dictionary exists
-    if (lang !== 'en' && trans) {
-      const transSubj = trans.subj[subject] || subject;
-      const transAction = trans.con[action.text] || action.text;
-      const transLocation = trans.con[location] || location; // Fall back to raw if translation not mapped
-      const lowercaseFirst = (str: string) => str ? str.charAt(0).toLowerCase() + str.slice(1) : str;
-      const capitalizeFirst = (str: string) => str ? str.charAt(0).toUpperCase() + str.slice(1) : str;
-      prompt = capitalizeFirst(`${transLocation}, ${lowercaseFirst(transSubj)} ${transAction}.`);
 
-      dirLabel = trans.opt[dirLabel] || dirLabel;
-      socLabel = trans.opt[socLabel] || socLabel;
-      refLabel = trans.opt[refLabel] || refLabel;
-    }
 
     const answerOptions: AnswerOption[] = [
       {
@@ -597,9 +425,6 @@ export function generateQuestionPool(lang: string = 'en'): Question[] {
     const shuffledOptions = perm.map(idx => answerOptions[idx]);
 
     let instructions = type === 'single_choice' ? 'Select the single best response.' : 'Select one primary and up to two secondary actions.';
-    if (lang !== 'en' && trans) {
-      instructions = type === 'single_choice' ? trans.instructions_single : trans.instructions_ranked;
-    }
 
     pool.push({
       id: `q-p-${idCounter}`,
