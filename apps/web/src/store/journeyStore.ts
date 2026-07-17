@@ -71,22 +71,7 @@ export const useJourneyStore = create<JourneyState>((set, get) => ({
 
     const journeyDef = mockJourney as unknown as JourneyVersion;
 
-    if (activeSession && activeSession.feedbackFor === feedbackFor) {
-      // Load responses for this session
-      const resps = await db.responses
-        .where('sessionId')
-        .equals(activeSession.id)
-        .toArray();
-
-      set({
-        currentSession: activeSession,
-        currentQuestionId: activeSession.currentQuestionId,
-        responses: resps,
-        isLoading: false
-      });
-      syncPendingOperations().catch(err => console.error('[Sync] Init sync failed:', err));
-    } else {
-      // Create new session
+    const createFreshSession = async () => {
       const sessionId = crypto.randomUUID();
       const pool = generateQuestionPool(get().currentLanguage);
       const firstQuestion = pool[Math.floor(Math.random() * pool.length)];
@@ -133,6 +118,44 @@ export const useJourneyStore = create<JourneyState>((set, get) => ({
         isLoading: false
       });
       syncPendingOperations().catch(err => console.error('[Sync] Init sync failed:', err));
+    };
+
+    if (activeSession && activeSession.feedbackFor === feedbackFor) {
+      // Load responses for this session
+      const resps = await db.responses
+        .where('sessionId')
+        .equals(activeSession.id)
+        .toArray();
+
+      set({
+        currentSession: activeSession,
+        currentQuestionId: activeSession.currentQuestionId,
+        responses: resps,
+        isLoading: false
+      });
+      syncPendingOperations().catch(err => console.error('[Sync] Init sync failed:', err));
+    } else if (feedbackFor) {
+      // Check if we already completed a feedback session for this target
+      const completedSession = await db.journeySessions
+        .where('status')
+        .equals('completed')
+        .filter((s: any) => s.feedbackFor === feedbackFor)
+        .first();
+
+      if (completedSession) {
+        set({
+          currentSession: completedSession,
+          currentQuestionId: null,
+          responses: [],
+          isLoading: false
+        });
+        return;
+      }
+      
+      // If no active or completed session, fall back to new session creation
+      await createFreshSession();
+    } else {
+      await createFreshSession();
     }
   },
 

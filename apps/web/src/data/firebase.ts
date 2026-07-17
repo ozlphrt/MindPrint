@@ -1,19 +1,17 @@
-// Serverless Cloud Sync Connector
-// Using a globally distributed KV database for 100% setup-free, zero-configuration sync.
+// Render Cloud Sync Connector
+// Connects directly to the live healthy Render Fastify backend server.
 
-const BUCKET_URL = 'https://kvdb.io/z7R4kP1n9X2w6Q8s3vY5t/';
+const BUCKET_URL = 'https://mindprint-xhtj.onrender.com';
 
 // 1. Submit peer feedback from phone (anonymous)
 export async function submitOnlineFeedback(sessionId: string, feedbackFor: string, result: any) {
-  const key = `feedback:${feedbackFor.toLowerCase()}:${sessionId}`;
-  const response = await fetch(`${BUCKET_URL}${key}`, {
+  const response = await fetch(`${BUCKET_URL}/v1/feedback/submit`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       sessionId,
       feedbackFor: feedbackFor.toLowerCase(),
-      result,
-      submittedAt: new Date().toISOString()
+      result
     })
   });
   if (!response.ok) {
@@ -28,28 +26,16 @@ export function subscribeToReceivedFeedback(username: string, onUpdate: (feedbac
   async function poll() {
     if (!active) return;
     try {
-      // List all feedback keys for this user
-      const listRes = await fetch(`${BUCKET_URL}?prefix=feedback:${username.toLowerCase()}:`);
-      if (listRes.ok) {
-        const keys: string[] = await listRes.json();
-        if (keys.length > 0) {
-          // Fetch all feedbacks in parallel
-          const docs = await Promise.all(
-            keys.map(async (key) => {
-              const res = await fetch(`${BUCKET_URL}${key}`);
-              return res.json();
-            })
-          );
-          if (active) onUpdate(docs);
-        } else {
-          if (active) onUpdate([]);
-        }
+      const res = await fetch(`${BUCKET_URL}/v1/feedback/received?username=${encodeURIComponent(username)}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (active) onUpdate(data.feedbacks || []);
       }
     } catch (err) {
-      console.warn('[CloudSync] Fetch failed:', err);
+      console.warn('[CloudSync] Poll failed:', err);
     }
-    // Poll every 4 seconds for low-latency updates
-    if (active) setTimeout(poll, 4000);
+    // Poll every 5 seconds
+    if (active) setTimeout(poll, 5000);
   }
 
   poll();
@@ -61,51 +47,38 @@ export function subscribeToReceivedFeedback(username: string, onUpdate: (feedbac
 
 // 3. User Registration
 export async function registerOnlineUser(username: string, passwordHash: string, deviceId: string) {
-  const key = `user:${username.toLowerCase()}`;
-  const check = await fetch(`${BUCKET_URL}${key}`);
-  if (check.status === 200) {
-    throw new Error('Username already exists');
-  }
-  await fetch(`${BUCKET_URL}${key}`, {
+  const response = await fetch(`${BUCKET_URL}/v1/auth/register`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username, passwordHash, deviceId, createdAt: new Date().toISOString() })
+    body: JSON.stringify({ username, password: passwordHash, deviceId })
   });
+  if (!response.ok) {
+    const err = await response.json();
+    throw new Error(err.error || 'Registration failed');
+  }
+  return response.json();
 }
 
 // 4. User Login
 export async function loginOnlineUser(username: string, passwordHash: string, deviceId: string) {
-  const key = `user:${username.toLowerCase()}`;
-  const res = await fetch(`${BUCKET_URL}${key}`);
-  if (res.status !== 200) {
-    throw new Error('Invalid username or password');
+  const response = await fetch(`${BUCKET_URL}/v1/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username, password: passwordHash, deviceId })
+  });
+  if (!response.ok) {
+    const err = await response.json();
+    throw new Error(err.error || 'Login failed');
   }
-  const data = await res.json();
-  if (data.passwordHash !== passwordHash) {
-    throw new Error('Invalid username or password');
-  }
-  return data;
+  return response.json();
 }
 
 // 5. Sync/Upload local sessions to cloud
 export async function uploadSessionToCloud(sessionId: string, session: any, result: any) {
-  const key = `session:${session.deviceId}:${sessionId}`;
-  await fetch(`${BUCKET_URL}${key}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ session, result, updatedAt: new Date().toISOString() })
-  });
+  // Sync operations handled via standard sync operation syncPendingOperations()
 }
 
 // 6. Fetch user's self-assessments from cloud
 export async function fetchUserCloudSessions(deviceId: string) {
-  const listRes = await fetch(`${BUCKET_URL}?prefix=session:${deviceId}:`);
-  if (!listRes.ok) return [];
-  const keys: string[] = await listRes.json();
-  return Promise.all(
-    keys.map(async (key) => {
-      const res = await fetch(`${BUCKET_URL}${key}`);
-      return res.json();
-    })
-  );
+  return [];
 }

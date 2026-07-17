@@ -420,14 +420,11 @@ export default function App() {
   const [showShareModal, setShowShareModal] = useState(false);
   const [shareTab, setShareTab] = useState<'app' | 'feedback'>('app');
 
-  // 1. Listen to online feedback in real-time from Google Firebase Firestore
+  // 1. Listen to online feedback in real-time from the backend database
   useEffect(() => {
-    if (!registeredUser) {
-      setOnlineFeedbacks([]);
-      return;
-    }
-    console.log(`[FirebaseSync] Subscribing to real-time peer feedback for: ${registeredUser}`);
-    const unsubscribe = subscribeToReceivedFeedback(registeredUser, (feedbacks) => {
+    const syncTarget = registeredUser || ('Guest_' + deviceId.slice(0, 6));
+    console.log(`[CloudSync] Subscribing to real-time peer feedback for: ${syncTarget}`);
+    const unsubscribe = subscribeToReceivedFeedback(syncTarget, (feedbacks) => {
       const mapped = feedbacks.map((fb: any) => ({
         session: {
           id: fb.sessionId,
@@ -438,11 +435,11 @@ export default function App() {
         },
         result: fb.result
       }));
-      console.log(`[FirebaseSync] Instant update: Received ${mapped.length} feedback(s)`);
+      console.log(`[CloudSync] Instant update: Received ${mapped.length} feedback(s)`);
       setOnlineFeedbacks(mapped);
     });
     return () => unsubscribe();
-  }, [registeredUser]);
+  }, [registeredUser, deviceId]);
 
   // 2. Fetch and merge local and server self-assessments with online feedbacks
   useEffect(() => {
