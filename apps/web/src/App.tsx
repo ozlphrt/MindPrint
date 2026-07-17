@@ -571,13 +571,6 @@ export default function App() {
             </button>
           </div>
 
-          <h3 style={{ color: '#fff', marginBottom: '6px', fontSize: '1.15rem', fontWeight: 700 }}>
-            {currentLanguage === 'tr' ? trTitle : enTitle}
-          </h3>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.78rem', marginBottom: '16px', lineHeight: 1.35 }}>
-            {currentLanguage === 'tr' ? trDesc : enDesc}
-          </p>
-          
           <div style={{ background: '#fff', padding: '12px', borderRadius: '8px', display: 'inline-block', marginBottom: '16px' }}>
             <img 
               src={`https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(activeUrl)}`} 
@@ -586,6 +579,13 @@ export default function App() {
               style={{ width: '240px', height: '240px', display: 'block' }} 
             />
           </div>
+
+          <h3 style={{ color: '#fff', marginBottom: '6px', fontSize: '1.15rem', fontWeight: 700 }}>
+            {currentLanguage === 'tr' ? trTitle : enTitle}
+          </h3>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.78rem', marginBottom: '16px', lineHeight: 1.35 }}>
+            {currentLanguage === 'tr' ? trDesc : enDesc}
+          </p>
 
           <button
             className="btn btn-secondary"
