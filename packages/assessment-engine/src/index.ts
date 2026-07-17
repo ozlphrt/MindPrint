@@ -160,6 +160,17 @@ export { generateQuestionPool };
 /**
  * Determines the next question based on branching rules and progress.
  */
+function shuffleArray<T>(array: T[]): T[] {
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const temp = arr[i];
+    arr[i] = arr[j];
+    arr[j] = temp;
+  }
+  return arr;
+}
+
 export function getNextQuestion(
   journeyVersion: JourneyVersion,
   responses: Response[],
@@ -167,6 +178,26 @@ export function getNextQuestion(
   lang: string = 'en'
 ): string | null {
   const answeredCount = responses.length;
+
+  // Check branching rules of the current question first
+  const currentQuestion = journeyVersion.questions.find(q => q.id === currentQuestionId);
+  if (currentQuestion && currentQuestion.branchRules) {
+    for (const rule of currentQuestion.branchRules) {
+      const cond = rule.condition;
+      const scores = calculateScores(journeyVersion, responses);
+      const score = scores[cond.dimension]?.score ?? 50;
+      let match = false;
+      if (cond.operator === '>=' && score >= cond.value) match = true;
+      else if (cond.operator === '<=' && score <= cond.value) match = true;
+      else if (cond.operator === '==' && score === cond.value) match = true;
+      else if (cond.operator === '>' && score > cond.value) match = true;
+      else if (cond.operator === '<' && score < cond.value) match = true;
+
+      if (match) {
+        return rule.targetQuestionId;
+      }
+    }
+  }
   
   // Hard limit of 12 questions budget
   if (answeredCount >= 12) {
@@ -179,7 +210,7 @@ export function getNextQuestion(
 
   // Phase 2: Adaptive IRT pathing from the 500-question pool
   const pool = generateQuestionPool(lang);
-  const shuffledPool = [...pool].sort(() => Math.random() - 0.5);
+  const shuffledPool = shuffleArray(pool);
 
   // Find scenario tags of already answered questions
   const answeredScenarioTags = new Set<string>();
