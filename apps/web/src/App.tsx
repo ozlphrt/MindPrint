@@ -821,9 +821,6 @@ export default function App() {
     const isFeedbackInvitation = typeof window !== 'undefined' && !!new URLSearchParams(window.location.search).get('feedbackFor');
     const languages = [
       { code: 'en', flag: 'us', label: 'English' },
-      { code: 'fr', flag: 'fr', label: 'Français' },
-      { code: 'de', flag: 'de', label: 'Deutsch' },
-      { code: 'ru', flag: 'ru', label: 'Русский' },
       { code: 'tr', flag: 'tr', label: 'Türkçe' },
     ];
     const currentLangObj = languages.find(l => l.code === currentLanguage) || languages[0];
