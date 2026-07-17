@@ -1220,6 +1220,7 @@ export default function App() {
           className="btn btn-primary"
           style={{ width: '100%', padding: '12px', background: '#2ecc71', borderColor: '#2ecc71', color: '#fff', fontWeight: 'bold' }}
           onClick={() => {
+            localStorage.removeItem('mindprint_active_feedback_session_id');
             window.history.pushState({}, '', window.location.pathname);
             useJourneyStore.setState({ currentSession: null });
             window.location.reload();
