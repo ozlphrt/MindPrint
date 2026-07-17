@@ -335,7 +335,7 @@ export const useJourneyStore = create<JourneyState>((set, get) => ({
     // ── Feedback giver path: POST directly to /v1/feedback/submit (no login needed) ──
     if (currentSession.feedbackFor) {
       try {
-        const apiBase = 'https://mindprint-api.onrender.com';
+        const apiBase = 'https://mindprint-xhtj.onrender.com';
         const res = await fetch(`${apiBase}/v1/feedback/submit`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },

@@ -10,7 +10,7 @@ import { TRANSLATIONS } from './data/translations.ts';
 
 const getApiBaseUrl = () => {
   // Always use the online production API server to ensure both local and remote devices share the same database
-  return 'https://mindprint-api.onrender.com';
+  return 'https://mindprint-xhtj.onrender.com';
 };
 
 const ShareCard = ({ result }: { result: any }) => {
