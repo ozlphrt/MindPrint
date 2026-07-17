@@ -2,7 +2,7 @@ services:
   - type: web
     name: mindprint-api
     runtime: node
-    buildCommand: npx pnpm@11 install --frozen-lockfile && npx pnpm@11 --filter @mindprint/api build
+    buildCommand: npx pnpm@9 install --frozen-lockfile && npx pnpm@9 --filter @mindprint/api build
     startCommand: node apps/api/dist/index.js
     envVars:
       - key: NODE_ENV
