@@ -1970,7 +1970,7 @@ export default function App() {
       )}
 
       {/* PWA Update Toast */}
-      {needRefresh && (
+      {needRefresh && (onboardingStep === -1 || onboardingStep === -2) && (
         <div style={{
           position: 'fixed',
           bottom: '24px',
