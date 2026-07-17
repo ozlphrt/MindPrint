@@ -586,6 +586,7 @@ export default function App() {
             <img 
               src={`https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(activeUrl)}`} 
               alt="QR Code" 
+              className="qr-code-img"
               style={{ width: '240px', height: '240px', display: 'block' }} 
             />
           </div>
