@@ -319,7 +319,7 @@ const TRANSLATIONS: Record<string, {
       "plays loud videos on their phone speakers": "telefon hoparlöründen yüksek sesle videolar oynatıyor",
       "cuts directly in front of you in the queue": "sırada doğrudan önünüze geçiyor",
       "parks their bicycle in your driveway space": "bisikletini garaj yolunuza park ediyor",
-      "leaves trash on your shared bench": "ortak bankınızın üzerine çöp bırakıyor",
+      "leaves trash on your shared bench": "ortak kullandığınız bankın üzerine çöp bırakıyor",
       "talks loudly on a call during quiet hours": "sessiz saatlerde telefonda yüksek sesle konuşuyor",
       "blocks the sliding elevator doors": "asansörün sürgülü kapılarını engelliyor",
       "smokes in a non-smoking waiting area": "sigara içilmeyen bekleme alanında sigara içiyor",
@@ -371,9 +371,9 @@ const TRANSLATIONS: Record<string, {
       'Accept it quietly and adjust your hosting plans.': "Sessizce kabul edip ev sahipliği planlarını buna göre ayarlamak.",
       'Interrupt politely to share your own thoughts.': "Kendi fikirlerinizi paylaşmak için kibarca araya girmek.",
       // New combinatorial options translations
-      "State the value of the damaged item directly and request a replacement.": "Hasar gören eşyanın değerini doğrudan belirtip yenisini talep etmek.",
-      "Brush off the accident with a warm smile to show you care more about the relationship.": "İlişkiye eşyadan daha çok değer verdiğinizi göstermek için kazayı sıcak bir gülümsemeyle geçiştirmek.",
-      "Quietly inspect the items to see if they can be repaired before saying anything.": "Herhangi bir şey söylemeden önce eşyaların onarılıp onarılamayacağını sessizce incelemek.",
+      "State the value of the damaged item directly and request a replacement.": "Zararın karşılanmasını veya eşyanın yenisiyle değiştirilmesini doğrudan talep etmek.",
+      "Brush off the accident with a warm smile to show you care more about the relationship.": "Aramızdaki ilişkiyi daha çok önemsediğimi göstermek için kazayı sıcak bir gülümsemeyle geçiştirmek.",
+      "Quietly inspect the items to see if they can be repaired before saying anything.": "Bir şey söylemeden önce eşyayı sessizce inceleyip tamir edilip edilemeyeceğine bakmak.",
       "Schedule a direct meeting immediately to resolve the collaboration boundary.": "İş birliği sınırlarını netleştirmek için hemen doğrudan bir toplantı ayarlamak.",
       "Suggest a collaborative compromise to complete the work in a friendly manner.": "İşi dostane bir şekilde tamamlamak için ortak bir uzlaşı önermek.",
       "Review the project notes privately first to ensure you have the facts straight.": "Gerçekleri netleştirmek için önce proje notlarını özel olarak incelemek.",
@@ -519,7 +519,9 @@ export function generateQuestionPool(lang: string = 'en'): Question[] {
       const transSubj = trans.subj[subject] || subject;
       const transAction = trans.con[action.text] || action.text;
       const transLocation = trans.con[location] || location; // Fall back to raw if translation not mapped
-      prompt = `${transSubj} ${transLocation} ${transAction}.`;
+      const lowercaseFirst = (str: string) => str ? str.charAt(0).toLowerCase() + str.slice(1) : str;
+      const capitalizeFirst = (str: string) => str ? str.charAt(0).toUpperCase() + str.slice(1) : str;
+      prompt = capitalizeFirst(`${transLocation}, ${lowercaseFirst(transSubj)} ${transAction}.`);
 
       dirLabel = trans.opt[dirLabel] || dirLabel;
       socLabel = trans.opt[socLabel] || socLabel;
