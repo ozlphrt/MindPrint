@@ -1604,9 +1604,9 @@ export default function App() {
             Wipe Data (GDPR)
           </button>
         </div>
-        {renderShareModal()}
-        {renderLoginModal()}
       </div>
+      {renderShareModal()}
+      {renderLoginModal()}
       </>
     );
   }
