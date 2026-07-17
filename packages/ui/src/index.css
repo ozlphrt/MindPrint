@@ -206,3 +206,75 @@ body {
 .animate-slide-up {
   animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
+
+/* Mobile responsive adjustments to fit screens within the viewport without scrolling */
+@media (max-width: 480px) {
+  html, body {
+    height: 100dvh;
+    min-height: 100dvh;
+    overflow: hidden;
+  }
+
+  /* Ensure the main panel fits on mobile screen */
+  .glass-panel {
+    margin: 10px auto !important;
+    padding: 16px 20px !important;
+    width: 95% !important;
+    max-height: calc(100dvh - 20px) !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow-y: auto;
+  }
+
+  /* Scale down headers and fonts */
+  .glass-panel h1 {
+    font-size: 1.8rem !important;
+    margin-bottom: 8px !important;
+  }
+
+  .glass-panel h2 {
+    font-size: 1.3rem !important;
+    margin-bottom: 8px !important;
+  }
+
+  .glass-panel p {
+    font-size: 0.82rem !important;
+    margin-bottom: 16px !important;
+    line-height: 1.4 !important;
+  }
+
+  /* Scale down logos/images */
+  .glass-panel img {
+    width: 70px !important;
+    height: 70px !important;
+    margin-bottom: 12px !important;
+  }
+
+  /* Tighten list items and option cards */
+  .option-card {
+    padding: 10px 14px !important;
+    margin-bottom: 8px !important;
+    font-size: 0.85rem !important;
+  }
+
+  /* Scale down badges and fonts inside options */
+  .option-badge {
+    min-width: 24px !important;
+    height: 24px !important;
+    font-size: 0.75rem !important;
+  }
+
+  /* Tighten buttons spacing */
+  .btn {
+    padding: 10px 20px !important;
+    font-size: 0.9rem !important;
+  }
+
+  /* Fix for rating card margins on mobile */
+  .glass-panel div[style*="padding: '16px'"] {
+    padding: 10px !important;
+    margin-bottom: 6px !important;
+  }
+}
+
