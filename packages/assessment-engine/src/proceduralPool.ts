@@ -823,19 +823,20 @@ export function generateQuestionPool(lang: string = 'en'): Question[] {
   const pool: Question[] = [];
   let idCounter = 1;
 
-  const subjects = [
-    "A colleague", "A teammate", "A neighbor", "A guest", "A stranger",
-    "A visitor", "A passenger", "A friend", "Your companion", "Your roommate",
-    "A classmate", "A client", "A delivery person", "A service technician", "A peer"
-  ];
+  // Category-specific allowed lists to ensure logical semantic scenarios
+  const categorySubjects: Record<number, string[]> = {
+    1: ["A guest", "A visitor", "A friend", "Your roommate", "A neighbor", "Your companion", "A teammate"],
+    2: ["A colleague", "A teammate", "A classmate", "A peer", "A partner"],
+    3: ["A stranger", "A passenger", "A fellow commuter", "A customer", "A tourist", "A bystander"],
+    4: ["A friend", "Your roommate", "Your companion", "A relative", "A classmate", "Your partner"]
+  };
 
-  const locations = [
-    "in the shared office lobby", "at a crowded local cafe", "during an important group meeting",
-    "in a quiet public library", "at a small dinner party", "on a busy commuter train",
-    "in your apartment building", "at a local community center", "in the campus study room",
-    "in a busy department store", "at a weekend neighborhood picnic", "in a design studio workspace",
-    "at the train platform", "in a shared kitchen area", "near the building entrance"
-  ];
+  const categoryLocations: Record<number, string[]> = {
+    1: ["at a small dinner party", "in your apartment building", "at a local community center", "in a shared kitchen area", "at a weekend neighborhood picnic"],
+    2: ["in the shared office lobby", "during an important group meeting", "in a design studio workspace", "in the campus study room"],
+    3: ["on a busy commuter train", "in a quiet public library", "at a crowded local cafe", "in a busy department store", "at the train platform", "near the building entrance"],
+    4: ["in your apartment building", "at a small dinner party", "at a local cafe", "in a shared kitchen area"]
+  };
 
   // 50 unique conflict actions across 4 categories
   const conflictActions = [
@@ -928,11 +929,14 @@ export function generateQuestionPool(lang: string = 'en'): Question[] {
     const action = conflictActions[actionIndex];
     const category = action.cat;
 
-    const subjectIndex = Math.floor(i / conflictActions.length) % subjects.length;
-    const subject = subjects[subjectIndex];
+    const subjectsList = categorySubjects[category];
+    const locationsList = categoryLocations[category];
 
-    const locationIndex = Math.floor(i / (conflictActions.length * subjects.length)) % locations.length;
-    const location = locations[locationIndex];
+    const subjectIndex = Math.floor(i / conflictActions.length) % subjectsList.length;
+    const subject = subjectsList[subjectIndex];
+
+    const locationIndex = Math.floor(i / (conflictActions.length * subjectsList.length)) % locationsList.length;
+    const location = locationsList[locationIndex];
 
     const type = (idCounter % 3 === 0) ? 'single_choice' : 'ranked_choice';
 
