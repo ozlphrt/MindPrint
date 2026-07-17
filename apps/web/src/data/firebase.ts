@@ -84,10 +84,13 @@ export async function loginOnlineUser(username: string, passwordHash: string, de
 
 // 5. Sync/Upload local sessions to cloud
 export async function uploadSessionToCloud(sessionId: string, session: any, result: any) {
+  const cleanSession = session ? JSON.parse(JSON.stringify(session)) : null;
+  const cleanResult = result ? JSON.parse(JSON.stringify(result)) : null;
+
   const sessRef = doc(firestore, 'sessions', sessionId);
   await setDoc(sessRef, {
-    session,
-    result,
+    session: cleanSession,
+    result: cleanResult,
     updatedAt: new Date().toISOString()
   });
 }
