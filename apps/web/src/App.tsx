@@ -1165,7 +1165,8 @@ export default function App() {
   if (currentSession?.status === 'completed' && localResult) {
     const t = TRANSLATIONS[currentLanguage] || TRANSLATIONS.en;
     return (
-      <div className="glass-panel" style={{ maxWidth: '600px', margin: '40px auto', padding: '30px' }}>
+      <>
+        <div className="glass-panel" style={{ maxWidth: '600px', margin: '40px auto', padding: '30px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
           <button
             onClick={() => setShowShareModal(true)}
@@ -1628,6 +1629,7 @@ export default function App() {
         </div>
         {renderShareModal()}
       </div>
+      </>
     );
   }
 
