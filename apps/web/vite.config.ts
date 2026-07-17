@@ -8,7 +8,7 @@ export default defineConfig({
     react(),
     VitePWA({
       strategy: 'generateSW',
-      registerType: 'autoUpdate',
+      registerType: 'prompt',
       injectRegister: 'auto',
       includeAssets: ['favicon.ico', 'icon-192.png', 'icon-512.png', 'icon-1024.png', 'logo.svg'],
       workbox: {
