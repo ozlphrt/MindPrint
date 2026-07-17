@@ -849,6 +849,7 @@ export default function App() {
     const currentLangObj = languages.find(l => l.code === currentLanguage) || languages[0];
 
     return (
+      <>
       <div className="glass-panel animate-float animate-fade-in" style={{ 
         maxWidth: '430px', 
         margin: '20px auto', 
@@ -1080,9 +1081,10 @@ export default function App() {
         </div>
       )}
 
-        {renderLoginModal()}
-        {renderShareModal()}
       </div>
+      {renderLoginModal()}
+      {renderShareModal()}
+      </>
     );
   }
 
