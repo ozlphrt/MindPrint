@@ -62,6 +62,7 @@ export async function registerOnlineUser(username: string, passwordHash: string,
     deviceId,
     createdAt: new Date().toISOString()
   });
+  return { username };
 }
 
 // 4. User Login
