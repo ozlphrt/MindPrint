@@ -17,6 +17,7 @@ import {
 } from '@mindprint/assessment-engine';
 import mockJourney from '../../../../content/journeys/how-others-experience-me.json';
 import { syncPendingOperations } from '../data/sync.ts';
+import { submitOnlineFeedback, uploadSessionToCloud } from '../data/firebase.ts';
 
 import { Language } from '../data/translations.ts';
 
@@ -332,29 +333,17 @@ export const useJourneyStore = create<JourneyState>((set, get) => ({
       }
     });
 
-    // ── Feedback giver path: POST directly to /v1/feedback/submit (no login needed) ──
+    // ── Feedback giver path: Write directly to Google Firebase Firestore ──
     if (currentSession.feedbackFor) {
-      try {
-        const apiBase = 'https://mindprint-xhtj.onrender.com';
-        const res = await fetch(`${apiBase}/v1/feedback/submit`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            sessionId: currentSession.id,
-            feedbackFor: currentSession.feedbackFor,
-            result: finalResult
-          })
-        });
-        if (!res.ok) {
-          console.error('[Feedback] Submit failed with status', res.status);
-        } else {
-          console.log('[Feedback] Successfully submitted feedback for', currentSession.feedbackFor);
-        }
-      } catch (err) {
-        console.error('[Feedback] Submit request failed:', err);
-      }
+      submitOnlineFeedback(currentSession.id, currentSession.feedbackFor, finalResult)
+        .then(() => console.log('[Firebase] Successfully submitted peer feedback for', currentSession.feedbackFor))
+        .catch(err => console.error('[Firebase] Failed to submit peer feedback:', err));
     } else {
-      // Self-assessment: trigger normal sync queue
+      // Self-assessment: sync to Firestore cloud collection
+      uploadSessionToCloud(currentSession.id, completedSession, finalResult)
+        .then(() => console.log('[Firebase] Successfully synced self-assessment to Firestore'))
+        .catch(err => console.error('[Firebase] Local-only mode fallback:', err));
+      
       syncPendingOperations().catch(err => console.error('[Sync] Complete sync failed:', err));
     }
 

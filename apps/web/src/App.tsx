@@ -7,6 +7,12 @@ import '@mindprint/ui/src/index.css';
 import { useRegisterSW } from 'virtual:pwa-register/react';
 import { generateQuestionPool } from '@mindprint/assessment-engine';
 import { TRANSLATIONS } from './data/translations.ts';
+import { 
+  subscribeToReceivedFeedback, 
+  registerOnlineUser, 
+  loginOnlineUser, 
+  fetchUserCloudSessions 
+} from './data/firebase.ts';
 
 const getApiBaseUrl = () => {
   // Always use the online production API server to ensure both local and remote devices share the same database
@@ -404,6 +410,7 @@ export default function App() {
   const [resultsTab, setResultsTab] = useState<'overview' | 'map' | 'history'>('overview');
   const [historySessions, setHistorySessions] = useState<any[]>([]);
   const [allMapSessions, setAllMapSessions] = useState<any[]>([]);
+  const [onlineFeedbacks, setOnlineFeedbacks] = useState<any[]>([]);
 
   // User Login States
   const [loginUsername, setLoginUsername] = useState('');
@@ -413,6 +420,31 @@ export default function App() {
   const [showShareModal, setShowShareModal] = useState(false);
   const [shareTab, setShareTab] = useState<'app' | 'feedback'>('app');
 
+  // 1. Listen to online feedback in real-time from Google Firebase Firestore
+  useEffect(() => {
+    if (!registeredUser) {
+      setOnlineFeedbacks([]);
+      return;
+    }
+    console.log(`[FirebaseSync] Subscribing to real-time peer feedback for: ${registeredUser}`);
+    const unsubscribe = subscribeToReceivedFeedback(registeredUser, (feedbacks) => {
+      const mapped = feedbacks.map((fb: any) => ({
+        session: {
+          id: fb.sessionId,
+          feedbackFor: fb.feedbackFor,
+          status: 'completed',
+          completedAt: fb.submittedAt,
+          startedAt: fb.submittedAt
+        },
+        result: fb.result
+      }));
+      console.log(`[FirebaseSync] Instant update: Received ${mapped.length} feedback(s)`);
+      setOnlineFeedbacks(mapped);
+    });
+    return () => unsubscribe();
+  }, [registeredUser]);
+
+  // 2. Fetch and merge local and server self-assessments with online feedbacks
   useEffect(() => {
     async function loadSessions() {
       try {
@@ -442,45 +474,18 @@ export default function App() {
               }
             }
           } catch (netErr) {
-            console.warn('[History] Remote fetch failed, using local sessions:', netErr);
+            console.warn('[History] Remote fetch failed, using local/cached sessions:', netErr);
           }
         }
 
-        // 3. Fetch peer feedback received for this user (separate dedicated endpoint)
-        let feedbackCombined: any[] = [];
-        if (registeredUser) {
-          try {
-            const fbRes = await fetch(`${getApiBaseUrl()}/v1/feedback/received?username=${encodeURIComponent(registeredUser)}`);
-            if (fbRes.ok) {
-              const fbData = await fbRes.json();
-              if (fbData.feedbacks && fbData.feedbacks.length > 0) {
-                // Shape feedback records to match the {session, result} structure the map expects
-                feedbackCombined = fbData.feedbacks.map((fb: any) => ({
-                  session: {
-                    id: fb.sessionId,
-                    feedbackFor: fb.feedbackFor,
-                    status: 'completed',
-                    completedAt: fb.submittedAt,
-                    startedAt: fb.submittedAt
-                  },
-                  result: fb.result
-                }));
-                console.log(`[FeedbackPoll] Received ${feedbackCombined.length} peer feedback(s) for ${registeredUser}`);
-              }
-            }
-          } catch (fbErr) {
-            console.warn('[FeedbackPoll] Failed to fetch peer feedback:', fbErr);
-          }
-        }
-
-        // 4. Merge unique by session ID — self first, then server, then feedback
+        // 3. Merge unique by session ID — self first, then server, then feedbacks
         const allSessions = [...localCombined];
         for (const item of serverCombined) {
           if (!allSessions.some(x => x.session.id === item.session.id)) {
             allSessions.push(item);
           }
         }
-        for (const item of feedbackCombined) {
+        for (const item of onlineFeedbacks) {
           if (!allSessions.some(x => x.session.id === item.session.id)) {
             allSessions.push(item);
           }
@@ -498,13 +503,13 @@ export default function App() {
 
     let intervalId: any;
     if (registeredUser) {
-      intervalId = setInterval(loadSessions, 8000);
+      intervalId = setInterval(loadSessions, 12000);
     }
 
     return () => {
       if (intervalId) clearInterval(intervalId);
     };
-  }, [resultsTab, registeredUser]);
+  }, [resultsTab, registeredUser, onlineFeedbacks]);
 
   const handleLogout = async () => {
     localStorage.removeItem('mindprint_username');
