@@ -13,12 +13,12 @@ import {
 
 // Reads from Vite environment variables, falling back to a shared sandbox project
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyAsJ4mK9_XFv1gXyP9-x6lHj8kK2Lp4mQ",
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "mindprint-sandbox.firebaseapp.com",
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "mindprint-sandbox",
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "mindprint-sandbox.appspot.com",
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "109876543210",
-  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:109876543210:web:abcdef123456"
+  apiKey: "AIzaSyCLj--rmWNTNNW-idgvkIOiemuC7qi4xek",
+  authDomain: "mindprint-cee8c.firebaseapp.com",
+  projectId: "mindprint-cee8c",
+  storageBucket: "mindprint-cee8c.firebasestorage.app",
+  messagingSenderId: "955726659291",
+  appId: "1:955726659291:web:21e2cc6c8337245fca96fe"
 };
 
 const app = initializeApp(firebaseConfig);
