@@ -584,9 +584,9 @@ export default function App() {
           
           <div style={{ background: '#fff', padding: '12px', borderRadius: '8px', display: 'inline-block', marginBottom: '16px' }}>
             <img 
-              src={`https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(activeUrl)}`} 
+              src={`https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(activeUrl)}`} 
               alt="QR Code" 
-              style={{ width: '160px', height: '160px', display: 'block' }} 
+              style={{ width: '240px', height: '240px', display: 'block' }} 
             />
           </div>
 
