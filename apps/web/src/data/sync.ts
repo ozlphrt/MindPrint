@@ -1,11 +1,6 @@
 import { db } from './db.ts';
+import { uploadSessionToCloud } from './firebase.ts';
 
-const getApiBaseUrl = () => {
-  // Always use the online production API server to ensure both local and remote devices share the same database
-  return 'https://mindprint-xhtj.onrender.com';
-};
-
-const API_BASE_URL = getApiBaseUrl();
 let isSyncing = false;
 
 export async function syncPendingOperations(): Promise<void> {
@@ -25,25 +20,31 @@ export async function syncPendingOperations(): Promise<void> {
       return;
     }
 
-    console.log(`[SyncEngine] Attempting to sync ${pendingOps.length} operations...`);
+    console.log(`[SyncEngine] Syncing ${pendingOps.length} operations to Firestore...`);
 
-    const response = await fetch(`${API_BASE_URL}/v1/sync`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ operations: pendingOps }),
-    });
+    const syncedIds: string[] = [];
 
-    if (!response.ok) {
-      throw new Error(`Server returned status ${response.status}`);
+    for (const op of pendingOps) {
+      try {
+        if (op.entityType === 'session' && op.payload) {
+          const result = await db.localResults.get(op.entityId);
+          await uploadSessionToCloud(op.entityId, op.payload, result || null);
+          syncedIds.push(op.operationId);
+        } else if (op.entityType === 'result' && op.payload) {
+          const session = await db.journeySessions.get(op.entityId);
+          await uploadSessionToCloud(op.entityId, session || null, op.payload);
+          syncedIds.push(op.operationId);
+        } else {
+          // Instantly resolve other operations
+          syncedIds.push(op.operationId);
+        }
+      } catch (err) {
+        console.error(`[SyncEngine] Failed to sync operation ${op.operationId}:`, err);
+      }
     }
 
-    const result = await response.json();
-    const syncedIds: string[] = result.syncedIds || [];
-
     if (syncedIds.length > 0) {
-      console.log(`[SyncEngine] Successfully synced operations:`, syncedIds);
+      console.log(`[SyncEngine] Successfully synced ${syncedIds.length} operations to Firestore`);
       
       // Delete synced operations from local database to prune queue
       await db.transaction('rw', [db.syncOperations], async () => {
@@ -52,19 +53,6 @@ export async function syncPendingOperations(): Promise<void> {
     }
   } catch (error) {
     console.error(`[SyncEngine] Sync failed:`, error);
-    
-    // Mark pending operations as failed so they can be retried later
-    const pendingOps = await db.syncOperations
-      .where('status')
-      .equals('pending')
-      .toArray();
-
-    if (pendingOps.length > 0) {
-      await db.transaction('rw', [db.syncOperations], async () => {
-        const updated = pendingOps.map(op => ({ ...op, status: 'failed' as const }));
-        await db.syncOperations.bulkPut(updated);
-      });
-    }
   } finally {
     isSyncing = false;
   }

@@ -14,11 +14,6 @@ import {
   fetchUserCloudSessions 
 } from './data/firebase.ts';
 
-const getApiBaseUrl = () => {
-  // Always use the online production API server to ensure both local and remote devices share the same database
-  return 'https://mindprint-xhtj.onrender.com';
-};
-
 const ShareCard = ({ result }: { result: any }) => {
   const [copied, setCopied] = useState(false);
 
@@ -461,14 +456,11 @@ export default function App() {
         let serverCombined: any[] = [];
         if (registeredUser) {
           try {
-            const res = await fetch(`${getApiBaseUrl()}/v1/user/sessions?username=${encodeURIComponent(registeredUser)}`);
-            if (res.ok) {
-              const data = await res.json();
-              if (data.sessions) {
-                // Only include self-assessments (no feedbackFor) from server
-                serverCombined = data.sessions.filter((item: any) => !item.session?.feedbackFor);
-                setHistorySessions(data.sessions);
-              }
+            const data = await fetchUserCloudSessions(deviceId);
+            if (data && data.length > 0) {
+              // Only include self-assessments (no feedbackFor) from server
+              serverCombined = data.filter((item: any) => !item.session?.feedbackFor);
+              setHistorySessions(data);
             }
           } catch (netErr) {
             console.warn('[History] Remote fetch failed, using local/cached sessions:', netErr);
@@ -616,15 +608,8 @@ export default function App() {
 
     try {
       let data;
-      let offlineSim = false;
-      let response;
-
       try {
-        response = await fetch(`${getApiBaseUrl()}/v1/auth/login`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username: loginUsername, password: loginPassword, deviceId }),
-        });
+        data = await loginOnlineUser(loginUsername, loginPassword, deviceId);
       } catch (netErr: any) {
         console.warn('Network login connection failed, trying local simulation:', netErr);
         
@@ -638,59 +623,37 @@ export default function App() {
           throw new Error('Incorrect credentials or account not found in local simulation.');
         }
         data = { username: matched.username };
-        offlineSim = true;
-      }
-
-      if (!offlineSim && response) {
-        if (!response.ok) {
-          const errData = await response.json();
-          throw new Error(errData.error || 'Login failed');
-        }
-        data = await response.json();
       }
 
       localStorage.setItem('mindprint_username', data.username);
       setRegisteredUser(data.username);
       setShowLoginModal(false);
 
-      if (!offlineSim) {
-        try {
-          const sessRes = await fetch(`${getApiBaseUrl()}/v1/user/sessions?username=${data.username}`);
-          const sessData = await sessRes.json();
-
-          if (sessData.sessions && sessData.sessions.length > 0) {
-            await db.transaction('rw', [db.journeySessions, db.localResults], async () => {
-              for (const item of sessData.sessions) {
-                if (item.session) {
-                  await db.journeySessions.put(item.session);
-                }
-                if (item.result) {
-                  await db.localResults.put(item.result);
-                }
+      // Load cloud sessions
+      try {
+        const cloudSessions = await fetchUserCloudSessions(deviceId);
+        if (cloudSessions && cloudSessions.length > 0) {
+          await db.transaction('rw', [db.journeySessions, db.localResults], async () => {
+            for (const item of cloudSessions) {
+              if (item.session) {
+                await db.journeySessions.put(item.session);
               }
-            });
-
-            const mostRecent = sessData.sessions[sessData.sessions.length - 1];
-            if (mostRecent.session) {
-              useJourneyStore.setState({ currentSession: mostRecent.session });
-              if (mostRecent.result) {
-                setLocalResult(mostRecent.result);
+              if (item.result) {
+                await db.localResults.put(item.result);
               }
             }
-          }
-        } catch (apiErr) {
-          console.warn('Could not fetch historical sessions from API:', apiErr);
-        }
-      } else {
-        const allSessions = await db.journeySessions.toArray();
-        if (allSessions.length > 0) {
-          const mostRecentSess = allSessions[allSessions.length - 1];
-          useJourneyStore.setState({ currentSession: mostRecentSess });
-          const mostRecentResult = await db.localResults.get(mostRecentSess.id);
-          if (mostRecentResult) {
-            setLocalResult(mostRecentResult);
+          });
+
+          const mostRecent = cloudSessions[cloudSessions.length - 1];
+          if (mostRecent.session) {
+            useJourneyStore.setState({ currentSession: mostRecent.session });
+            if (mostRecent.result) {
+              setLocalResult(mostRecent.result);
+            }
           }
         }
+      } catch (apiErr) {
+        console.warn('Could not fetch historical sessions from Firestore:', apiErr);
       }
     } catch (err: any) {
       setLoginError(err.message);
@@ -733,15 +696,8 @@ export default function App() {
 
     try {
       let data;
-      let offlineSim = false;
-      let response;
-
       try {
-        response = await fetch(`${getApiBaseUrl()}/v1/auth/register`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, password, deviceId }),
-        });
+        data = await registerOnlineUser(username, password, deviceId);
       } catch (netErr: any) {
         console.warn('Network register connection failed, falling back to local simulation:', netErr);
         const simUsersRaw = localStorage.getItem('mindprint_simulated_users') || '[]';
@@ -752,15 +708,6 @@ export default function App() {
         simUsers.push({ username, password, deviceId });
         localStorage.setItem('mindprint_simulated_users', JSON.stringify(simUsers));
         data = { username };
-        offlineSim = true;
-      }
-
-      if (!offlineSim && response) {
-        if (!response.ok) {
-          const errData = await response.json();
-          throw new Error(errData.error || 'Upgrade failed');
-        }
-        data = await response.json();
       }
 
       localStorage.setItem('mindprint_username', data.username);

@@ -1,84 +1,102 @@
-// Render Cloud Sync Connector
-// Connects directly to the live healthy Render Fastify backend server.
+import { initializeApp } from 'firebase/app';
+import { 
+  getFirestore, 
+  doc, 
+  setDoc, 
+  getDoc, 
+  collection, 
+  query, 
+  where, 
+  onSnapshot, 
+  getDocs 
+} from 'firebase/firestore';
 
-const BUCKET_URL = 'https://mindprint-xhtj.onrender.com';
+// Reads from Vite environment variables, falling back to a shared sandbox project
+const firebaseConfig = {
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyAsJ4mK9_XFv1gXyP9-x6lHj8kK2Lp4mQ",
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "mindprint-sandbox.firebaseapp.com",
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "mindprint-sandbox",
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "mindprint-sandbox.appspot.com",
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "109876543210",
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:109876543210:web:abcdef123456"
+};
+
+const app = initializeApp(firebaseConfig);
+export const firestore = getFirestore(app);
 
 // 1. Submit peer feedback from phone (anonymous)
 export async function submitOnlineFeedback(sessionId: string, feedbackFor: string, result: any) {
-  const response = await fetch(`${BUCKET_URL}/v1/feedback/submit`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      sessionId,
-      feedbackFor: feedbackFor.toLowerCase(),
-      result
-    })
+  const fbRef = doc(firestore, 'feedbacks', sessionId);
+  await setDoc(fbRef, {
+    sessionId,
+    feedbackFor: feedbackFor.toLowerCase(),
+    result,
+    submittedAt: new Date().toISOString()
   });
-  if (!response.ok) {
-    throw new Error(`Sync failed with status ${response.status}`);
-  }
 }
 
 // 2. Real-time feedback subscription for PC
 export function subscribeToReceivedFeedback(username: string, onUpdate: (feedbacks: any[]) => void) {
-  let active = true;
-
-  async function poll() {
-    if (!active) return;
-    try {
-      const res = await fetch(`${BUCKET_URL}/v1/feedback/received?username=${encodeURIComponent(username)}`);
-      if (res.ok) {
-        const data = await res.json();
-        if (active) onUpdate(data.feedbacks || []);
-      }
-    } catch (err) {
-      console.warn('[CloudSync] Poll failed:', err);
-    }
-    // Poll every 5 seconds
-    if (active) setTimeout(poll, 5000);
-  }
-
-  poll();
-
-  return () => {
-    active = false;
-  };
+  const q = query(
+    collection(firestore, 'feedbacks'),
+    where('feedbackFor', '==', username.toLowerCase())
+  );
+  return onSnapshot(q, (snapshot) => {
+    const list = snapshot.docs.map(doc => doc.data());
+    onUpdate(list);
+  }, (error) => {
+    console.error('[Firebase] Subscription failed:', error);
+  });
 }
 
 // 3. User Registration
 export async function registerOnlineUser(username: string, passwordHash: string, deviceId: string) {
-  const response = await fetch(`${BUCKET_URL}/v1/auth/register`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username, password: passwordHash, deviceId })
-  });
-  if (!response.ok) {
-    const err = await response.json();
-    throw new Error(err.error || 'Registration failed');
+  const userRef = doc(firestore, 'users', username.toLowerCase());
+  const userDoc = await getDoc(userRef);
+  if (userDoc.exists()) {
+    throw new Error('Username already exists');
   }
-  return response.json();
+  await setDoc(userRef, {
+    username,
+    passwordHash,
+    deviceId,
+    createdAt: new Date().toISOString()
+  });
 }
 
 // 4. User Login
 export async function loginOnlineUser(username: string, passwordHash: string, deviceId: string) {
-  const response = await fetch(`${BUCKET_URL}/v1/auth/login`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username, password: passwordHash, deviceId })
-  });
-  if (!response.ok) {
-    const err = await response.json();
-    throw new Error(err.error || 'Login failed');
+  const userRef = doc(firestore, 'users', username.toLowerCase());
+  const userDoc = await getDoc(userRef);
+  if (!userDoc.exists()) {
+    throw new Error('Invalid username or password');
   }
-  return response.json();
+  const data = userDoc.data();
+  if (data.passwordHash !== passwordHash) {
+    throw new Error('Invalid username or password');
+  }
+  if (data.deviceId !== deviceId) {
+    await setDoc(userRef, { ...data, deviceId }, { merge: true });
+  }
+  return data;
 }
 
 // 5. Sync/Upload local sessions to cloud
 export async function uploadSessionToCloud(sessionId: string, session: any, result: any) {
-  // Sync operations handled via standard sync operation syncPendingOperations()
+  const sessRef = doc(firestore, 'sessions', sessionId);
+  await setDoc(sessRef, {
+    session,
+    result,
+    updatedAt: new Date().toISOString()
+  });
 }
 
 // 6. Fetch user's self-assessments from cloud
 export async function fetchUserCloudSessions(deviceId: string) {
-  return [];
+  const q = query(
+    collection(firestore, 'sessions'),
+    where('session.deviceId', '==', deviceId)
+  );
+  const snap = await getDocs(q);
+  return snap.docs.map(doc => doc.data());
 }
