@@ -416,8 +416,11 @@ export default function App() {
   useEffect(() => {
     async function loadSessions() {
       try {
-        // 1. Local Dexie sessions
-        const localSess = await db.journeySessions.where('status').equals('completed').toArray();
+        // 1. Local Dexie sessions (self-assessments only — no feedbackFor)
+        const localSess = await db.journeySessions
+          .where('status').equals('completed')
+          .filter((s: any) => !s.feedbackFor)
+          .toArray();
         const localRes = await db.localResults.toArray();
         
         const localCombined = localSess.map(s => {
@@ -425,24 +428,59 @@ export default function App() {
           return { session: s, result: r };
         }).filter(item => item.result);
 
-        // 2. Fetch server sessions if registered
+        // 2. Fetch server self-assessment sessions if registered
         let serverCombined: any[] = [];
         if (registeredUser) {
           try {
-            const res = await fetch(`${getApiBaseUrl()}/v1/user/sessions?username=${registeredUser}`);
-            const data = await res.json();
-            if (data.sessions) {
-              serverCombined = data.sessions;
-              setHistorySessions(data.sessions);
+            const res = await fetch(`${getApiBaseUrl()}/v1/user/sessions?username=${encodeURIComponent(registeredUser)}`);
+            if (res.ok) {
+              const data = await res.json();
+              if (data.sessions) {
+                // Only include self-assessments (no feedbackFor) from server
+                serverCombined = data.sessions.filter((item: any) => !item.session?.feedbackFor);
+                setHistorySessions(data.sessions);
+              }
             }
           } catch (netErr) {
             console.warn('[History] Remote fetch failed, using local sessions:', netErr);
           }
         }
 
-        // 3. Merge unique by session ID
+        // 3. Fetch peer feedback received for this user (separate dedicated endpoint)
+        let feedbackCombined: any[] = [];
+        if (registeredUser) {
+          try {
+            const fbRes = await fetch(`${getApiBaseUrl()}/v1/feedback/received?username=${encodeURIComponent(registeredUser)}`);
+            if (fbRes.ok) {
+              const fbData = await fbRes.json();
+              if (fbData.feedbacks && fbData.feedbacks.length > 0) {
+                // Shape feedback records to match the {session, result} structure the map expects
+                feedbackCombined = fbData.feedbacks.map((fb: any) => ({
+                  session: {
+                    id: fb.sessionId,
+                    feedbackFor: fb.feedbackFor,
+                    status: 'completed',
+                    completedAt: fb.submittedAt,
+                    startedAt: fb.submittedAt
+                  },
+                  result: fb.result
+                }));
+                console.log(`[FeedbackPoll] Received ${feedbackCombined.length} peer feedback(s) for ${registeredUser}`);
+              }
+            }
+          } catch (fbErr) {
+            console.warn('[FeedbackPoll] Failed to fetch peer feedback:', fbErr);
+          }
+        }
+
+        // 4. Merge unique by session ID — self first, then server, then feedback
         const allSessions = [...localCombined];
         for (const item of serverCombined) {
+          if (!allSessions.some(x => x.session.id === item.session.id)) {
+            allSessions.push(item);
+          }
+        }
+        for (const item of feedbackCombined) {
           if (!allSessions.some(x => x.session.id === item.session.id)) {
             allSessions.push(item);
           }

@@ -10,7 +10,9 @@ import {
   getAllSessions, 
   saveSession, 
   getResult, 
-  saveResult 
+  saveResult,
+  saveFeedback,
+  getFeedbacksFor
 } from './db.js';
 
 const fastify = Fastify({ logger: true });
@@ -73,19 +75,45 @@ fastify.get('/v1/analytics/dropoff', async () => {
   };
 });
 
-// Feedback reception endpoint
-fastify.post('/v1/feedback', async (request, reply) => {
-  const { sessionId, type, rating, insightId, feedback } = request.body as {
+// ─── Peer Feedback Endpoints ─────────────────────────────────────────────────
+
+// Submit peer feedback — completely anonymous, no user account needed on the giver's side
+fastify.post('/v1/feedback/submit', async (request, reply) => {
+  const { sessionId, feedbackFor, result } = request.body as {
     sessionId: string;
-    type: 'overall' | 'insight';
-    rating?: number;
-    insightId?: string;
-    feedback?: string;
+    feedbackFor: string;
+    result: any;
   };
-  
-  fastify.log.info(`Feedback received - Session: ${sessionId}, Type: ${type}, Rating: ${rating}, InsightId: ${insightId}, Feedback: ${feedback}`);
-  
-  return reply.code(200).send({ status: 'success' });
+
+  if (!sessionId || !feedbackFor || !result) {
+    return reply.code(400).send({ error: 'sessionId, feedbackFor, and result are required' });
+  }
+
+  const feedbackRecord = {
+    sessionId,
+    feedbackFor: feedbackFor.toLowerCase(),
+    result,
+    submittedAt: new Date().toISOString()
+  };
+
+  await saveFeedback(sessionId, feedbackRecord);
+  fastify.log.info(`[Feedback] Stored feedback for "${feedbackFor}" — sessionId: ${sessionId}`);
+
+  return reply.code(200).send({ status: 'success', sessionId });
+});
+
+// Retrieve all peer feedback received for a given username (polled by PC dashboard)
+fastify.get('/v1/feedback/received', async (request, reply) => {
+  const { username } = request.query as { username?: string };
+
+  if (!username) {
+    return reply.code(400).send({ error: 'username query parameter is required' });
+  }
+
+  const received = getFeedbacksFor(username);
+  fastify.log.info(`[Feedback] Returning ${received.length} feedback(s) for "${username}"`);
+
+  return reply.code(200).send({ feedbacks: received });
 });
 
 // User Registration endpoint

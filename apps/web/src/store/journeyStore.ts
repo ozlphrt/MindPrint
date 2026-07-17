@@ -302,34 +302,61 @@ export const useJourneyStore = create<JourneyState>((set, get) => ({
       await db.journeySessions.put(completedSession);
       await db.localResults.put(finalResult);
 
-      // Queue completed session sync
-      const sessionSyncOp: SyncOperation = {
-        operationId: crypto.randomUUID(),
-        entityType: 'session',
-        entityId: currentSession.id,
-        operationType: 'upsert',
-        payload: completedSession,
-        createdAt: new Date().toISOString(),
-        attemptCount: 0,
-        nextAttemptAt: null,
-        status: 'pending'
-      };
-      await db.syncOperations.put(sessionSyncOp);
+      // Queue completed session sync for self-assessments
+      if (!currentSession.feedbackFor) {
+        const sessionSyncOp: SyncOperation = {
+          operationId: crypto.randomUUID(),
+          entityType: 'session',
+          entityId: currentSession.id,
+          operationType: 'upsert',
+          payload: completedSession,
+          createdAt: new Date().toISOString(),
+          attemptCount: 0,
+          nextAttemptAt: null,
+          status: 'pending'
+        };
+        await db.syncOperations.put(sessionSyncOp);
 
-      // Queue result sync
-      const resultSyncOp: SyncOperation = {
-        operationId: crypto.randomUUID(),
-        entityType: 'result',
-        entityId: currentSession.id,
-        operationType: 'upsert',
-        payload: finalResult,
-        createdAt: new Date().toISOString(),
-        attemptCount: 0,
-        nextAttemptAt: null,
-        status: 'pending'
-      };
-      await db.syncOperations.put(resultSyncOp);
+        const resultSyncOp: SyncOperation = {
+          operationId: crypto.randomUUID(),
+          entityType: 'result',
+          entityId: currentSession.id,
+          operationType: 'upsert',
+          payload: finalResult,
+          createdAt: new Date().toISOString(),
+          attemptCount: 0,
+          nextAttemptAt: null,
+          status: 'pending'
+        };
+        await db.syncOperations.put(resultSyncOp);
+      }
     });
+
+    // ── Feedback giver path: POST directly to /v1/feedback/submit (no login needed) ──
+    if (currentSession.feedbackFor) {
+      try {
+        const apiBase = 'https://mindprint-api.onrender.com';
+        const res = await fetch(`${apiBase}/v1/feedback/submit`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            sessionId: currentSession.id,
+            feedbackFor: currentSession.feedbackFor,
+            result: finalResult
+          })
+        });
+        if (!res.ok) {
+          console.error('[Feedback] Submit failed with status', res.status);
+        } else {
+          console.log('[Feedback] Successfully submitted feedback for', currentSession.feedbackFor);
+        }
+      } catch (err) {
+        console.error('[Feedback] Submit request failed:', err);
+      }
+    } else {
+      // Self-assessment: trigger normal sync queue
+      syncPendingOperations().catch(err => console.error('[Sync] Complete sync failed:', err));
+    }
 
     set({
       currentSession: completedSession,
