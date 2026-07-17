@@ -2908,5 +2908,19 @@
     },
     "deviceId": "52003f77-3ad3-440c-8905-784a4507009d",
     "syncStatus": "pending"
+  },
+  "70e2ca83-54bb-4bec-b8f7-daa79f9075e9": {
+    "id": "70e2ca83-54bb-4bec-b8f7-daa79f9075e9",
+    "journeyId": "how-others-experience-me",
+    "journeyVersion": "1.0.0",
+    "status": "in_progress",
+    "currentQuestionId": "q-p-347",
+    "startedAt": "2026-07-16T10:10:15.793Z",
+    "updatedAt": "2026-07-16T10:10:15.793Z",
+    "completedAt": null,
+    "responseCount": 0,
+    "scoreSnapshot": {},
+    "deviceId": "7eb7c501-591f-43ca-aeee-eb1c74b6139a",
+    "syncStatus": "pending"
   }
 }

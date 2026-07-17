@@ -9,15 +9,8 @@ import { generateQuestionPool } from '@mindprint/assessment-engine';
 import { TRANSLATIONS } from './data/translations.ts';
 
 const getApiBaseUrl = () => {
-  if (typeof window === 'undefined') return 'http://localhost:3000';
-  const hostname = window.location.hostname;
-  if (hostname !== 'localhost' && hostname !== '127.0.0.1') {
-    if (/^(192\.168\.|10\.|172\.)/.test(hostname)) {
-      return `http://${hostname}:3000`;
-    }
-    return 'https://mindprint-api.onrender.com';
-  }
-  return 'http://localhost:3000';
+  // Always use the online production API server to ensure both local and remote devices share the same database
+  return 'https://mindprint-api.onrender.com';
 };
 
 const ShareCard = ({ result }: { result: any }) => {
