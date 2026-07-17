@@ -184,17 +184,20 @@ export function getNextQuestion(
   if (currentQuestion && currentQuestion.branchRules) {
     for (const rule of currentQuestion.branchRules) {
       const cond = rule.condition;
-      const scores = calculateScores(journeyVersion, responses);
-      const score = scores[cond.dimension]?.score ?? 50;
-      let match = false;
-      if (cond.operator === '>=' && score >= cond.value) match = true;
-      else if (cond.operator === '<=' && score <= cond.value) match = true;
-      else if (cond.operator === '==' && score === cond.value) match = true;
-      else if (cond.operator === '>' && score > cond.value) match = true;
-      else if (cond.operator === '<' && score < cond.value) match = true;
+      if (cond.dimension && cond.operator && cond.value !== undefined) {
+        const scores = calculateScores(journeyVersion, responses);
+        const score = scores[cond.dimension]?.score ?? 50;
+        let match = false;
+        const val = cond.value;
+        if (cond.operator === '>=' && score >= val) match = true;
+        else if (cond.operator === '<=' && score <= val) match = true;
+        else if (cond.operator === '==' && score === val) match = true;
+        else if (cond.operator === '>' && score > val) match = true;
+        else if (cond.operator === '<' && score < val) match = true;
 
-      if (match) {
-        return rule.targetQuestionId;
+        if (match) {
+          return rule.targetQuestionId;
+        }
       }
     }
   }
