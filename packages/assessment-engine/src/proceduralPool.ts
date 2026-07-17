@@ -310,23 +310,23 @@ export function generateQuestionPool(lang: string = 'en'): Question[] {
   // Option Labels by Category
   const optionTemplates: Record<number, { dir: string; soc: string; ref: string }> = {
     1: {
-      dir: "State the value of the damaged item directly and request a replacement.",
-      soc: "Brush off the accident with a warm smile to show you care more about the relationship.",
-      ref: "Quietly inspect the items to see if they can be repaired before saying anything."
+      dir: "State the issue directly and ask them to resolve or address it.",
+      soc: "Minimize the incident with a warm smile, prioritizing the relationship.",
+      ref: "Quietly assess the situation first to decide on the best response."
     },
     2: {
-      dir: "Schedule a direct meeting immediately to resolve the collaboration boundary.",
-      soc: "Suggest a collaborative compromise to complete the work in a friendly manner.",
-      ref: "Review the project notes privately first to ensure you have the facts straight."
+      dir: "Address the collaboration boundary directly to resolve the issue.",
+      soc: "Propose a friendly compromise to complete the task together.",
+      ref: "Review the details privately first to understand the situation fully."
     },
     3: {
       dir: "Ask them directly and firmly to respect the public space rules.",
-      soc: "Make a light-hearted joke about the situation to ease any tension in the area.",
-      ref: "Observe the crowd's reaction and decide if it is safer to just walk away."
+      soc: "Make a light-hearted joke about the situation to ease any tension.",
+      ref: "Observe the surroundings quietly and adapt your own plans."
     },
     4: {
-      dir: "Tell them frankly that their behavior was a breach of your personal trust.",
-      soc: "Laugh off the awkward remark and shift the group discussion to a lighter topic.",
+      dir: "Address the boundary crossing directly and state how it affects you.",
+      soc: "Laugh off the awkwardness and steer the conversation somewhere else.",
       ref: "Ponder their underlying motives in silence before responding."
     }
   };
