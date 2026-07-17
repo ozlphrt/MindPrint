@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import App from './App.tsx';
 
 // Programmatically force clear active PWA service workers and cache storage to bypass sticky caches
-const CURRENT_VERSION = '1.0.8';
+const CURRENT_VERSION = '1.0.9';
 if (typeof window !== 'undefined' && localStorage.getItem('mindprint_version') !== CURRENT_VERSION) {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.getRegistrations().then(registrations => {

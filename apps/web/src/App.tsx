@@ -643,6 +643,32 @@ export default function App() {
     );
   };
 
+  const renderUpdateBanner = () => {
+    if (!needRefresh) return null;
+    return (
+      <div style={{
+        position: 'fixed',
+        bottom: '24px',
+        right: '24px',
+        background: 'var(--bg-secondary)',
+        border: '1px solid var(--accent-primary)',
+        borderRadius: '12px',
+        padding: '16px 20px',
+        boxShadow: 'var(--shadow-glow)',
+        zIndex: 4000,
+        display: 'flex',
+        alignItems: 'center',
+        gap: '16px',
+        animation: 'slideUp 0.3s ease'
+      }}>
+        <span style={{ fontSize: '0.9rem', color: 'var(--text-primary)', fontWeight: 600 }}>New update is available!</span>
+        <button className="btn btn-primary" style={{ padding: '8px 16px', fontSize: '0.85rem' }} onClick={() => updateServiceWorker(true)}>
+          Update
+        </button>
+      </div>
+    );
+  };
+
   const handleAuthSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoginError(null);
@@ -1084,6 +1110,7 @@ export default function App() {
       </div>
       {renderLoginModal()}
       {renderShareModal()}
+      {renderUpdateBanner()}
       </>
     );
   }
@@ -1108,6 +1135,7 @@ export default function App() {
     const btnText = currentLanguage === 'tr' ? "Tamamla ve Çık" : "Complete & Exit";
 
     return (
+      <>
       <div className="glass-panel animate-float" style={{ 
         maxWidth: '430px', 
         margin: '60px auto', 
@@ -1147,6 +1175,8 @@ export default function App() {
           {btnText}
         </button>
       </div>
+      {renderUpdateBanner()}
+      </>
     );
   }
 
@@ -1662,6 +1692,7 @@ export default function App() {
     const t = TRANSLATIONS[currentLanguage] || TRANSLATIONS.en;
 
     return (
+      <>
       <div className="glass-panel" style={{ maxWidth: '600px', margin: '40px auto', width: '90%' }}>
         {(() => {
           const queryParams = new URLSearchParams(window.location.search);
@@ -1800,6 +1831,8 @@ export default function App() {
           )}
         </div>
       </div>
+      {renderUpdateBanner()}
+      </>
     );
   }
 
@@ -1825,29 +1858,7 @@ export default function App() {
         </button>
       )}
 
-      {/* PWA Update Toast */}
-      {needRefresh && (
-        <div style={{
-          position: 'fixed',
-          bottom: '24px',
-          right: '24px',
-          background: 'var(--bg-secondary)',
-          border: '1px solid var(--accent-primary)',
-          borderRadius: '12px',
-          padding: '16px 20px',
-          boxShadow: 'var(--shadow-lg)',
-          zIndex: 1000,
-          display: 'flex',
-          alignItems: 'center',
-          gap: '16px',
-          animation: 'slideUp 0.3s ease'
-        }}>
-          <span style={{ fontSize: '0.9rem', color: 'var(--text-primary)' }}>New update is available!</span>
-          <button className="btn btn-primary" style={{ padding: '8px 16px', fontSize: '0.85rem' }} onClick={() => updateServiceWorker(true)}>
-            Update
-          </button>
-        </div>
-      )}
+      {renderUpdateBanner()}
       {renderLoginModal()}
       {renderShareModal()}
     </div>
