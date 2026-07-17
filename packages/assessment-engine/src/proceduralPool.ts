@@ -823,45 +823,144 @@ export function generateQuestionPool(lang: string = 'en'): Question[] {
   const pool: Question[] = [];
   let idCounter = 1;
 
-  const allScenarios = [
-    ...socialConflicts,
-    ...personalConflicts,
-    ...leisureConflicts
+  const subjects = [
+    "A colleague", "A teammate", "A neighbor", "A guest", "A stranger",
+    "A visitor", "A passenger", "A friend", "Your companion", "Your roommate",
+    "A classmate", "A client", "A delivery person", "A service technician", "A peer"
   ];
+
+  const locations = [
+    "in the shared office lobby", "at a crowded local cafe", "during an important group meeting",
+    "in a quiet public library", "at a small dinner party", "on a busy commuter train",
+    "in your apartment building", "at a local community center", "in the campus study room",
+    "in a busy department store", "at a weekend neighborhood picnic", "in a design studio workspace",
+    "at the train platform", "in a shared kitchen area", "near the building entrance"
+  ];
+
+  // 50 unique conflict actions across 4 categories
+  const conflictActions = [
+    // Category 1: Property/Physical (cat: 1)
+    { cat: 1, text: "spills a hot beverage on your research notes" },
+    { cat: 1, text: "accidentally knocks your folder into the mud" },
+    { cat: 1, text: "scratches your table surface with a heavy box" },
+    { cat: 1, text: "tears a page from your favorite book" },
+    { cat: 1, text: "breaks a ceramic mug you left out" },
+    { cat: 1, text: "loses a tool you lent them yesterday" },
+    { cat: 1, text: "dents your bicycle frame while parking theirs" },
+    { cat: 1, text: "gets oil stains on your project documents" },
+    { cat: 1, text: "drops your expensive camera on the floor" },
+    { cat: 1, text: "leaves your window open during a heavy rainstorm" },
+    { cat: 1, text: "uses your personal glass without washing it" },
+    { cat: 1, text: "knocks over a vase of flowers on your table" },
+    { cat: 1, text: "misplaces your apartment keys" },
+
+    // Category 2: Workplace/Collab Friction (cat: 2)
+    { cat: 2, text: "takes credit for your design pitch deck" },
+    { cat: 2, text: "assigns their own low-priority tasks to you" },
+    { cat: 2, text: "ignores your messages about project deadlines" },
+    { cat: 2, text: "criticizes your performance in public" },
+    { cat: 2, text: "talks over your slides during a group review" },
+    { cat: 2, text: "arrives late to your joint presentation slot" },
+    { cat: 2, text: "changes the shared database configuration without warning" },
+    { cat: 2, text: "reads your personal notes on the office desk" },
+    { cat: 2, text: "discards your printouts from the copy machine" },
+    { cat: 2, text: "occupies your reserved meeting room" },
+    { cat: 2, text: "rejects your feedback without reading it" },
+    { cat: 2, text: "demands changes to the project at the last minute" },
+
+    // Category 3: Public space / community disturbance (cat: 3)
+    { cat: 3, text: "plays loud videos on their phone speakers" },
+    { cat: 3, text: "cuts directly in front of you in the queue" },
+    { cat: 3, text: "parks their bicycle in your driveway space" },
+    { cat: 3, text: "leaves trash on your shared bench" },
+    { cat: 3, text: "talks loudly on a call during quiet hours" },
+    { cat: 3, text: "blocks the sliding elevator doors" },
+    { cat: 3, text: "takes photos of you without asking" },
+    { cat: 3, text: "smokes in a non-smoking waiting area" },
+    { cat: 3, text: "stands too close to you in a line" },
+    { cat: 3, text: "takes the seat you reserved online" },
+    { cat: 3, text: "plays music late into the night" },
+    { cat: 3, text: "leaves their dog unleashed in the lobby" },
+
+    // Category 4: Personal boundary crossing (cat: 4)
+    { cat: 4, text: "shares a secret you told them in confidence" },
+    { cat: 4, text: "brings uninvited guests to your dinner" },
+    { cat: 4, text: "asks intrusive questions about your budget" },
+    { cat: 4, text: "makes a sarcastic joke at your expense" },
+    { cat: 4, text: "invades your personal space while speaking" },
+    { cat: 4, text: "gives unsolicited advice about your future" },
+    { cat: 4, text: "borrows your keys without asking" },
+    { cat: 4, text: "makes plan modifications without telling you" },
+    { cat: 4, text: "invites themselves to your weekend trip" },
+    { cat: 4, text: "criticizes your taste in front of others" },
+    { cat: 4, text: "takes your phone to read messages" },
+    { cat: 4, text: "cancels your plans at the last second" }
+  ];
+
+  // Option Labels by Category
+  const optionTemplates: Record<number, { dir: string; soc: string; ref: string }> = {
+    1: {
+      dir: "State the value of the damaged item directly and request a replacement.",
+      soc: "Brush off the accident with a warm smile to show you care more about the relationship.",
+      ref: "Quietly inspect the items to see if they can be repaired before saying anything."
+    },
+    2: {
+      dir: "Schedule a direct meeting immediately to resolve the collaboration boundary.",
+      soc: "Suggest a collaborative compromise to complete the work in a friendly manner.",
+      ref: "Review the project notes privately first to ensure you have the facts straight."
+    },
+    3: {
+      dir: "Ask them directly and firmly to respect the public space rules.",
+      soc: "Make a light-hearted joke about the situation to ease any tension in the area.",
+      ref: "Observe the crowd's reaction and decide if it is safer to just walk away."
+    },
+    4: {
+      dir: "Tell them frankly that their behavior was a breach of your personal trust.",
+      soc: "Laugh off the awkward remark and shift the group discussion to a lighter topic.",
+      ref: "Ponder their underlying motives in silence before responding."
+    }
+  };
 
   const trans = TRANSLATIONS[lang];
 
   for (let i = 0; i < 500; i++) {
-    const scenarioIndex = i % allScenarios.length;
-    const scenario = allScenarios[scenarioIndex];
-    
-    // Select a prefix/subject directly matched to this scenario
-    let subjList = scenario.subj;
-    let conText = scenario.con;
-    let dirLabel = scenario.dir;
-    let socLabel = scenario.soc;
-    let refLabel = scenario.ref;
+    const actionIndex = i % conflictActions.length;
+    const action = conflictActions[actionIndex];
+    const category = action.cat;
 
-    // Apply translations if language is supported
-    if (lang !== 'en' && trans) {
-      subjList = scenario.subj.map(s => trans.subj[s] || s);
-      conText = trans.con[scenario.con] || scenario.con;
-      dirLabel = trans.opt[scenario.dir] || scenario.dir;
-      socLabel = trans.opt[scenario.soc] || scenario.soc;
-      refLabel = trans.opt[scenario.ref] || scenario.ref;
-    }
+    const subjectIndex = Math.floor(i / conflictActions.length) % subjects.length;
+    const subject = subjects[subjectIndex];
 
-    const prefix = subjList[Math.floor(i / subjList.length) % subjList.length];
+    const locationIndex = Math.floor(i / (conflictActions.length * subjects.length)) % locations.length;
+    const location = locations[locationIndex];
 
     const type = (idCounter % 3 === 0) ? 'single_choice' : 'ranked_choice';
-    const prompt = `${prefix} ${conText}.`;
+
+    let prompt = `${subject} ${action.text} ${location}.`;
+    let templates = optionTemplates[category];
+
+    let dirLabel = templates.dir;
+    let socLabel = templates.soc;
+    let refLabel = templates.ref;
+
+    // Localize templates if translation dictionary exists
+    if (lang !== 'en' && trans) {
+      const transSubj = trans.subj[subject] || subject;
+      const transAction = trans.con[action.text] || action.text;
+      const transLocation = trans.con[location] || location; // Fall back to raw if translation not mapped
+      prompt = `${transSubj} ${transLocation} ${transAction}.`;
+
+      dirLabel = trans.opt[dirLabel] || dirLabel;
+      socLabel = trans.opt[socLabel] || socLabel;
+      refLabel = trans.opt[refLabel] || refLabel;
+    }
 
     const answerOptions: AnswerOption[] = [
       {
         id: `qp-${idCounter}-opt-0`,
         label: dirLabel,
         effects: [
-          { dimension: 'directness', delta: 1.0 }, 
+          { dimension: 'directness', delta: 1.0 },
           { dimension: 'social_energy', delta: 0.3 },
           { dimension: 'expressiveness', delta: 0.2 },
           { dimension: 'assertiveness', delta: 1.0 },
@@ -879,7 +978,7 @@ export function generateQuestionPool(lang: string = 'en'): Question[] {
         id: `qp-${idCounter}-opt-1`,
         label: socLabel,
         effects: [
-          { dimension: 'social_energy', delta: 1.0 }, 
+          { dimension: 'social_energy', delta: 1.0 },
           { dimension: 'directness', delta: -0.4 },
           { dimension: 'expressiveness', delta: 1.0 },
           { dimension: 'assertiveness', delta: -0.3 },
@@ -897,7 +996,7 @@ export function generateQuestionPool(lang: string = 'en'): Question[] {
         id: `qp-${idCounter}-opt-2`,
         label: refLabel,
         effects: [
-          { dimension: 'reflectiveness', delta: 1.0 }, 
+          { dimension: 'reflectiveness', delta: 1.0 },
           { dimension: 'social_energy', delta: -0.8 },
           { dimension: 'expressiveness', delta: -0.8 },
           { dimension: 'assertiveness', delta: -0.6 },
@@ -939,7 +1038,7 @@ export function generateQuestionPool(lang: string = 'en'): Question[] {
       maxSelections: type === 'single_choice' ? 1 : 3,
       required: true,
       answerOptions: shuffledOptions,
-      tags: [`scenario-idx-${scenarioIndex}`]
+      tags: [`scenario-idx-${actionIndex}`]
     });
 
     idCounter++;
