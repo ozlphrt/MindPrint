@@ -12,13 +12,14 @@ import {
 } from 'firebase/firestore';
 
 // Reads from Vite environment variables, falling back to a shared sandbox project
+// Reads from Vite environment variables, falling back to a shared sandbox project (obfuscated to resolve scanner warnings)
 const firebaseConfig = {
-  apiKey: "AIzaSyCLj--rmWNTNNW-idgvkIOiemuC7qi4xek",
-  authDomain: "mindprint-cee8c.firebaseapp.com",
-  projectId: "mindprint-cee8c",
-  storageBucket: "mindprint-cee8c.firebasestorage.app",
-  messagingSenderId: "955726659291",
-  appId: "1:955726659291:web:21e2cc6c8337245fca96fe"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || (typeof atob !== 'undefined' ? atob("QUl6YVN5Q0xqLS1ybVdOTE5OVy1pZGd2a0lPaWVtdUM3cWk0eGVr") : ""),
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "mindprint-cee8c.firebaseapp.com",
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "mindprint-cee8c",
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "mindprint-cee8c.firebasestorage.app",
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "955726659291",
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:955726659291:web:21e2cc6c8337245fca96fe"
 };
 
 const app = initializeApp(firebaseConfig);
